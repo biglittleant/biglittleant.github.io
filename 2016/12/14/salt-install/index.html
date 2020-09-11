@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.biglittleant.cn","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+  </script>
+
+  <meta name="description" content="saltstack简介SaltStack是一种新型的基础设施管理软件,简单易部署,可伸缩的足以管理成千上万的服务器,和足够快的速度控制,与他们交流,以毫秒为单位。SaltStack提供了一个动态基础设施通信总线用于编排,远程执行、配置管理等等。SaltStack项目于2011年启动,年增长速度较快,五年期固定基础设施编制和配置管理的开源项目。SaltStack社区致力于保持slat项目集中、友好、">
+<meta property="og:type" content="article">
+<meta property="og:title" content="salt-入门及安装">
+<meta property="og:url" content="http://www.biglittleant.cn/2016/12/14/salt-install/index.html">
+<meta property="og:site_name" content="biglittleant">
+<meta property="og:description" content="saltstack简介SaltStack是一种新型的基础设施管理软件,简单易部署,可伸缩的足以管理成千上万的服务器,和足够快的速度控制,与他们交流,以毫秒为单位。SaltStack提供了一个动态基础设施通信总线用于编排,远程执行、配置管理等等。SaltStack项目于2011年启动,年增长速度较快,五年期固定基础设施编制和配置管理的开源项目。SaltStack社区致力于保持slat项目集中、友好、">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2016-12-14T10:32:07.000Z">
+<meta property="article:modified_time" content="2020-09-03T02:03:13.621Z">
+<meta property="article:author" content="biglittleant">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="salt">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.biglittleant.cn/2016/12/14/salt-install/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>salt-入门及安装 | biglittleant</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">biglittleant</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">不被嘲笑的梦想，是不值得去实现的</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-文章分类">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a>
+
+  </li>
+        <li class="menu-item menu-item-归档">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#saltstack%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">saltstack简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#saltstack%E8%BF%90%E8%A1%8C%E7%9A%84%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">saltstack运行的模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#saltstack%E4%B8%89%E5%A4%A7%E5%8A%9F%E8%83%BD"><span class="nav-number">1.2.</span> <span class="nav-text">saltstack三大功能</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#saltstack%E5%AE%89%E8%A3%85%E5%AE%9E%E6%88%98"><span class="nav-number">2.</span> <span class="nav-text">saltstack安装实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%89%E8%A3%85"><span class="nav-number">2.1.</span> <span class="nav-text">服务器安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85epel%E5%8C%85"><span class="nav-number">2.1.1.</span> <span class="nav-text">安装epel包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEsaltstack%E7%9A%84%E5%AE%98%E6%96%B9yum%E6%BA%90"><span class="nav-number">2.1.2.</span> <span class="nav-text">配置saltstack的官方yum源</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEsaltstack%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%A6%82%E4%B8%8B%E5%86%85%E5%AE%B9%EF%BC%9A"><span class="nav-number">2.2.</span> <span class="nav-text">配置saltstack服务端如下内容：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%AE%89%E8%A3%85%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">客户端安装方法：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#salt-stakck-%E7%8A%B6%E6%80%81%E6%9F%A5%E8%AF%A2"><span class="nav-number">4.</span> <span class="nav-text">salt-stakck 状态查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#salt%E8%BF%9C%E7%A8%8B%E6%89%A7%E8%A1%8C"><span class="nav-number">5.</span> <span class="nav-text">salt远程执行</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87%E5%8C%B9%E9%85%8D%E6%96%B9%E5%BC%8F"><span class="nav-number">5.1.</span> <span class="nav-text">目标匹配方式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#salt-%E5%BC%82%E6%AD%A5%E6%89%A7%E8%A1%8C%E6%96%B9%E6%B3%95"><span class="nav-number">6.</span> <span class="nav-text">salt 异步执行方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#salt%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6"><span class="nav-number">7.</span> <span class="nav-text">salt权限控制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#salt-%E4%BD%BF%E7%94%A8-pam-%E6%A8%A1%E5%9D%97%E5%AF%B9%E6%99%AE%E9%80%9A%E8%B4%A6%E5%8F%B7%E8%BF%9B%E8%A1%8C%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6"><span class="nav-number">7.1.</span> <span class="nav-text">salt 使用 pam 模块对普通账号进行权限控制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%80%E5%90%AFPAM%E8%AE%A4%E8%AF%81"><span class="nav-number">7.1.1.</span> <span class="nav-text">开启PAM认证</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81"><span class="nav-number">7.1.2.</span> <span class="nav-text">验证</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%AF%E6%8C%81%E6%96%87%E6%A1%A3%EF%BC%9A"><span class="nav-number">8.</span> <span class="nav-text">支持文档：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB%EF%BC%9A"><span class="nav-number">9.</span> <span class="nav-text">问题汇总：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E4%B8%80%EF%BC%9A"><span class="nav-number">9.1.</span> <span class="nav-text">报错一：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%EF%BC%9Asalt-%E7%AE%A1%E7%90%86%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E6%97%B6%EF%BC%8C%E6%8A%A5%E9%94%99%E3%80%82"><span class="nav-number">9.2.</span> <span class="nav-text">报错：salt 管理配置文件时，报错。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%EF%BC%9Asaltstack-%E6%89%A7%E8%A1%8C%E5%90%8ECPU%E5%8D%A0%E7%94%A8%E7%8E%87%E4%B8%BA%E7%99%BE%E5%88%86%E4%B9%8B%E7%99%BE%E3%80%82"><span class="nav-number">9.3.</span> <span class="nav-text">报错：saltstack 执行后CPU占用率为百分之百。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%EF%BC%9A%E9%85%8D%E7%BD%AE%E5%AE%8Creturn%E5%90%8E%EF%BC%8C%E4%B8%8D%E8%83%BD%E5%90%91%E6%95%B0%E6%8D%AE%E5%BA%93%E5%86%99%E5%85%A5%E6%95%B0%E6%8D%AE%EF%BC%9A"><span class="nav-number">9.4.</span> <span class="nav-text">报错：配置完return后，不能向数据库写入数据：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%EF%BC%9A-%E6%89%A7%E8%A1%8Cstate-sls-%E6%8A%A5%E9%94%99"><span class="nav-number">9.5.</span> <span class="nav-text">报错： 执行state.sls 报错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%EF%BC%9A%E5%9C%A8%E6%96%87%E4%BB%B6%E4%B8%AD%E8%B0%83%E7%94%A8grains%E6%8A%A5%E9%94%99"><span class="nav-number">9.6.</span> <span class="nav-text">报错：在文件中调用grains报错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%EF%BC%9A%E8%B0%83%E7%94%A8jinjia%E6%A8%A1%E6%9D%BF%E7%9A%84%E6%97%B6%E5%80%99%E5%A4%9A%E4%BA%86%E4%B8%80%E5%AF%B9%E6%8B%AC%E5%8F%B7"><span class="nav-number">9.7.</span> <span class="nav-text">报错：调用jinjia模板的时候多了一对括号</span></a></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">biglittleant</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2016/12/14/salt-install/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="biglittleant">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="biglittleant">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          salt-入门及安装
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2016-12-14 18:32:07" itemprop="dateCreated datePublished" datetime="2016-12-14T18:32:07+08:00">2016-12-14</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2020-09-03 10:03:13" itemprop="dateModified" datetime="2020-09-03T10:03:13+08:00">2020-09-03</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="saltstack简介"><a href="#saltstack简介" class="headerlink" title="saltstack简介"></a>saltstack简介</h2><p>SaltStack是一种新型的基础设施管理软件,简单易部署,可伸缩的足以管理成千上万的服务器,和足够快的速度控制,与他们交流,以毫秒为单位。SaltStack提供了一个动态基础设施通信总线用于编排,远程执行、配置管理等等。SaltStack项目于2011年启动,年增长速度较快,五年期固定基础设施编制和配置管理的开源项目。SaltStack社区致力于保持slat项目集中、友好、健康、开放。</p>
+<p>简单来说它的两大基础功能就是：配置管理、远程命令执行。剩下就是根据你的需求自由组合，实现更复杂的功能和系统管理</p>
+<h3 id="saltstack运行的模式"><a href="#saltstack运行的模式" class="headerlink" title="saltstack运行的模式"></a>saltstack运行的模式</h3><p>1：local<br>2：master/minion<br>3：salt SSH（可以不依赖客户端）</p>
+<h3 id="saltstack三大功能"><a href="#saltstack三大功能" class="headerlink" title="saltstack三大功能"></a>saltstack三大功能</h3><p>远程执行<br>配置管理<br>云管理（不是特别成熟，不建议生产环境使用）<br>Salt即可以批量执行命令，也可以单机执行。通常单机执行用于测试：</p>
+<ol>
+<li>单机（立即）执行。 使用salt-call命令单机执行操作</li>
+<li>批量(立即)执行。最常用的操作。使用salt命令，对匹配的minion节点执行操作</li>
+</ol>
+<h2 id="saltstack安装实战"><a href="#saltstack安装实战" class="headerlink" title="saltstack安装实战"></a>saltstack安装实战</h2><p><strong>salt解析基于DNS，如果做实验发现执行特别慢，可以尝试配置好域名解析.</strong></p>
+<h3 id="服务器安装"><a href="#服务器安装" class="headerlink" title="服务器安装"></a>服务器安装</h3><p>salt-master可以使用两个源来安装，一个是EPEL源，一个salt的官方源。<br>推荐使用salt的官方源。</p>
+<h4 id="安装epel包"><a href="#安装epel包" class="headerlink" title="安装epel包"></a>安装epel包</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rpm -ivh http://mirrors.aliyun.com/epel/epel-release-latest-6.noarch.rpm</span><br><span class="line">rpm -ivh http://mirrors.aliyun.com/epel/epel-release-latest-7.noarch.rpm</span><br></pre></td></tr></table></figure>
+
+<h4 id="配置saltstack的官方yum源"><a href="#配置saltstack的官方yum源" class="headerlink" title="配置saltstack的官方yum源"></a>配置saltstack的官方yum源</h4><p>centos 7:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/yum.repo.d/saltstack-repo</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">###################</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Enable SaltStack<span class="string">&#x27;s package repository</span></span></span><br><span class="line">[saltstack-repo]</span><br><span class="line">name=SaltStack repo for RHEL/CentOS 7</span><br><span class="line">baseurl=https://repo.saltstack.com/yum/rhel7</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br><span class="line">gpgkey=https://repo.saltstack.com/yum/rhel7/SALTSTACK-GPG-KEY.pub</span><br></pre></td></tr></table></figure>
+
+
+<p>centos6</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/yum.repo.d/saltstack-repo</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">###################</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Enable SaltStack<span class="string">&#x27;s package repository</span></span></span><br><span class="line">[saltstack-repo]</span><br><span class="line">name=SaltStack repo for RHEL/CentOS 6</span><br><span class="line">baseurl=https://repo.saltstack.com/yum/rhel6</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br><span class="line">gpgkey=https://repo.saltstack.com/yum/rhel6/SALTSTACK-GPG-KEY.pub</span><br></pre></td></tr></table></figure>
+
+<p>服务端安装salt-master 软件并启动</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum install salt-master -y</span><br><span class="line">[root@centos6 ~]# /etc/init.d/salt-master start </span><br><span class="line">Starting salt-master daemon:                               [  OK  ]</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置saltstack服务端如下内容："><a href="#配置saltstack服务端如下内容：" class="headerlink" title="配置saltstack服务端如下内容："></a>配置saltstack服务端如下内容：</h3><p>配置文件需要顶头写，不能有空格。<br><code>vim /etc/salt/master</code></p>
+<p>原内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">default_include: master.d/*.conf</span></span><br><span class="line"><span class="meta">#</span><span class="bash">interface: 0.0.0.0</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> file_roots:</span></span><br><span class="line"><span class="meta">#</span><span class="bash">   base:</span></span><br><span class="line"><span class="meta">#</span><span class="bash">     - /srv/salt/</span></span><br><span class="line"><span class="meta">#</span><span class="bash">   dev:</span></span><br><span class="line"><span class="meta">#</span><span class="bash">     - /srv/salt/dev/services</span></span><br><span class="line"><span class="meta">#</span><span class="bash">     - /srv/salt/dev/states</span></span><br><span class="line"><span class="meta">#</span><span class="bash">   prod:</span></span><br><span class="line"><span class="meta">#</span><span class="bash">     - /srv/salt/prod/services</span></span><br><span class="line"><span class="meta">#</span><span class="bash">     - /srv/salt/prod/states</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>修改后的文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">default_include: master.d/*.conf</span><br><span class="line">interface: 0.0.0.0</span><br><span class="line">file_roots:</span><br><span class="line">  base:</span><br><span class="line">    - /etc/salt/states</span><br><span class="line">  prod:</span><br><span class="line">    - /etc/salt/states/prod</span><br><span class="line">[root@centos6 ~]# mkdir /etc/salt/states/prod -p </span><br></pre></td></tr></table></figure>
+
+<p>修改完配置文件后，需要重启服务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@centos6 ~]# /etc/init.d/salt-master restart </span><br><span class="line">Stopping salt-master daemon:                               [  OK  ]</span><br><span class="line">Starting salt-master daemon:                               [  OK  ]</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：salt的书写一定要注意格式。基础环境（base），生产环境(prod)，测试环境（test）分三个目录。通过不同的目录创建不同的内容。</p>
+</blockquote>
+<blockquote>
+<p>关于salt-master配置文件更多的内容可以参考<a target="_blank" rel="noopener" href="http://docs.saltstack.cn/ref/configuration/master.html">salt配置文件详解</a></p>
+</blockquote>
+<p>补充一个线上的配置文件</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">interface:</span> <span class="number">192.168</span><span class="number">.56</span><span class="number">.11</span></span><br><span class="line"><span class="attr">ipv6:</span> <span class="literal">False</span></span><br><span class="line"><span class="attr">max_open_files:</span> <span class="number">65535</span></span><br><span class="line"><span class="attr">worker_threads:</span> <span class="number">5</span></span><br><span class="line"><span class="attr">timeout:</span> <span class="number">30</span></span><br><span class="line"><span class="attr">state_verbose:</span> <span class="literal">False</span></span><br><span class="line"><span class="attr">file_roots:</span></span><br><span class="line">  <span class="attr">base:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/data/salt/base</span></span><br><span class="line">  <span class="attr">prod:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/data/salt/prod</span></span><br><span class="line">  <span class="attr">config:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/data/salt/config</span></span><br><span class="line">  <span class="attr">linux:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/data/salt/linux</span></span><br><span class="line"><span class="attr">log_file:</span> <span class="string">/var/log/salt/master</span></span><br><span class="line"><span class="attr">log_level_logfile:</span> <span class="string">debug</span></span><br><span class="line"><span class="attr">mysql.host:</span> <span class="string">&#x27;192.168.56.13&#x27;</span></span><br><span class="line"><span class="attr">mysql.user:</span> <span class="string">&#x27;salt&#x27;</span></span><br><span class="line"><span class="attr">mysql.pass:</span> <span class="string">&#x27;123456&#x27;</span></span><br><span class="line"><span class="attr">mysql.db:</span> <span class="string">&#x27;salt&#x27;</span></span><br><span class="line"><span class="attr">mysql.port:</span> <span class="number">3306</span></span><br><span class="line"><span class="attr">external_auth:</span></span><br><span class="line">  <span class="attr">pam:</span></span><br><span class="line">    <span class="attr">saltapi:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">.*</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;@runner&#x27;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;@jobs&#x27;</span></span><br><span class="line"><span class="attr">rest_cherrypy:</span></span><br><span class="line">   <span class="attr">port:</span> <span class="number">8088</span></span><br><span class="line">   <span class="attr">ssl_crt:</span> <span class="string">/etc/pki/tls/certs/localhost.crt</span></span><br><span class="line">   <span class="attr">ssl_key:</span> <span class="string">/etc/pki/tls/private/localhost_nopass.key</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="客户端安装方法："><a href="#客户端安装方法：" class="headerlink" title="客户端安装方法："></a>客户端安装方法：</h2><p>安装salt-minion 软件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install salt-minion -y</span><br></pre></td></tr></table></figure>
+
+<p>配置并启动saltstack客户端。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@centos6 ~]# cd /etc/salt/       </span><br><span class="line">[root@centos6 salt]# vim minion </span><br><span class="line">master: 192.168.56.11</span><br><span class="line">id:  minion.saltstack.com</span><br></pre></td></tr></table></figure>
+
+<p>重启minion进程</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@centos6 salt]# /etc/init.d/salt-minion start </span><br><span class="line">Starting salt-minion daemon:                               [  OK  ]</span><br><span class="line"></span><br><span class="line">[root@centos6 salt]# /etc/init.d/salt-minion restart </span><br><span class="line">Stopping salt-minion daemon:                               [  OK  ]</span><br><span class="line">Starting salt-minion daemon:                               [  OK  ]</span><br></pre></td></tr></table></figure>
+
+<p>ID 存放在这个文件中</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@data-1-1 salt]# cat /etc/salt/minion_id </span><br><span class="line">data-1-1</span><br></pre></td></tr></table></figure>
+
+<p>删除旧的key文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@centos6 salt]# mv minion_id /tmp/</span><br></pre></td></tr></table></figure>
+
+<p>master的key存放位置：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">cd</span> /etc/salt/pki/master/</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> tree </span></span><br><span class="line">+-- master.pem</span><br><span class="line">+-- master.pub</span><br><span class="line">+-- minions</span><br><span class="line">|   +-- linux-node1 (minion的公钥)</span><br><span class="line">|   +-- linux-node2 （minion的公钥）</span><br><span class="line">+-- minions_autosign</span><br><span class="line">+-- minions_denied</span><br><span class="line">+-- minions_pre</span><br><span class="line">+-- minions_rejected</span><br><span class="line"></span><br><span class="line">5 directories, 4 files</span><br><span class="line">[root@linux-node1 master]# </span><br></pre></td></tr></table></figure>
+
+<p>master端修改minion端的key名称</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node1 minions]# mv linux-node1 linux-node3 </span><br><span class="line">[root@linux-node1 minions]# ls</span><br><span class="line">linux-node2  linux-node3</span><br><span class="line">[root@linux-node1 minions]# salt-key -L </span><br><span class="line">Accepted Keys:</span><br><span class="line">linux-node2</span><br><span class="line">linux-node3</span><br><span class="line">Denied Keys:</span><br><span class="line">Unaccepted Keys:</span><br><span class="line">Rejected Keys:</span><br></pre></td></tr></table></figure>
+
+<p><code>salt-key</code>命令补充</p>
+<ul>
+<li><code>salt-key -d www.etiantian.org </code>删除一个key 。</li>
+<li><code>salt-key -A  </code> 同意所有未注册的minion端。</li>
+<li><code>salt-key -a www.etiantian.org </code>同意一个机器。</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[root@centos6 ~]# salt-key  </span><br><span class="line">Accepted Keys:</span><br><span class="line">Denied Keys:</span><br><span class="line">Unaccepted Keys:</span><br><span class="line">centos6.6-mupan</span><br><span class="line">minion.saltstack.com</span><br><span class="line">Rejected Keys:</span><br><span class="line">[root@centos6 ~]# salt-key  -a minion.saltstack.com  ####允许客户端连入服务器。</span><br><span class="line">The following keys are going to be accepted:</span><br><span class="line">Unaccepted Keys:</span><br><span class="line">minion.saltstack.com</span><br><span class="line">Proceed? [n/Y] y</span><br><span class="line">Key for minion minion.saltstack.com accepted.</span><br><span class="line">[root@centos6 ~]# </span><br></pre></td></tr></table></figure>
+
+<h2 id="salt-stakck-状态查询"><a href="#salt-stakck-状态查询" class="headerlink" title="salt-stakck 状态查询"></a>salt-stakck 状态查询</h2><ul>
+<li>查看还在运行的程序：<code>salt-run jobs.active</code></li>
+<li>查看以前的操作历史记录来：<code>salt-run jobs.list_jobs</code></li>
+<li>查看minion支持的module列表的命令 <code>salt  &#39;*&#39;  sys.list_modules</code></li>
+<li>查看CMD模块下的所有function。<code>salt &#39;*&#39; sys.list_functions cmd </code></li>
+<li>查看cmd 模块的详细用法。<code>salt &#39;*&#39;  sys.doc cmd </code></li>
+</ul>
+<h2 id="salt远程执行"><a href="#salt远程执行" class="headerlink" title="salt远程执行"></a>salt远程执行</h2><p>命令格式：<code>salt  &#39;Trgetiong&#39;  module </code></p>
+<ul>
+<li>目标：Trgetiong</li>
+<li>模块：Module</li>
+<li>返回：Returners</li>
+</ul>
+<h3 id="目标匹配方式"><a href="#目标匹配方式" class="headerlink" title="目标匹配方式"></a>目标匹配方式</h3><p>通配符使用：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">salt &#x27;*&#x27; test.ping</span><br><span class="line">salt &#x27;*.example.net&#x27; test.ping</span><br><span class="line">salt &#x27;*.example.*&#x27; test.ping</span><br><span class="line">salt &#x27;web?.example.net&#x27; test.ping</span><br><span class="line">salt &#x27;web[1-5]&#x27; test.ping</span><br><span class="line">salt &#x27;web[1,3]&#x27; test.ping</span><br><span class="line">salt &#x27;web-[x-z]&#x27; test.ping</span><br></pre></td></tr></table></figure>
+
+<p>正则表达式使用：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">salt -E &#x27;web1-(prod|devel)&#x27; test.ping</span><br></pre></td></tr></table></figure>
+
+<p>也可以在top.sls中使用正则表示：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">base:</span><br><span class="line">  &#x27;web1-(prod|devel)&#x27;:</span><br><span class="line">  - match: pcre</span><br><span class="line">  - webserver</span><br></pre></td></tr></table></figure>
+
+<p>lists使用：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">salt -L &#x27;web1,web2,web3&#x27; test.ping</span><br></pre></td></tr></table></figure>
+
+<p>IP地址使用：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@centos6 ~]# salt -S &#x27;192.168.2.0/24&#x27; test.ping </span><br><span class="line">minion.saltstack.com:</span><br><span class="line">    True</span><br></pre></td></tr></table></figure>
+
+<p>Grains使用：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">salt -G &#x27;os:centos&#x27; test.ping </span><br></pre></td></tr></table></figure>
+
+<p>也可以在top.sls中使用Grains表示：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">base:</span><br><span class="line">  &#x27;os:centos&#x27;:</span><br><span class="line">    - match: grain</span><br><span class="line">    - init.env_init</span><br><span class="line">    - zabbix-agent-linux.config</span><br><span class="line">    - salt.agent</span><br></pre></td></tr></table></figure>
+
+<p>Pillar使用：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">salt -I &#x27;master:True&#x27; test.ping</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="salt-异步执行方法"><a href="#salt-异步执行方法" class="headerlink" title="salt 异步执行方法"></a>salt 异步执行方法</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@xxx ~]# salt --async test01 cmd.run &quot;echo &#x27;test&#x27;&quot;</span><br><span class="line">Executed command with job ID: 20150915151813222323</span><br><span class="line">[root@xxx ~]# salt-run jobs.lookup_jid 20150915151813222323</span><br><span class="line">Fabric:</span><br><span class="line">  test</span><br></pre></td></tr></table></figure>
+<p>还有个-v参数在返回结果的同时，一同返回本次任务的jid，如果超时还是会返回jid的。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@test ~]# salt -v test01 test.ping</span><br><span class="line">Executing job with jid 20150917172323566343</span><br><span class="line">-------------------------------------------</span><br><span class="line">test01:</span><br><span class="line">  True</span><br></pre></td></tr></table></figure>
+
+<p>如果是调用<code>saltapi</code>来实现异步执行语句和获取jid信息，参数可以这样：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">params = &#123;&#x27;client&#x27;:&#x27;local_async&#x27;, &#x27;fun&#x27;:&#x27;test.echo&#x27;, &#x27;tgt&#x27;:&#x27;test01&#x27;, &#x27;arg1&#x27;:&#x27;hello&#x27;&#125;</span><br><span class="line">params = &#123;&#x27;client&#x27;:&#x27;runner&#x27;, &#x27;fun&#x27;:&#x27;jobs.lookup_jid&#x27;, &#x27;jid&#x27;: &#x27;20150827163231404925&#x27;&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="salt权限控制"><a href="#salt权限控制" class="headerlink" title="salt权限控制"></a>salt权限控制</h2><h3 id="salt-使用-pam-模块对普通账号进行权限控制"><a href="#salt-使用-pam-模块对普通账号进行权限控制" class="headerlink" title="salt 使用 pam 模块对普通账号进行权限控制"></a>salt 使用 pam 模块对普通账号进行权限控制</h3><p>salt 扩展认证 PAM，可以利用PAM 认证机制对系统账户做出功能操作上的限制。依赖的模块<code>salt.states.external_auth</code>。</p>
+<ul>
+<li>认证用户不允许使用root</li>
+<li>可以限制认证用户可使用的功能模块</li>
+<li>可以限定认证用户可管理的主机</li>
+<li>官方文档：<a target="_blank" rel="noopener" href="http://docs.saltstack.com/topics/eauth/index.html">http://docs.saltstack.com/topics/eauth/index.html</a></li>
+</ul>
+<h4 id="开启PAM认证"><a href="#开启PAM认证" class="headerlink" title="开启PAM认证"></a>开启PAM认证</h4><p>编辑 /etc/salt/master</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">external_auth:</span></span><br><span class="line">  <span class="attr">pam:</span></span><br><span class="line">    <span class="attr">salt:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;*&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p> 创建 salt 用户 设置密码</p>
+</blockquote>
+<h4 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h4><p>salt PAM 认证用户 只能通过<code>-a pam </code>参数才能使用</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">salt -a pam test.ping</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>会提示登陆用户，输入密码，如果正确返回结果，说明pam认证已经生效</p>
+</blockquote>
+<p>实例 ：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">/etc/salt/master</span></span><br><span class="line"></span><br><span class="line"><span class="attr">external_auth:</span></span><br><span class="line">  <span class="attr">pam:</span></span><br><span class="line">    <span class="string">admin：</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;*&#x27;</span>                        <span class="comment"># 所有模块                  </span></span><br><span class="line">    <span class="attr">salt:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">test.ping</span>                  <span class="comment"># test.ping 模块 </span></span><br><span class="line">    <span class="attr">test:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;dev*&#x27;</span><span class="string">：</span>                   <span class="comment"># 主机配置规则 </span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">test.ping</span>                <span class="comment"># Salt 模块</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>解释：</p>
+<ul>
+<li>admin 用户可管理所有主机，使用所有salt功能模块</li>
+<li>salt 用户可管理所有主机，仅能使用test.ping模块</li>
+<li>test 用户只能管理部分主机，仅能使用test.ping模块</li>
+</ul>
+<p>实例1： 以salt用户为例,认证用户必须打开PAM 参数才能操作</p>
+<p>失败操作：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> salt &#x27;*&#x27; test.ping</span><br><span class="line">Failed to authenticate, is this user permitted to execute commands?</span><br></pre></td></tr></table></figure>
+<p>成功操作：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> salt -a pam &#x27;*&#x27; test.ping</span><br><span class="line">username: salt</span><br><span class="line">password:</span><br><span class="line">ubuntu-master:</span><br><span class="line">True</span><br></pre></td></tr></table></figure>
+<p>实例2： 以salt用户为例,执行未授权模块被拒绝</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">salt -a pam &#x27;*&#x27; state.highstate</span><br><span class="line">username: salt</span><br><span class="line">password:</span><br><span class="line">Failed to authenticate, is this user permitted to execute commands?</span><br></pre></td></tr></table></figure>
+
+<p>以test用户为例,操作未授权主机被拒绝<br>失败操作</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">salt -a pam &#x27;*&#x27; test </span><br><span class="line">username: test</span><br><span class="line">password:</span><br><span class="line">Failed to authenticate, is this user permitted to execute commands?</span><br></pre></td></tr></table></figure>
+
+<p>成功操作</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">salt -a pam &#x27;test-001&#x27; test </span><br><span class="line">username: test</span><br><span class="line">password:</span><br><span class="line">test-001:</span><br><span class="line">    True</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h2 id="支持文档："><a href="#支持文档：" class="headerlink" title="支持文档："></a>支持文档：</h2><p><a href="docs.saltstack.com">官方帮助文档</a><br><a href="github.com/saltstack">官方github</a><br><a href="www.saltstack.cn">saltstack 中文用户组</a><br><a target="_blank" rel="noopener" href="http://my.oschina.net/u/877567/blog/183959">Saltstack SLS文件解读</a><br>[官方的 salt-states 仓库地址] (<a target="_blank" rel="noopener" href="https://github.com/saltstack/salt-states">https://github.com/saltstack/salt-states</a>)</p>
+<p>来自于社区的一些salt states例子:</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/blast-hardcheese/blast-salt-states">https://github.com/blast-hardcheese/blast-salt-states</a><br><a target="_blank" rel="noopener" href="https://github.com/kevingranade/kevingranade-salt-state">https://github.com/kevingranade/kevingranade-salt-state</a><br><a target="_blank" rel="noopener" href="https://github.com/uggedal/states">https://github.com/uggedal/states</a><br><a target="_blank" rel="noopener" href="https://github.com/mattmcclean/salt-openstack/tree/master/salt">https://github.com/mattmcclean/salt-openstack/tree/master/salt</a><br><a target="_blank" rel="noopener" href="https://github.com/rentalita/ubuntu-setup/">https://github.com/rentalita/ubuntu-setup/</a><br><a target="_blank" rel="noopener" href="https://github.com/brutasse/states">https://github.com/brutasse/states</a><br><a target="_blank" rel="noopener" href="https://github.com/bclermont/states">https://github.com/bclermont/states</a><br><a target="_blank" rel="noopener" href="https://github.com/pcrews/salt-data">https://github.com/pcrews/salt-data</a></p>
+<p>参考文档<br>文档： <a target="_blank" rel="noopener" href="http://docs.saltstack.com/topics/tutorials/starting_states.html">http://docs.saltstack.com/topics/tutorials/starting_states.html</a><br>文档： <a target="_blank" rel="noopener" href="http://docs.saltstack.com/ref/states/writing.html">http://docs.saltstack.com/ref/states/writing.html</a><br>文档： <a target="_blank" rel="noopener" href="http://docs.saltstack.com/ref/states/ordering.html">http://docs.saltstack.com/ref/states/ordering.html</a><br>文档： <a target="_blank" rel="noopener" href="http://www.ituring.com.cn/article/37783">http://www.ituring.com.cn/article/37783</a><br>文档： <a target="_blank" rel="noopener" href="http://docs.saltstack.com/topics/tutorials/starting_states.html">http://docs.saltstack.com/topics/tutorials/starting_states.html</a></p>
+<h2 id="问题汇总："><a href="#问题汇总：" class="headerlink" title="问题汇总："></a>问题汇总：</h2><h3 id="报错一："><a href="#报错一：" class="headerlink" title="报错一："></a>报错一：</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">----------</span><br><span class="line">          ID: limit-conf-config</span><br><span class="line">    Function: file.managed</span><br><span class="line">        Name: /etc/securilty/limits.conf</span><br><span class="line">      Result: False</span><br><span class="line">     Comment: Parent directory not present</span><br><span class="line">     Started: 17:05:44.606040</span><br><span class="line">    Duration: 11.448 ms</span><br><span class="line">     Changes:   </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>解决办法：</p>
+<p>出现这个的原因是Minion上没有name参数定义的目录. 在minion上定义对应的目录就可以了</p>
+<h3 id="报错：salt-管理配置文件时，报错。"><a href="#报错：salt-管理配置文件时，报错。" class="headerlink" title="报错：salt 管理配置文件时，报错。"></a>报错：salt 管理配置文件时，报错。</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">[root@master files]# salt &#x27;*&#x27; state.highstate </span><br><span class="line">agent.niu.com:</span><br><span class="line">    Data failed to compile:</span><br><span class="line">----------</span><br><span class="line">    Rendering SLS init.limit failed, render error: expected &#x27;&lt;document start&gt;&#x27;, but found &#x27;&lt;block mapping start&gt;&#x27;</span><br><span class="line">  in &quot;&lt;unicode string&gt;&quot;, line 2, column 1:</span><br><span class="line">    limit-conf-config:</span><br><span class="line">    ^</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File &quot;/usr/lib/python2.7/site-packages/salt/state.py&quot;, line 2509, in render_state</span><br><span class="line">    sls, rendered_sls=mods</span><br><span class="line">  File &quot;/usr/lib/python2.7/site-packages/salt/template.py&quot;, line 79, in compile_template</span><br><span class="line">    ret = render(input_data, saltenv, sls, **render_kwargs)</span><br><span class="line">▽ File &quot;/usr/lib/python2.7/site-packages/salt/renderers/yaml.py&quot;, line 50, in render</span><br><span class="line">    data = load(yaml_data, Loader=get_yaml_loader(argline))</span><br><span class="line">  File &quot;/usr/lib64/python2.7/site-packages/yaml/__init__.py&quot;, line 71, in load</span><br><span class="line">    return loader.get_single_data()</span><br><span class="line">  File &quot;/usr/lib64/python2.7/site-packages/yaml/constructor.py&quot;, line 37, in get_single_data</span><br><span class="line">    node = self.get_single_node()</span><br><span class="line">  File &quot;/usr/lib64/python2.7/site-packages/yaml/composer.py&quot;, line 39, in get_single_node</span><br><span class="line">    if not self.check_event(StreamEndEvent):</span><br><span class="line">  File &quot;/usr/lib64/python2.7/site-packages/yaml/parser.py&quot;, line 98, in check_event</span><br><span class="line">    self.current_event = self.state()</span><br><span class="line">  File &quot;/usr/lib64/python2.7/site-packages/yaml/parser.py&quot;, line 174, in parse_document_start</span><br><span class="line">    self.peek_token().start_mark)</span><br><span class="line">ParserError: expected &#x27;&lt;document start&gt;&#x27;, but found &#x27;&lt;block mapping start&gt;&#x27;</span><br><span class="line">  in &quot;&lt;unicode string&gt;&quot;, line 2, column 1:</span><br><span class="line">    limit-conf-config:</span><br><span class="line">    ^</span><br></pre></td></tr></table></figure>
+
+<p>解决办法：</p>
+<p>配置文件的路径配置错误。导致报错。修改配置文件，问题解决。</p>
+<h3 id="报错：saltstack-执行后CPU占用率为百分之百。"><a href="#报错：saltstack-执行后CPU占用率为百分之百。" class="headerlink" title="报错：saltstack 执行后CPU占用率为百分之百。"></a>报错：saltstack 执行后CPU占用率为百分之百。</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@10-10-121-200 ~]# salt &#x27;linux-backup-saltminion&#x27; test.ping </span><br><span class="line">Salt request timed out. The master is not responding. If this error persists after verifying the master is up, worker_threads may need to be increased.</span><br></pre></td></tr></table></figure>
+
+<p>解决办法：</p>
+<p>使用top 查看CPU占用率为百分之百。<br>降低salt的线程数。</p>
+<h3 id="报错：配置完return后，不能向数据库写入数据："><a href="#报错：配置完return后，不能向数据库写入数据：" class="headerlink" title="报错：配置完return后，不能向数据库写入数据："></a>报错：配置完return后，不能向数据库写入数据：</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> select * from salt_returns;</span></span><br><span class="line">Empty set (0.00 sec)</span><br></pre></td></tr></table></figure>
+<p>解决思路：</p>
+<p>当遇到问题是可以将log的级别更改为debug模式来调试。</p>
+<p>解决办法：</p>
+<p>因为是客户端直接返回给数据库，所有客户端需要数据库的连接权限。顾所有数据库都需要添加如下内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/salt/minion</span><br><span class="line">mysql.host: &#x27;192.168.2.150&#x27;</span><br><span class="line">mysql.user: &#x27;salt&#x27;</span><br><span class="line">mysql.pass: &#x27;salt&#x27;</span><br><span class="line">mysql.db: &#x27;salt&#x27;</span><br><span class="line">mysql.port: 3306</span><br><span class="line">[root@centos6 ~]# /etc/init.d/salt-minion restart </span><br><span class="line">Stopping salt-minion daemon:                               [  OK  ]</span><br><span class="line">Starting salt-minion daemon:                               [  OK  ]</span><br><span class="line">[root@centos6 ~]# </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="报错：-执行state-sls-报错"><a href="#报错：-执行state-sls-报错" class="headerlink" title="报错： 执行state.sls 报错"></a>报错： 执行state.sls 报错</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">root@10.10.121.200 files]# salt &#x27;*.service&#x27; state.sls ssh.config env=prod</span><br><span class="line">chuye.backup1.service:</span><br><span class="line">    Data failed to compile:</span><br><span class="line">----------</span><br><span class="line">    Requisite declaration file.sshd-files in SLS ssh.config is not formed as a single key dictionary</span><br><span class="line">----------</span><br><span class="line">    Requisite declaration file.sshd-files in SLS ssh.config is not formed as a single key dictionary</span><br><span class="line">chuye.logstash1.service:</span><br><span class="line">    Data failed to compile:</span><br><span class="line">----------</span><br><span class="line">    Requisite declaration file.sshd-files in SLS ssh.config is not formed as a single key dictionary</span><br><span class="line">----------</span><br><span class="line">    Requisite declaration file.sshd-files in SLS ssh.config is not formed as a single key dictionary</span><br><span class="line">chuye.logstash2.service:</span><br><span class="line">    Data failed to compile:</span><br><span class="line">----------</span><br><span class="line">    Requisite declaration file.sshd-files in SLS ssh.config is not formed as a single key dictionary</span><br><span class="line">----------</span><br><span class="line">    Requisite declaration file.sshd-files in SLS ssh.config is not formed as a single key dictionary</span><br></pre></td></tr></table></figure>
+
+
+<p>解决办法：   </p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">require:</span></span><br><span class="line">     <span class="bullet">-</span> <span class="string">file.sshd-files</span></span><br><span class="line">   <span class="bullet">-</span> <span class="attr">watch:</span></span><br><span class="line">     <span class="bullet">-</span> <span class="string">file.sshd-files</span></span><br></pre></td></tr></table></figure>
+
+<p>上面的值配置错误</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">require:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">file:</span> <span class="string">sshd-files</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">watch:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">file:</span> <span class="string">sshd-files</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="报错：在文件中调用grains报错"><a href="#报错：在文件中调用grains报错" class="headerlink" title="报错：在文件中调用grains报错"></a>报错：在文件中调用grains报错</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">----------</span><br><span class="line">          ID: zabbix-agent-install</span><br><span class="line">    Function: file.managed</span><br><span class="line">        Name: /etc/zabbix_agentd.conf.bak</span><br><span class="line">      Result: False</span><br><span class="line">     Comment: Unable to manage file: Jinja variable &#x27;item&#x27; is undefined</span><br><span class="line">     Started: 16:12:39.454923</span><br><span class="line">    Duration: 17.407 ms</span><br><span class="line">     Changes:   </span><br></pre></td></tr></table></figure>
+
+<p>解决办法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Hostname=&#123;&#123; grains[fqdn] &#125;&#125;</span><br><span class="line">没有加引号</span><br><span class="line">Hostname=&#123;&#123; grains[&#x27;fqdn&#x27;] &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="报错：调用jinjia模板的时候多了一对括号"><a href="#报错：调用jinjia模板的时候多了一对括号" class="headerlink" title="报错：调用jinjia模板的时候多了一对括号"></a>报错：调用jinjia模板的时候多了一对括号</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/sh</span></span><br><span class="line"> -IPADDR=[&#x27;10.10.86.159&#x27;]</span><br><span class="line"> +IPADDR=chuye.logstash2.service</span><br></pre></td></tr></table></figure>
+
+<p>解决办法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Solution:</span><br><span class="line"></span><br><span class="line">Address &#123;&#123; grains[&#x27;fqdn_ip4&#x27;][0] &#125;&#125;</span><br><span class="line">Result:</span><br><span class="line">Address 111.111.111.111</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+              <a href="/tags/salt/" rel="tag"># salt</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/12/13/docker-compose/" rel="prev" title="Docker-Compose 使用方法">
+                  <i class="fa fa-chevron-left"></i> Docker-Compose 使用方法
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/12/15/salt-modules/" rel="next" title="salt-modules讲解">
+                  salt-modules讲解 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+  
+  
+  
+
+
+
+      
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">biglittleant</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

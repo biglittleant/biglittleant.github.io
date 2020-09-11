@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.biglittleant.cn","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+  </script>
+
+  <meta name="description" content="elasticsearch 数据导入导出工具 支持基于HTTP导出、导入。 支持保存到文件。  安装1npm install elasticdump -g  简单使用拷贝分词器信息12345elasticdump \--input&#x3D;http:&#x2F;&#x2F;192.168.56.13:9200&#x2F;thread \--output&#x3D;http:&#x2F;&#x2F;192.168.56.12:9200&#x2F;thread1 \--typ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="elasticsearch-migration 在线导入导出工具">
+<meta property="og:url" content="http://www.biglittleant.cn/2016/12/03/elastic-dump/index.html">
+<meta property="og:site_name" content="biglittleant">
+<meta property="og:description" content="elasticsearch 数据导入导出工具 支持基于HTTP导出、导入。 支持保存到文件。  安装1npm install elasticdump -g  简单使用拷贝分词器信息12345elasticdump \--input&#x3D;http:&#x2F;&#x2F;192.168.56.13:9200&#x2F;thread \--output&#x3D;http:&#x2F;&#x2F;192.168.56.12:9200&#x2F;thread1 \--typ">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2016-12-03T10:13:05.000Z">
+<meta property="article:modified_time" content="2020-09-03T02:03:13.612Z">
+<meta property="article:author" content="biglittleant">
+<meta property="article:tag" content="elastic">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.biglittleant.cn/2016/12/03/elastic-dump/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>elasticsearch-migration 在线导入导出工具 | biglittleant</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">biglittleant</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">不被嘲笑的梦想，是不值得去实现的</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-文章分类">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a>
+
+  </li>
+        <li class="menu-item menu-item-归档">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8"><span class="nav-number">1.1.</span> <span class="nav-text">简单使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%B7%E8%B4%9D%E5%88%86%E8%AF%8D%E5%99%A8%E4%BF%A1%E6%81%AF"><span class="nav-number">1.2.</span> <span class="nav-text">拷贝分词器信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%B7%E8%B4%9Dmapping%E4%BF%A1%E6%81%AF"><span class="nav-number">1.3.</span> <span class="nav-text">拷贝mapping信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%B7%E8%B4%9D%E6%95%B0%E6%8D%AE"><span class="nav-number">1.4.</span> <span class="nav-text">拷贝数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86%E6%95%B0%E6%8D%AE%E4%BF%9D%E5%AD%98%E5%88%B0%E6%9C%AC%E5%9C%B0"><span class="nav-number">2.</span> <span class="nav-text">将数据保存到本地</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%9D%E5%AD%98%E5%88%B0%E5%8E%8B%E7%BC%A9%E6%96%87%E4%BB%B6%E4%B8%AD"><span class="nav-number">3.</span> <span class="nav-text">保存到压缩文件中</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E6%90%9C%E7%B4%A2%E4%BF%9D%E5%AD%98%E6%96%87%E4%BB%B6%E5%86%85%E5%AE%B9"><span class="nav-number">4.</span> <span class="nav-text">基于搜索保存文件内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E5%85%A8%E5%B1%80%E6%90%9C%E7%B4%A2%E7%9A%84%E7%BB%93%E6%9E%9C%E4%BF%9D%E5%AD%98"><span class="nav-number">5.</span> <span class="nav-text">基于全局搜索的结果保存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%AE%E5%8A%A9%E6%96%87%E6%A1%A3"><span class="nav-number">6.</span> <span class="nav-text">帮助文档</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">biglittleant</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2016/12/03/elastic-dump/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="biglittleant">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="biglittleant">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          elasticsearch-migration 在线导入导出工具
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2016-12-03 18:13:05" itemprop="dateCreated datePublished" datetime="2016-12-03T18:13:05+08:00">2016-12-03</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2020-09-03 10:03:13" itemprop="dateModified" datetime="2020-09-03T10:03:13+08:00">2020-09-03</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <ul>
+<li>elasticsearch 数据导入导出工具</li>
+<li>支持基于HTTP导出、导入。</li>
+<li>支持保存到文件。</li>
+</ul>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install elasticdump -g </span><br></pre></td></tr></table></figure>
+<h3 id="简单使用"><a href="#简单使用" class="headerlink" title="简单使用"></a>简单使用</h3><h3 id="拷贝分词器信息"><a href="#拷贝分词器信息" class="headerlink" title="拷贝分词器信息"></a>拷贝分词器信息</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">elasticdump \</span><br><span class="line">--input=http://192.168.56.13:9200/thread \</span><br><span class="line">--output=http://192.168.56.12:9200/thread1 \</span><br><span class="line">--type=analyzer</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="拷贝mapping信息"><a href="#拷贝mapping信息" class="headerlink" title="拷贝mapping信息"></a>拷贝mapping信息</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">elasticdump \</span><br><span class="line">--input=http://192.168.56.13:9200/thread \</span><br><span class="line">--output=http://192.168.56.12:9200/thread1 \</span><br><span class="line">--type=mapping</span><br></pre></td></tr></table></figure>
+
+<h3 id="拷贝数据"><a href="#拷贝数据" class="headerlink" title="拷贝数据"></a>拷贝数据</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">elasticdump \</span><br><span class="line">--input=http://192.168.56.13:9200/thread \</span><br><span class="line">--output=http://192.168.56.12:9200/thread1 \</span><br><span class="line">--type=data \</span><br><span class="line">--limit=1000</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>limit 设置每次拷贝多少内容，默认是100。<br>拷贝数据的同时mapping也会被拷贝。</p>
+</blockquote>
+<h2 id="将数据保存到本地"><a href="#将数据保存到本地" class="headerlink" title="将数据保存到本地"></a>将数据保存到本地</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">elasticdump \</span><br><span class="line">--input=http://192.168.56.13:9200/thread \</span><br><span class="line">--output=thread.json \</span><br><span class="line">--type=mapping</span><br><span class="line"></span><br><span class="line">elasticdump \</span><br><span class="line">--input=http://192.168.56.13:9200/thread \</span><br><span class="line">--output=thread-data.json \</span><br><span class="line">--type=data </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="保存到压缩文件中"><a href="#保存到压缩文件中" class="headerlink" title="保存到压缩文件中"></a>保存到压缩文件中</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Backup and index to a gzip using stdout:</span></span><br><span class="line">elasticdump \</span><br><span class="line">  --input=http://production.es.com:9200/my_index \</span><br><span class="line">  --output=$ \</span><br><span class="line">  | gzip &gt; /data/my_index.json.gz</span><br><span class="line">  </span><br></pre></td></tr></table></figure>
+
+<h2 id="基于搜索保存文件内容"><a href="#基于搜索保存文件内容" class="headerlink" title="基于搜索保存文件内容"></a>基于搜索保存文件内容</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">elasticdump \</span><br><span class="line">  --input=http://production.es.com:9200/my_index \</span><br><span class="line">  --output=query.json \</span><br><span class="line">  --searchBody &#x27;&#123;&quot;query&quot;:&#123;&quot;term&quot;:&#123;&quot;username&quot;: &quot;admin&quot;&#125;&#125;&#125;&#x27;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="基于全局搜索的结果保存"><a href="#基于全局搜索的结果保存" class="headerlink" title="基于全局搜索的结果保存"></a>基于全局搜索的结果保存</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">elasticdump \</span><br><span class="line">  --input=http://es.com:9200/api/search \</span><br><span class="line">  --input-index=my_index/my_type \</span><br><span class="line">  --output=http://es.com:9200/api/search \</span><br><span class="line">  --output-index=my_index \</span><br><span class="line">  --type=mapping</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="帮助文档"><a href="#帮助文档" class="headerlink" title="帮助文档"></a>帮助文档</h2><p><a target="_blank" rel="noopener" href="https://github.com/taskrabbit/elasticsearch-dump">elastic-dump-github</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/elastic/" rel="tag"># elastic</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/12/02/curator-user/" rel="prev" title="curator-4.1 版本使用">
+                  <i class="fa fa-chevron-left"></i> curator-4.1 版本使用
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/12/04/elastic-mapping/" rel="next" title="elasticsearch-mapping学习">
+                  elasticsearch-mapping学习 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+  
+  
+  
+
+
+
+      
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">biglittleant</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

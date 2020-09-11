@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.biglittleant.cn","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+  </script>
+
+  <meta name="description" content="使用nginx做负载均衡的两大模块：  upstream 定义负载节点池。 location 模块 进行URL匹配。 proxy模块 发送请求给upstream定义的节点池。  相关功能模块讲解upstream模块解读nginx 的负载均衡功能依赖于 ngx_http_upstream_module模块，所支持的代理方式有 proxy_pass(一般用于反向代理),fastcgi_pass(一般用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="死磕nginx系列--使用nginx做负载均衡">
+<meta property="og:url" content="http://www.biglittleant.cn/2017/01/03/nginx-upstream/index.html">
+<meta property="og:site_name" content="biglittleant">
+<meta property="og:description" content="使用nginx做负载均衡的两大模块：  upstream 定义负载节点池。 location 模块 进行URL匹配。 proxy模块 发送请求给upstream定义的节点池。  相关功能模块讲解upstream模块解读nginx 的负载均衡功能依赖于 ngx_http_upstream_module模块，所支持的代理方式有 proxy_pass(一般用于反向代理),fastcgi_pass(一般用">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-01-03T00:11:57.000Z">
+<meta property="article:modified_time" content="2020-09-03T02:03:13.618Z">
+<meta property="article:author" content="biglittleant">
+<meta property="article:tag" content="nginx">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.biglittleant.cn/2017/01/03/nginx-upstream/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>死磕nginx系列--使用nginx做负载均衡 | biglittleant</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">biglittleant</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">不被嘲笑的梦想，是不值得去实现的</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-文章分类">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a>
+
+  </li>
+        <li class="menu-item menu-item-归档">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%8A%9F%E8%83%BD%E6%A8%A1%E5%9D%97%E8%AE%B2%E8%A7%A3"><span class="nav-number">1.</span> <span class="nav-text">相关功能模块讲解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#upstream%E6%A8%A1%E5%9D%97%E8%A7%A3%E8%AF%BB"><span class="nav-number">1.1.</span> <span class="nav-text">upstream模块解读</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#location-%E6%A8%A1%E5%9D%97%E8%A7%A3%E8%AF%BB"><span class="nav-number">1.2.</span> <span class="nav-text">location 模块解读</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#proxy-pass-%E6%A8%A1%E5%9D%97%E8%A7%A3%E8%AF%BB"><span class="nav-number">2.</span> <span class="nav-text">proxy_pass 模块解读</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%90%8E%E7%AB%AF%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A5%E6%94%B6%E5%89%8D%E7%AB%AF%E7%9C%9F%E5%AE%9EIP"><span class="nav-number">2.1.</span> <span class="nav-text">配置后端服务器接收前端真实IP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#proxy-pass%E7%9B%B8%E5%85%B3%E7%9A%84%E4%BC%98%E5%8C%96%E5%8F%82%E6%95%B0"><span class="nav-number">2.2.</span> <span class="nav-text">proxy_pass相关的优化参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E5%AE%8C%E6%95%B4%E7%9A%84nginx%E5%AE%9E%E4%BE%8B"><span class="nav-number">3.</span> <span class="nav-text">一个完整的nginx实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E8%A1%A5%E5%85%85"><span class="nav-number">4.</span> <span class="nav-text">扩展补充</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AA%E5%85%81%E8%AE%B8%E4%BD%BF%E7%94%A8GET-HEAD-POST%E6%96%B9%E6%B3%95%E5%8E%BB%E8%AF%B7%E6%B1%82"><span class="nav-number">4.1.</span> <span class="nav-text">只允许使用GET,HEAD,POST方法去请求</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E6%88%98"><span class="nav-number">5.</span> <span class="nav-text">实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B9%E6%8D%AEURI%E5%8F%8Alocation%E5%AE%9E%E7%8E%B0%E5%8A%A8%E9%9D%99%E5%88%86%E7%A6%BB%E3%80%82"><span class="nav-number">5.1.</span> <span class="nav-text">根据URI及location实现动静分离。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E8%8B%B9%E6%9E%9C%E6%89%8B%E6%9C%BA%E5%92%8C%E5%AE%89%E5%8D%93%E6%89%8B%E6%9C%BA%E8%AE%BF%E9%97%AE%E4%B8%8D%E5%90%8C%E7%9A%84%E5%9C%B0%E5%9D%80"><span class="nav-number">5.2.</span> <span class="nav-text">实现苹果手机和安卓手机访问不同的地址</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">6.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">biglittleant</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2017/01/03/nginx-upstream/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="biglittleant">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="biglittleant">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          死磕nginx系列--使用nginx做负载均衡
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-01-03 08:11:57" itemprop="dateCreated datePublished" datetime="2017-01-03T08:11:57+08:00">2017-01-03</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2020-09-03 10:03:13" itemprop="dateModified" datetime="2020-09-03T10:03:13+08:00">2020-09-03</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>使用nginx做负载均衡的两大模块：</p>
+<ul>
+<li>upstream 定义负载节点池。</li>
+<li>location 模块 进行URL匹配。</li>
+<li>proxy模块 发送请求给upstream定义的节点池。</li>
+</ul>
+<h2 id="相关功能模块讲解"><a href="#相关功能模块讲解" class="headerlink" title="相关功能模块讲解"></a>相关功能模块讲解</h2><h3 id="upstream模块解读"><a href="#upstream模块解读" class="headerlink" title="upstream模块解读"></a>upstream模块解读</h3><p>nginx 的负载均衡功能依赖于 ngx_http_upstream_module模块，所支持的代理方式有 proxy_pass(一般用于反向代理),fastcgi_pass(一般用于和动态程序交互),memcached_pass,proxy_next_upstream,fastcgi_next_pass,memcached_next_pass 。</p>
+<p>upstream 模块应该放于http{}标签内。</p>
+<p>模块写法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">upstream backend &#123;</span><br><span class="line">    ip_hash; </span><br><span class="line">    server backend1.example.com       weight=5;</span><br><span class="line">    server backend2.example.com:8080;</span><br><span class="line">    server backup1.example.com:8080   backup;</span><br><span class="line">    server backup2.example.com:8080   backup;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实例一：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">upstream dynamic &#123;</span><br><span class="line">    zone upstream_dynamic 64k;</span><br><span class="line"></span><br><span class="line">    server backend1.example.com      weight=5;</span><br><span class="line">    server backend2.example.com:8080 fail_timeout=5s slow_start=30s;</span><br><span class="line">    server 192.0.2.1                 max_fails=3;</span><br><span class="line">    server backend3.example.com      resolve;</span><br><span class="line"></span><br><span class="line">    server backup1.example.com:8080  backup;</span><br><span class="line">    server backup2.example.com:8080  backup;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>语法解释：<br>nginx默认支持四种调度算法</p>
+<ul>
+<li>轮询(rr),每个请求按时间顺序逐一分配到不同的后端服务器，如果后端服务器故障，故障系统自动清除，使用户访问不受影响。</li>
+<li>轮询权值(weight),weight值越大，分配到的访问几率越高，主要用于后端每个服务器性能不均的情况。</li>
+<li>ip_hash，每个请求按访问IP的hash结果分配，这样来自同一个IP的固定访问一个后端服务器，主要解决动态网站session共享的问题。</li>
+<li>url_hash，按照访问的URL的hash结果来分配请求，是每个URL定向到同一个后端服务器，可以进一步提高后端缓存服务器的效率，nginx本身不支持，如果想使用需要安装nginx的hash软件包。</li>
+<li>fair，这个算法可以依据页面大小和加载时间长短智能的进行负载均衡，也就是根据后端服务器的响应时间来分配请求，相应时间短的优先分配，默认不支持，如果想使用需要安装upstream_fail模块。</li>
+<li>least_conn 最少链接数，那个机器连接数少就分发。</li>
+</ul>
+<p>server模块的写法<code> server IP 调度状态</code></p>
+<p>server指令指定后端服务器IP地址和端口，同时还可以设定每个后端服务器在负载均衡调度中的状态。</p>
+<ul>
+<li>down 表示当前的server暂时不参与负载均衡。</li>
+<li>backup 预留的备份服务器，当其他所有的非backup服务器出现故障或者忙的时候，才会请求backup机器，因为这台集群的压力最小。</li>
+<li>max_fails 允许请求失败的次数，默认是1，当超过最大次数时，返回proxy_next_upstream模块定义的错误。0表示禁止失败尝试，企业场景：2-3.京东1次，蓝汛10次，根据业务需求去配置。</li>
+<li>fail_timeout，在经历了max_fails次失败后，暂停服务的时间。京东是3s，蓝汛是3s，根据业务需求配置。常规业务2-3秒合理。</li>
+</ul>
+<p>例：如果max_fails是5，他就检测5次，如果五次都是502.那么，他就会根据fail_timeout 的值，等待10秒，再去检测。</p>
+<blockquote>
+<p>server 如果接域名，需要内网有DNS服务器，或者在负载均衡器的hosts文件做域名解析。server后面还可以直接接IP或IP加端口。</p>
+</blockquote>
+<h3 id="location-模块解读"><a href="#location-模块解读" class="headerlink" title="location 模块解读"></a>location 模块解读</h3><p>location作用：基于一个指令设置URI。<br>基本语法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Syntax:	location [ = | ~ | ~* | ^~ ] uri &#123; ... &#125;</span><br><span class="line">location @name &#123; ... &#125;</span><br><span class="line">Default:	—</span><br><span class="line">Context:	server, location</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code> =</code> 精确匹配，如果找到匹配=号的内容，立即停止搜索，并立即处理请求(优先级最高)</li>
+<li><code>~ </code> 区分大小写</li>
+<li><code>~*</code> 不区分大小写</li>
+<li><code>^~ </code>     只匹配字符串，不匹配正则表达式</li>
+<li><code>@ </code>     指定一个命名的location，一般用于内部重定义请求，location @name {…}</li>
+</ul>
+<p>官方的例子：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">location = / &#123;</span><br><span class="line">    [ configuration A ]</span><br><span class="line">&#125;</span><br><span class="line">location / &#123;</span><br><span class="line">    [ configuration B ]</span><br><span class="line">&#125;</span><br><span class="line">location /documents/ &#123;</span><br><span class="line">    [ configuration C ]</span><br><span class="line">&#125;</span><br><span class="line">location ^~ /images/ &#123;</span><br><span class="line">    [ configuration D ]</span><br><span class="line">&#125;</span><br><span class="line">location ~* \.(gif|jpg|jpeg)$ &#123;</span><br><span class="line">    [ configuration E ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试用的例子：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">location / &#123;</span><br><span class="line">           return 401;</span><br><span class="line">        &#125;</span><br><span class="line">        location = / &#123;</span><br><span class="line">            return 402;</span><br><span class="line">        &#125;</span><br><span class="line">        location /documents/ &#123;</span><br><span class="line">            return 403;</span><br><span class="line">        &#125;</span><br><span class="line">        location ^~ /images/ &#123;</span><br><span class="line">            return 404;</span><br><span class="line">        &#125;</span><br><span class="line">        location ~* \.(gif|jpg|jpeg)$ &#123;</span><br><span class="line">            return 500;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试结果（重点看）：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@lb01 conf]# curl -I -s -o /dev/null -w &quot;%&#123;http_code&#125;\n&quot; http://10.0.0.7/</span><br><span class="line">402</span><br><span class="line">[root@lb01 conf]# curl -I -s -o /dev/null -w &quot;%&#123;http_code&#125;\n&quot; http://10.0.0.7/index.html</span><br><span class="line">401</span><br><span class="line">[root@lb01 conf]# curl -I -s -o /dev/null -w &quot;%&#123;http_code&#125;\n&quot; http://10.0.0.7/documents/document.html </span><br><span class="line">403</span><br><span class="line">[root@lb01 conf]# curl -I -s -o /dev/null -w &quot;%&#123;http_code&#125;\n&quot; http://10.0.0.7/images/1.gif</span><br><span class="line">404</span><br><span class="line">[root@lb01 conf]# curl -I -s -o /dev/null -w &quot;%&#123;http_code&#125;\n&quot; http://10.0.0.7/dddd/1.gif  </span><br><span class="line">500</span><br></pre></td></tr></table></figure>
+
+<p>结果总结：<br>匹配的优先顺序，<code>=</code>&gt;<code>^~</code>（匹配固定字符串，忽略正则）&gt;<code> 完全相等</code>&gt;<code>~*</code>&gt;<code>空</code>&gt;<code>/</code> 。</p>
+<h2 id="proxy-pass-模块解读"><a href="#proxy-pass-模块解读" class="headerlink" title="proxy_pass 模块解读"></a>proxy_pass 模块解读</h2><p>proxy_pass 指令属于ngx_http_proxy_module 模块，此模块可以将请求转发到另一台服务器。</p>
+<p>写法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">proxy_pass http://localhost:8000/uri/; </span><br></pre></td></tr></table></figure>
+
+<p>实例一：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">upstream blog_real_servers &#123;</span><br><span class="line">     server 10.0.0.9:80  weight=5;</span><br><span class="line">     server 10.0.0.10:80  weight=10;</span><br><span class="line">     server 10.0.0.19:82  weight=15;</span><br><span class="line">&#125;</span><br><span class="line">server &#123;</span><br><span class="line">   listen       80;</span><br><span class="line">   server_name  blog.etiantian.org;</span><br><span class="line">   location / &#123;</span><br><span class="line">    proxy_pass http://blog_real_servers;</span><br><span class="line">   proxy_set_header host $host;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>proxy_set_header：当后端Web服务器上也配置有多个虚拟主机时，需要用该Header来区分反向代理哪个主机名，<code>proxy_set_header host $host;</code>。</li>
+<li>proxy_set_header X-Forwarded-For ：如果后端Web服务器上的程序需要获取用户IP，从该Header头获取。<code>proxy_set_header X-Forwarded-For  $remote_addr;</code></li>
+</ul>
+<h3 id="配置后端服务器接收前端真实IP"><a href="#配置后端服务器接收前端真实IP" class="headerlink" title="配置后端服务器接收前端真实IP"></a>配置后端服务器接收前端真实IP</h3><p>配置如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">log_format  commonlog  &#x27;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &#x27;</span><br><span class="line">                  &#x27;$status $body_bytes_sent &quot;$http_referer&quot; &#x27;</span><br><span class="line">                  &#x27;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>rs_apache节点的httpd.conf配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">LogFormat &quot;\&quot;%&#123;X-Forwarded-For&#125;i\&quot; %l %u %t \&quot;%r\&quot; %&gt;s %b \&quot;%&#123;Referer&#125;i\&quot; \&quot;%&#123;U</span><br><span class="line">ser-Agent&#125;i\&quot;&quot; combined修改日志记录</span><br><span class="line">apache</span><br><span class="line">LogFormat &quot;\&quot;%&#123;X-Forwarded-For&#125;i\&quot; %l %u %t \&quot;%r\&quot; %&gt;s %b&quot; common</span><br></pre></td></tr></table></figure>
+
+<h3 id="proxy-pass相关的优化参数"><a href="#proxy-pass相关的优化参数" class="headerlink" title="proxy_pass相关的优化参数"></a>proxy_pass相关的优化参数</h3><ul>
+<li><p><code>client_max_body_size     10m; </code>     允许客户端请求的最大的单个文件字节数</p>
+</li>
+<li><p><code>client_body_buffer_size  128k;</code>   缓冲区代理缓冲用户端请求的最大字节数 可以理解为先保存到本地再传给用户</p>
+</li>
+<li><p><code>proxy_connect_timeout    600;</code>  跟后端服务器连接的超时时间_发起握手等候响应超时时间</p>
+</li>
+<li><p><code>proxy_read_timeout       600;</code> 连接成功后_等候后端服务器响应时间_其实已经进入后端的排队之中等候处理</p>
+</li>
+<li><p><code>proxy_send_timeout       600; </code> 后端服务器回传数据时间,就是在规定时间之内后端服务器必须传完所有的数据</p>
+</li>
+<li><p><code>proxy_buffer_size        8k; </code>  代理请求缓存区，这个缓存区间会保存用户的头信息以供Nginx进行规则处理,一般只要设置能保存下头信息即可</p>
+</li>
+<li><p><code>proxy_buffers            4 32k; </code> 同上 告诉Nginx保存单个页面使用的空间大小，假设网页大小平均在32k以下的话。</p>
+</li>
+<li><p><code>proxy_busy_buffers_size 64k;  </code>  如果系统很忙的时候可以申请更大的proxy_buffers 官方推荐(proxy_buffers*2)</p>
+</li>
+<li><p><code>proxy_max_temp_file_size 1024m; </code>  当 proxy_buffers 放不下后端服务器的响应内容时，会将一部分保存到硬盘的临时文件中，这个值用来设置最大临时文件大小，默认1024M，它与 proxy_cache 没有关系。大于这个值，将从upstream服务器传回。设置为0禁用。</p>
+</li>
+<li><p><code>proxy_temp_file_write_size 64k;   </code> proxy缓存临时文件的大小 proxy_temp_path（可以在编译的时候）指定写到哪那个目录。</p>
+</li>
+</ul>
+<h2 id="一个完整的nginx实例"><a href="#一个完整的nginx实例" class="headerlink" title="一个完整的nginx实例"></a>一个完整的nginx实例</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">[root@lb01 conf]# cat nginx.conf</span><br><span class="line">worker_processes  1;</span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections  1024;</span><br><span class="line">&#125;</span><br><span class="line">http &#123;</span><br><span class="line">    include       mime.types;</span><br><span class="line">    default_type  application/octet-stream;</span><br><span class="line">    sendfile        on;</span><br><span class="line">    keepalive_timeout  65;</span><br><span class="line">    #blog lb by oldboy at 201303</span><br><span class="line">    upstream blog_real_servers &#123;</span><br><span class="line">   server   10.0.0.9:80 weight=1 max_fails=1 fail_timeout=10s;</span><br><span class="line">   server   10.0.0.10:80 weight=1 max_fails=2 fail_timeout=20s;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    server &#123;</span><br><span class="line">       listen       80;</span><br><span class="line">       server_name  blog.etiantian.org;</span><br><span class="line">       location / &#123;</span><br><span class="line">        proxy_pass http://blog_real_servers;</span><br><span class="line">        include proxy.conf;</span><br><span class="line">       &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@lb01 conf]# cat proxy.conf </span><br><span class="line">        proxy_set_header Host $host;</span><br><span class="line">        proxy_set_header X-Forwarded-For $remote_addr;</span><br><span class="line">        proxy_connect_timeout 90;        </span><br><span class="line">        proxy_send_timeout 90;</span><br><span class="line">        proxy_read_timeout 90;</span><br><span class="line">        proxy_buffer_size 4k;</span><br><span class="line">        proxy_buffers 4 32k;</span><br><span class="line">        proxy_busy_buffers_size 64k; proxy_temp_file_write_size 64k;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="扩展补充"><a href="#扩展补充" class="headerlink" title="扩展补充"></a>扩展补充</h2><h3 id="只允许使用GET-HEAD-POST方法去请求"><a href="#只允许使用GET-HEAD-POST方法去请求" class="headerlink" title="只允许使用GET,HEAD,POST方法去请求"></a>只允许使用GET,HEAD,POST方法去请求</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># Only allow these request methods ##</span></span></span><br><span class="line">     if ($request_method !~ ^(GET|HEAD|POST)$ ) &#123;</span><br><span class="line">         return 444;</span><br><span class="line">     &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h2><h3 id="根据URI及location实现动静分离。"><a href="#根据URI及location实现动静分离。" class="headerlink" title="根据URI及location实现动静分离。"></a>根据URI及location实现动静分离。</h3><p>最终实现：</p>
+<ol>
+<li>/static/的URL都去访问10.0.0.9。</li>
+<li>/dynamic/的URL都去访问10.0.0.10。</li>
+<li>图片这些静态文件去访问10.0.0.9。</li>
+<li>/upload/的URL都去访问10.0.0.10。</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">[root@lb01 conf]# cat nginx.conf</span><br><span class="line">worker_processes  1;</span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections  1024;</span><br><span class="line">&#125;</span><br><span class="line">http &#123;</span><br><span class="line">    include       mime.types;</span><br><span class="line">    default_type  application/octet-stream;</span><br><span class="line">    sendfile        on;</span><br><span class="line">    keepalive_timeout  65;</span><br><span class="line">    #blog lb by oldboy at 201303</span><br><span class="line"></span><br><span class="line">    upstream static_pools &#123;</span><br><span class="line">      server 10.0.0.9:80;</span><br><span class="line">    &#125;</span><br><span class="line">    upstream dynamic_pools &#123;</span><br><span class="line">      server 10.0.0.10:80;</span><br><span class="line">    &#125;</span><br><span class="line">     upstream upload_pools &#123;</span><br><span class="line">      server 10.0.0.9:80;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    server &#123;</span><br><span class="line">       listen       80;</span><br><span class="line">       server_name  blog.biglittleant.cn;</span><br><span class="line">       </span><br><span class="line">        location / &#123;</span><br><span class="line">        proxy_pass http://static_pools;</span><br><span class="line">        include proxy.conf;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       location /static/ &#123; </span><br><span class="line">        proxy_pass http://static_pools;</span><br><span class="line">        include proxy.conf;</span><br><span class="line">       &#125;</span><br><span class="line">       </span><br><span class="line">        location ~* \.(gif|jpg|jpeg)$ &#123;</span><br><span class="line">         proxy_pass http://static_pools;</span><br><span class="line">         include proxy.conf;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">       location /dynamic/ &#123; </span><br><span class="line">        proxy_pass http://dynamic_pools;</span><br><span class="line">        include proxy.conf;</span><br><span class="line">       &#125;</span><br><span class="line">       location /upload/ &#123;</span><br><span class="line">        proxy_pass http://upload_pools;</span><br><span class="line">        include proxy.conf;</span><br><span class="line">       &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h3 id="实现苹果手机和安卓手机访问不同的地址"><a href="#实现苹果手机和安卓手机访问不同的地址" class="headerlink" title="实现苹果手机和安卓手机访问不同的地址"></a>实现苹果手机和安卓手机访问不同的地址</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">       listen       80;</span><br><span class="line">       server_name  blog.etiantian.org;</span><br><span class="line">       location / &#123;</span><br><span class="line">        if ($http_user_agent ~* &quot;android&quot;)</span><br><span class="line">          &#123;</span><br><span class="line">            proxy_pass http://android_pools;</span><br><span class="line">          &#125;</span><br><span class="line">        if ($http_user_agent ~* &quot;iphone&quot;)</span><br><span class="line">          &#123;</span><br><span class="line">            proxy_pass http://iphone_pools;</span><br><span class="line">            &#125;</span><br><span class="line">        proxy_pass http://pc_pools;</span><br><span class="line">        include extra/proxy.conf;</span><br><span class="line">       &#125;</span><br><span class="line">        access_log off;</span><br><span class="line">     &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a target="_blank" rel="noopener" href="http://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_pass">nginx-proxy_pass官网</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/nginx/" rel="tag"># nginx</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/01/02/nginx-index/" rel="prev" title="死磕nginx系列--配置文档解读">
+                  <i class="fa fa-chevron-left"></i> 死磕nginx系列--配置文档解读
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/01/04/nginx-rewrite/" rel="next" title="死磕nginx系列--nginx服务器配置rewrite功能">
+                  死磕nginx系列--nginx服务器配置rewrite功能 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+  
+  
+  
+
+
+
+      
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">biglittleant</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

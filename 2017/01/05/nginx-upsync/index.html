@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.biglittleant.cn","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+  </script>
+
+  <meta name="description" content="简介：upsync模块是用来解决配置文件修改后，reload nginx进程造成性能下降的问题。 处理流程它的功能是拉取 consul 的后端 server 的列表，并更新 Nginx 的路由信息。此模块不依赖于任何第三方模块。consul 作为 Nginx 的 db，利用 consul 的 KV 服务，每个 Nginx work 进程独立的去拉取各个 upstream 的配置，并更新各自的路由。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="死磕nginx系列--使用upsync模块实现负载均衡">
+<meta property="og:url" content="http://www.biglittleant.cn/2017/01/05/nginx-upsync/index.html">
+<meta property="og:site_name" content="biglittleant">
+<meta property="og:description" content="简介：upsync模块是用来解决配置文件修改后，reload nginx进程造成性能下降的问题。 处理流程它的功能是拉取 consul 的后端 server 的列表，并更新 Nginx 的路由信息。此模块不依赖于任何第三方模块。consul 作为 Nginx 的 db，利用 consul 的 KV 服务，每个 Nginx work 进程独立的去拉取各个 upstream 的配置，并更新各自的路由。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://oi3tsepsh.bkt.clouddn.com/14841282377231.jpg">
+<meta property="article:published_time" content="2017-01-05T00:17:36.000Z">
+<meta property="article:modified_time" content="2020-09-03T02:03:13.619Z">
+<meta property="article:author" content="biglittleant">
+<meta property="article:tag" content="nginx">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://oi3tsepsh.bkt.clouddn.com/14841282377231.jpg">
+
+
+<link rel="canonical" href="http://www.biglittleant.cn/2017/01/05/nginx-upsync/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>死磕nginx系列--使用upsync模块实现负载均衡 | biglittleant</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">biglittleant</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">不被嘲笑的梦想，是不值得去实现的</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-文章分类">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a>
+
+  </li>
+        <li class="menu-item menu-item-归档">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E6%88%98"><span class="nav-number">1.</span> <span class="nav-text">实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%99nginx%E6%89%93%E8%A1%A5%E4%B8%81%E5%8C%85"><span class="nav-number">1.1.</span> <span class="nav-text">给nginx打补丁包</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8consul"><span class="nav-number">2.</span> <span class="nav-text">启动consul</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95"><span class="nav-number">3.</span> <span class="nav-text">测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%9C%8D%E5%8A%A1"><span class="nav-number">4.</span> <span class="nav-text">添加服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%AE%E5%8A%A9%E6%96%87%E6%A1%A3"><span class="nav-number">5.</span> <span class="nav-text">帮助文档</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">biglittleant</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2017/01/05/nginx-upsync/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="biglittleant">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="biglittleant">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          死磕nginx系列--使用upsync模块实现负载均衡
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-01-05 08:17:36" itemprop="dateCreated datePublished" datetime="2017-01-05T08:17:36+08:00">2017-01-05</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2020-09-03 10:03:13" itemprop="dateModified" datetime="2020-09-03T10:03:13+08:00">2020-09-03</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>简介：upsync模块是用来解决配置文件修改后，reload nginx进程造成性能下降的问题。</p>
+<p>处理流程<br>它的功能是拉取 consul 的后端 server 的列表，并更新 Nginx 的路由信息。此模块不依赖于任何第三方模块。consul 作为 Nginx 的 db，利用 consul 的 KV 服务，每个 Nginx work 进程独立的去拉取各个 upstream 的配置，并更新各自的路由。</p>
+<p><img src="http://oi3tsepsh.bkt.clouddn.com/14841282377231.jpg"></p>
+<h2 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h2><h3 id="给nginx打补丁包"><a href="#给nginx打补丁包" class="headerlink" title="给nginx打补丁包"></a>给nginx打补丁包</h3><p>这步可以不做，如果不做，编译的时候删除这个模块</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/xiaokai-wang/nginx_upstream_check_module</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 打补丁包</span></span></span><br><span class="line">patch -p0 &lt; /usr/local/src/nginx_upstream_check_module-master/check_1.9.2+.patch </span><br></pre></td></tr></table></figure>
+
+<p>下载nginx-upsync-module源码</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/weibocom/nginx-upsync-module.git</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">下载nginx源码</span><br><span class="line">wget &#x27;http://nginx.org/download/nginx-1.10.1.tar.gz&#x27;</span><br><span class="line">tar -xzvf nginx-1.10.1.tar.gz</span><br><span class="line">cd nginx-1.10.1/</span><br><span class="line">开始编译</span><br><span class="line">./configure --prefix=/data/app/nginx-1.10.1 --user=nginx --group=nginx  --with-http_ssl_module  --with-http_stub_status_module   --add-module=/usr/local/src/nginx-upsync-module-master/ --add-module=/usr/local/src/nginx_upstream_check_module-master/</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+
+<h2 id="启动consul"><a href="#启动consul" class="headerlink" title="启动consul"></a>启动consul</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wget https://releases.hashicorp.com/consul/0.6.4/consul_0.6.4_linux_amd64.zip</span><br><span class="line">unzip consul_0.6.4_linux_amd64.zip</span><br><span class="line">./consul agent -advertise=x.x.x.x -client=0.0.0.0 -dev</span><br></pre></td></tr></table></figure>
+
+<p>创建nginx配置文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /usr/local/nginx/conf/servers</span><br><span class="line">/usr/local/nginx/conf/nginx.conf</span><br><span class="line">events &#123;</span><br><span class="line">  worker_connections  4096;  ## Default: 1024</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line">    upstream test &#123;</span><br><span class="line">        # fake server otherwise ngx_http_upstream will report error when startup</span><br><span class="line">        server 127.0.0.1:11111;</span><br><span class="line"></span><br><span class="line">        # all backend server will pull from consul when startup and will delete fake server</span><br><span class="line">        upsync 127.0.0.1:8500/v1/kv/upstreams/test upsync_timeout=6m upsync_interval=500ms upsync_type=consul strong_dependency=off;</span><br><span class="line">        upsync_dump_path /usr/local/nginx/conf/servers/servers_test.conf;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    upstream bar &#123;</span><br><span class="line">        server 127.0.0.1:8090 weight=1 fail_timeout=10 max_fails=3;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    server &#123;</span><br><span class="line">        listen 8080;</span><br><span class="line"></span><br><span class="line">        location = /proxy_test &#123;</span><br><span class="line">            proxy_pass http://test;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        location = /bar &#123;</span><br><span class="line">            proxy_pass http://bar;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        location = /upstream_show &#123;</span><br><span class="line">            upstream_show;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for i in `seq 3`;do mkdir html$i/test -p &amp;&amp; echo $i &gt;html$i/test/test.html; done;  </span><br><span class="line"></span><br><span class="line">docker run -d -p 8001:80 -v /root/html1/:/usr/share/nginx/html nginx </span><br><span class="line">docker run -d -p 8002:80 -v /root/html2/:/usr/share/nginx/html nginx </span><br><span class="line">docker run -d -p 8003:80 -v /root/html3/:/usr/share/nginx/html nginx </span><br></pre></td></tr></table></figure>
+<h2 id="添加服务"><a href="#添加服务" class="headerlink" title="添加服务"></a>添加服务</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">curl -X PUT -d &#x27;&#123;&quot;weight&quot;:1, &quot;max_fails&quot;:2, &quot;fail_timeout&quot;:10&#125;&#x27; http://127.0.0.1:8500/v1/kv/upstreams/test/192.168.56.12:8001</span><br><span class="line">curl -X PUT -d &#x27;&#123;&quot;weight&quot;:1, &quot;max_fails&quot;:2, &quot;fail_timeout&quot;:10&#125;&#x27; http://127.0.0.1:8500/v1/kv/upstreams/test/192.168.56.12:8002</span><br><span class="line">curl -X PUT -d &#x27;&#123;&quot;weight&quot;:1, &quot;max_fails&quot;:2, &quot;fail_timeout&quot;:10&#125;&#x27; http://127.0.0.1:8500/v1/kv/upstreams/test/192.168.56.12:8003</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>查看conf/servers/servers_test.conf 文件中是否有内容</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cat conf/servers/servers_test.conf </span><br><span class="line">server 192.168.56.12:8003 weight=1 max_fails=2 fail_timeout=10s;</span><br><span class="line">server 192.168.56.12:8002 weight=1 max_fails=2 fail_timeout=10s;</span><br><span class="line">server 192.168.56.12:8001 weight=1 max_fails=2 fail_timeout=10s;</span><br></pre></td></tr></table></figure>
+
+<p>或者浏览器打开<code>http://192.168.56.11:8080/upstream_show?test</code><br>显示内容如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Upstream name: test; Backend server count: 3</span><br><span class="line">        server 192.168.56.12:8003 weight=1 max_fails=2 fail_timeout=10s;</span><br><span class="line">        server 192.168.56.12:8002 weight=1 max_fails=2 fail_timeout=10s;</span><br><span class="line">        server 192.168.56.12:8001 weight=1 max_fails=2 fail_timeout=10s;</span><br></pre></td></tr></table></figure>
+
+<p>总结<br>此模块只修改upstream 中的缓存信息，不能修改或添加其他配置</p>
+<p>测试中遇到的问题<br>在添加服务时出现如下错误，导致服务添加不能实时进行，大约需要3分钟左右时间。</p>
+<p>consul日志：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">2016/03/22 05:34:42 [DEBUG] http: Request GET /v1/kv/upstreams/test?recurse&amp;index=169 (149.023µs) from=127.0.0.1:38853</span><br><span class="line">    2016/03/22 05:34:43 [DEBUG] http: Request GET /v1/kv/upstreams/test?recurse&amp;index=169 (146.759µs) from=127.0.0.1:38854</span><br><span class="line">    2016/03/22 05:34:45 [DEBUG] http: Request GET /v1/kv/upstreams/test?recurse&amp;index=169 (149.853µs) from=127.0.0.1:38855</span><br><span class="line">    2016/03/22 05:34:46 [DEBUG] http: Request GET /v1/kv/upstreams/test?recurse&amp;index=169 (111.46µs) from=127.0.0.1:38856</span><br><span class="line">    2016/03/22 05:34:48 [DEBUG] http: Request GET /v1/kv/upstreams/test?recurse&amp;index=169 (142.696µs) from=127.0.0.1:38857</span><br><span class="line">    2016/03/22 05:34:48 [DEBUG] http: Request GET /v1/kv/upstreams/test?recurse&amp;index=169 (112.089µs) from=127.0.0.1:38858</span><br><span class="line">    2016/03/22 05:34:49 [DEBUG] http: Request GET /v1/kv/upstreams/test?recurse&amp;index=169 (114.29µs) from=127.0.0.1:38859</span><br><span class="line">    2016/03/22 05:34:50 [DEBUG] http: Request GET /v1/kv/upstreams/test?recurse&amp;index=169 (148.245µs) from=127.0.0.1:38860</span><br></pre></td></tr></table></figure>
+
+<p>nginx日志</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">2016/03/22 05:35:09 [error] 18879#0: recv() failed (104: Connection reset by peer)</span><br><span class="line">2016/03/22 05:35:09 [error] 18879#0: upsync_recv: recv error with upsync_server: 127.0.0.1:8500</span><br><span class="line">2016/03/22 05:35:10 [error] 18879#0: recv() failed (104: Connection reset by peer)</span><br><span class="line">2016/03/22 05:35:10 [error] 18879#0: upsync_recv: recv error with upsync_server: 127.0.0.1:8500</span><br><span class="line">2016/03/22 05:35:11 [error] 18879#0: recv() failed (104: Connection reset by peer)</span><br><span class="line">2016/03/22 05:35:11 [error] 18879#0: upsync_recv: recv error with upsync_server: 127.0.0.1:8500</span><br><span class="line">2016/03/22 05:35:13 [error] 18879#0: recv() failed (104: Connection reset by peer)</span><br><span class="line">2016/03/22 05:35:13 [error] 18879#0: upsync_recv: recv error with upsync_server: 127.0.0.1:8500</span><br><span class="line">2016/03/22 05:35:13 [error] 18879#0: recv() failed (104: Connection reset by peer)</span><br><span class="line">2016/03/22 05:35:13 [error] 18879#0: upsync_recv: recv error with upsync_server: 127.0.0.1:8500</span><br><span class="line">2016/03/22 05:35:14 [error] 18879#0: recv() failed (104: Connection reset by peer)</span><br></pre></td></tr></table></figure>
+
+<p>问题现象<br>当添加一个服务时，出现此问题，新增服务不能及时添加到负载中，不影响运行正常的服务。 此时再往consul继续添加一个服务时，可能会导致此错误终止，并能成功添加当前两条服务记录。</p>
+<h2 id="帮助文档"><a href="#帮助文档" class="headerlink" title="帮助文档"></a>帮助文档</h2><p><a target="_blank" rel="noopener" href="https://github.com/weibocom/nginx-upsync-module#consul_interface">官方github地址</a><br><a target="_blank" rel="noopener" href="https://github.com/xiaokai-wang/nginx_upstream_check_module">nginx_upstream_check_module</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/nginx/" rel="tag"># nginx</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/01/04/nginx-rewrite/" rel="prev" title="死磕nginx系列--nginx服务器配置rewrite功能">
+                  <i class="fa fa-chevron-left"></i> 死磕nginx系列--nginx服务器配置rewrite功能
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/01/06/nginx-proxy-pass-error/" rel="next" title="死磕nginx系列--proxy_pass后端斜杠问题">
+                  死磕nginx系列--proxy_pass后端斜杠问题 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+  
+  
+  
+
+
+
+      
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">biglittleant</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

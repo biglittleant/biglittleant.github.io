@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.biglittleant.cn","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+  </script>
+
+  <meta name="description" content="Grains数据系统Grains（鼓励）：静态数据，存储客户端的信息。 1salt &amp;#x27;*&amp;#x27; grains.items ###列出服务器的详细参数  只查看OS的信息： 123456789[root@centos6 ~]# salt &amp;#x27;*&amp;#x27; grains.item os minion.saltstack.com:    ----------    os:">
+<meta property="og:type" content="article">
+<meta property="og:title" content="salt-grains-pillar">
+<meta property="og:url" content="http://www.biglittleant.cn/2016/12/17/salt-grains-pillar/index.html">
+<meta property="og:site_name" content="biglittleant">
+<meta property="og:description" content="Grains数据系统Grains（鼓励）：静态数据，存储客户端的信息。 1salt &amp;#x27;*&amp;#x27; grains.items ###列出服务器的详细参数  只查看OS的信息： 123456789[root@centos6 ~]# salt &amp;#x27;*&amp;#x27; grains.item os minion.saltstack.com:    ----------    os:">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2016-12-17T02:35:57.000Z">
+<meta property="article:modified_time" content="2020-09-03T02:03:13.620Z">
+<meta property="article:author" content="biglittleant">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="salt">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.biglittleant.cn/2016/12/17/salt-grains-pillar/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>salt-grains-pillar | biglittleant</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">biglittleant</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">不被嘲笑的梦想，是不值得去实现的</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-文章分类">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a>
+
+  </li>
+        <li class="menu-item menu-item-归档">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Grains%E6%95%B0%E6%8D%AE%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.</span> <span class="nav-text">Grains数据系统</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">biglittleant</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2016/12/17/salt-grains-pillar/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="biglittleant">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="biglittleant">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          salt-grains-pillar
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2016-12-17 10:35:57" itemprop="dateCreated datePublished" datetime="2016-12-17T10:35:57+08:00">2016-12-17</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2020-09-03 10:03:13" itemprop="dateModified" datetime="2020-09-03T10:03:13+08:00">2020-09-03</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="Grains数据系统"><a href="#Grains数据系统" class="headerlink" title="Grains数据系统"></a>Grains数据系统</h2><p>Grains（鼓励）：静态数据，存储客户端的信息。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">salt &#x27;*&#x27; grains.items ###列出服务器的详细参数</span><br></pre></td></tr></table></figure>
+
+<p>只查看OS的信息：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@centos6 ~]# salt &#x27;*&#x27; grains.item os </span><br><span class="line">minion.saltstack.com:</span><br><span class="line">    ----------</span><br><span class="line">    os:</span><br><span class="line">        CentOS</span><br><span class="line">[root@centos6 ~]# salt &#x27;*&#x27; grains.get os </span><br><span class="line">minion.saltstack.com:</span><br><span class="line">    CentOS</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node1 salt]# salt &#x27;*&#x27; grains.get ip_interfaces:eth0 </span><br><span class="line">linux-node2:</span><br><span class="line">    - 10.0.0.8</span><br><span class="line">    - fe80::20c:29ff:fea4:91c7</span><br><span class="line">linux-node1:</span><br><span class="line">    - 10.0.0.7</span><br><span class="line">    - fe80::20c:29ff:fe6a:d896</span><br><span class="line">[root@linux-node1 salt]# </span><br></pre></td></tr></table></figure>
+<p>列出所有信息的名称：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@centos6 ~]# salt &#x27;*&#x27; grains.ls</span><br><span class="line">minion.saltstack.com:</span><br><span class="line">    - SSDs</span><br><span class="line">    - biosreleasedate</span><br><span class="line">    - biosversion</span><br><span class="line">    - cpu_flags</span><br><span class="line">    - cpu_model</span><br><span class="line">    - cpuarch</span><br><span class="line">    - domain</span><br><span class="line">    - fqdn</span><br><span class="line">    - fqdn_ip4</span><br><span class="line">    - fqdn_ip6</span><br><span class="line">省略部分内容。。。。。。。。</span><br></pre></td></tr></table></figure>
+
+
+<p>在服务端测试：-G 表示匹配grains ：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@centos6 ~]# salt -G &#x27;env:prod&#x27; test.ping   </span><br><span class="line">minion.saltstack.com:</span><br><span class="line">    True</span><br><span class="line"></span><br><span class="line">[root@linux-node1 salt]# salt -G &#x27;os:CentOS&#x27; cmd.run &#x27;w&#x27;</span><br><span class="line">linux-node2:</span><br><span class="line">     03:35:48 up  9:50,  2 users,  load average: 0.00, 0.00, 0.00</span><br><span class="line">    USER     TTY      FROM              LOGIN@   IDLE   JCPU   PCPU WHAT</span><br><span class="line">    niu      pts/0    10.0.2.1         02:02    1:10m  0.00s  0.00s -bash</span><br><span class="line">    niu      pts/1    10.0.2.1         02:14    1:21m  0.00s  0.00s -bash</span><br><span class="line">linux-node1:</span><br><span class="line">     03:35:46 up 19:30,  2 users,  load average: 0.00, 0.00, 0.00</span><br><span class="line">    USER     TTY      FROM              LOGIN@   IDLE   JCPU   PCPU WHAT</span><br><span class="line">    niu      pts/0    10.0.2.1         02:02    1.00s  0.41s  0.00s sshd: niu [priv</span><br><span class="line">    niu      pts/1    10.0.2.1         02:14    1:07m  0.02s  0.00s sshd: niu [priv</span><br><span class="line">[root@linux-node1 salt]# </span><br></pre></td></tr></table></figure>
+
+<p>在客户端自定义grains：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@centos6 ~]# vim /etc/salt/minion</span><br><span class="line">grains:</span><br><span class="line">  roles: nginx</span><br><span class="line">  env: prod</span><br><span class="line"></span><br><span class="line">&quot;/etc/salt/minion&quot; 627L, 25173C written   </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>使用命令行设置minion端的grains。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 给logstash4服务器设置一个elastic_url的grains值</span></span></span><br><span class="line">salt &#x27;chuye.logstash4.service&#x27; grains.setval elastic_url &#x27;http://10.10.196.24:9200&#x27;</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 查看elastic_url的值</span></span></span><br><span class="line">salt &#x27;chuye.logstash4.service&#x27; grains.item  elastic_url</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 重新给elastic_url赋值</span></span></span><br><span class="line">salt &#x27;chuye.logstash5.service&#x27; grains.setval elastic_url &#x27;&quot;http://10.10.160.129:9200&quot;&#x27;</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 查看新赋值是否生效</span></span></span><br><span class="line">salt &#x27;chuye.logstash5.service&#x27; grains.item  elastic_url</span><br></pre></td></tr></table></figure>
+
+<p>设置成功后，minion会在 /etc/minion/grains 增加一行配置文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/salt/grains </span><br><span class="line">elastic_url: http://10.10.196.24:9200  </span><br></pre></td></tr></table></figure>
+
+<p>也可以在客户端这样定义：<br>客户端编写： grains配置文件中，不能和minion的参数冲突。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@centos6 ~]# vim /etc/salt/grains            </span><br><span class="line">cloud: openstack</span><br><span class="line">[root@centos6 ~]# /etc/init.d/salt-minion restart </span><br><span class="line">Stopping salt-minion daemon:                               [  OK  ]</span><br><span class="line">Starting salt-minion daemon:                               [  OK  ]</span><br><span class="line">[root@centos6 ~]# </span><br></pre></td></tr></table></figure>
+
+
+<p>在top.sls中调用grains的方法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node1 salt]# vim top.sls </span><br><span class="line">base:</span><br><span class="line">  &#x27;web:nginx&#x27;:</span><br><span class="line">    - match: grain</span><br><span class="line">    - apache</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>在服务器端测试：<br>[root@centos6 ~]# salt -G ‘cloud:openstack’ test.ping<br>minion.saltstack.com:<br>    True</p>
+<p>在服务端输入如下命令可以刷新：（客户端更改后不用重启）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@centos6 ~]# salt &#x27;*&#x27; saltutil.sync_grains </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>在配置文件中调用</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">nginx:</span>  </span><br><span class="line">  <span class="attr">pkg:</span>  </span><br><span class="line">   <span class="bullet">-</span> <span class="string">installed</span>  </span><br><span class="line">  <span class="attr">file.managed:</span>  </span><br><span class="line">   <span class="bullet">-</span> <span class="attr">source:</span> <span class="string">salt://nginx/nginx.conf</span>  </span><br><span class="line">   <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">/etc/nginx/nginx.conf</span>  </span><br><span class="line">   <span class="bullet">-</span> <span class="attr">user:</span> <span class="string">root</span>  </span><br><span class="line">   <span class="bullet">-</span> <span class="attr">group:</span> <span class="string">root</span>  </span><br><span class="line">   <span class="bullet">-</span> <span class="attr">mode:</span> <span class="number">644</span>  </span><br><span class="line">   <span class="bullet">-</span> <span class="attr">template:</span> <span class="string">jinja</span>  </span><br><span class="line">  </span><br><span class="line">  <span class="attr">service.running:</span>  </span><br><span class="line">   <span class="bullet">-</span> <span class="attr">enable:</span> <span class="literal">True</span>  </span><br><span class="line">   <span class="bullet">-</span> <span class="attr">reload:</span> <span class="literal">True</span>  </span><br><span class="line">   <span class="bullet">-</span> <span class="attr">watch:</span>  </span><br><span class="line">     <span class="bullet">-</span> <span class="attr">file:</span> <span class="string">/etc/nginx/nginx.conf</span>  </span><br><span class="line">     <span class="bullet">-</span> <span class="attr">pkg:</span> <span class="string">nginx</span>  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+<p>Pillar（柱子）数据系统：<br>启动pillar功能</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/salt/master</span><br><span class="line">pillar_opts: True </span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#piller 默认参数的开启。</span></span></span><br></pre></td></tr></table></figure>
+
+<p>作用：</p>
+<ul>
+<li>处理敏感数据。</li>
+<li>处理差异性的文件。 </li>
+</ul>
+<p>第二步：在master文件中配置<code>pillar</code>文件存放的位置</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">vim</span> <span class="string">/etc/salt/master</span></span><br><span class="line"><span class="attr">pillar_roots:</span></span><br><span class="line">  <span class="attr">base:</span> </span><br><span class="line">    <span class="bullet">-</span> <span class="string">/etc/salt/pillar</span></span><br></pre></td></tr></table></figure>
+
+<p>第三步：开始编写pillar文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> mkdir /etc/salt/pillar</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">cd</span> /etc/salt/pillar/</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> vim top.sls</span></span><br><span class="line">base:</span><br><span class="line">  &#x27;*&#x27;:</span><br><span class="line">    - init.rsyslog</span><br><span class="line">~                                                                                                                       </span><br><span class="line">&quot;top.sls&quot; [New] 3L, 33C written                   </span><br><span class="line">```     </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">```shell</span><br><span class="line"><span class="meta">#</span><span class="bash"> mkdir init </span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">cd</span> init/</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> vim rsyslog.sls</span></span><br><span class="line">&#123;% if grains[&#x27;osfinger&#x27;] == &#x27;CentOS-6&#x27; %&#125;</span><br><span class="line">syslog: rsyslog</span><br><span class="line">&#123;% elif grains[&#x27;osfinger&#x27;] == &#x27;CentOS-5&#x27; %&#125;</span><br><span class="line">syslog: syslog</span><br><span class="line">&#123;% endif %&#125;</span><br><span class="line">```                                      </span><br><span class="line"></span><br><span class="line">刷新一下配置：</span><br><span class="line"></span><br><span class="line">```shell</span><br><span class="line">[root@centos6 init]# salt &#x27;*&#x27; saltutil.refresh_pillar</span><br><span class="line">minion.saltstack.com:</span><br><span class="line">    True</span><br><span class="line">[root@linux-node1 pillar]# salt &#x27;*&#x27; pillar.items </span><br></pre></td></tr></table></figure>
+
+<p>第四步使用pillar<br>pillar跟grains的使用方法一样<br>可以用索引（pillar[‘pkgs’][‘apache’]）或get方法（pillar.get(‘users’, {})）。</p>
+<p>索引的方式：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">/srv/salt/apache/init.sls：</span><br><span class="line"></span><br><span class="line">apache:</span><br><span class="line">  pkg.installed:</span><br><span class="line">    - name: &#123;&#123; pillar[&#x27;pkgs&#x27;][&#x27;apache&#x27;] &#125;&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>get的方式</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">还可以在state file中设置默认值： srv/salt/apache/init.sls：</span><br><span class="line"></span><br><span class="line">apache:</span><br><span class="line">  pkg.installed:</span><br><span class="line">    - name: &#123;&#123; salt[&#x27;pillar.get&#x27;](&#x27;pkgs:apache&#x27;, &#x27;httpd&#x27;) &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实例二：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#123;% if grains[&#x27;os&#x27;] == &#x27;CentOS&#x27; %&#125;</span><br><span class="line">apache:httpd</span><br><span class="line">&#123;% elif grains[&#x27;os&#x27;] == &#x27;Debian&#x27; %&#125;</span><br><span class="line">apache:apche2</span><br><span class="line">&#123;% endif %&#125;</span><br><span class="line"></span><br><span class="line">[root@linux-node1 pillar]# cat /srv/pillar/top.sls </span><br><span class="line">base:</span><br><span class="line">  &#x27;*&#x27;:</span><br><span class="line">    - apache</span><br><span class="line"></span><br><span class="line">[root@linux-node1 pillar]# ls</span><br><span class="line">apache.sls  top.sls</span><br><span class="line">[root@linux-node1 pillar]# pwd </span><br><span class="line">/srv/pillar</span><br><span class="line">[root@linux-node1 pillar]# </span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+<p>grains和pillar对比：</p>
+<p>使用salt进行nginx配置文件管理。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> For more information on configuration, see:  </span></span><br><span class="line">user              nginx;  </span><br><span class="line">worker_processes  &#123;&#123; grains[&#x27;num_cpus&#x27;] &#125;&#125;;  </span><br><span class="line">&#123;% if grains[&#x27;num_cpus&#x27;] == 2 %&#125;  </span><br><span class="line">worker_cpu_affinity 01 10;  </span><br><span class="line">&#123;% elif grains[&#x27;num_cpus&#x27;] == 4 %&#125;  </span><br><span class="line">worker_cpu_affinity 1000 0100 0010 0001;  </span><br><span class="line">&#123;% elif grains[&#x27;num_cpus&#x27;] &gt;= 8 %&#125;  </span><br><span class="line">worker_cpu_affinity 00000001 00000010 00000100 00001000 00010000 00100000 01000000 10000000;  </span><br><span class="line">&#123;% else %&#125;  </span><br><span class="line">worker_cpu_affinity 1000 0100 0010 0001;  </span><br><span class="line">&#123;% endif %&#125;  </span><br><span class="line">worker_rlimit_nofile &#123;&#123; grains[&#x27;max_open_file&#x27;] &#125;&#125;;  </span><br><span class="line">  </span><br><span class="line">error_log  /var/log/nginx/error.log;  </span><br><span class="line"><span class="meta">#</span><span class="bash">error_log  /var/<span class="built_in">log</span>/nginx/error.log  notice;  </span></span><br><span class="line"><span class="meta">#</span><span class="bash">error_log  /var/<span class="built_in">log</span>/nginx/error.log  info;  </span></span><br><span class="line">  </span><br><span class="line">pid        /var/run/nginx.pid;  </span><br><span class="line">  </span><br><span class="line">events &#123;  </span><br><span class="line">    worker_connections  &#123;&#123; grains[&#x27;max_open_file&#x27;] &#125;&#125;;  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">http &#123;  </span><br><span class="line">    include       /etc/nginx/mime.types;  </span><br><span class="line">    default_type  application/octet-stream;  </span><br><span class="line">  </span><br><span class="line">    log_format  main  &#x27;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &#x27;  </span><br><span class="line">                      &#x27;$status $body_bytes_sent &quot;$http_referer&quot; &#x27;  </span><br><span class="line">                      &#x27;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&#x27;;  </span><br><span class="line">  </span><br><span class="line">    access_log  /var/log/nginx/access.log  main;  </span><br><span class="line">  </span><br><span class="line">    sendfile        on;  </span><br><span class="line">    #tcp_nopush     on;  </span><br><span class="line">  </span><br><span class="line">    #keepalive_timeout  0;  </span><br><span class="line">    keepalive_timeout  65;  </span><br><span class="line">  </span><br><span class="line">    #gzip  on;  </span><br><span class="line">      </span><br><span class="line">    # Load config files from the /etc/nginx/conf.d directory  </span><br><span class="line">    # The default server is in conf.d/default.conf  </span><br><span class="line">    #include /etc/nginx/conf.d/*.conf;  </span><br><span class="line">    server &#123;  </span><br><span class="line">        listen       80 default_server;  </span><br><span class="line">        server_name  _;  </span><br><span class="line">  </span><br><span class="line">        #charset koi8-r;  </span><br><span class="line">  </span><br><span class="line">        #access_log  logs/host.access.log  main;  </span><br><span class="line">  </span><br><span class="line">        location / &#123;  </span><br><span class="line">            root   &#123;&#123; pillar[&#x27;nginx&#x27;][&#x27;root&#x27;] &#125;&#125;;  </span><br><span class="line">            index  index.html index.htm;  </span><br><span class="line">        &#125;  </span><br><span class="line">  </span><br><span class="line">        error_page  404              /404.html;  </span><br><span class="line">        location = /404.html &#123;  </span><br><span class="line">            root   /usr/share/nginx/html;  </span><br><span class="line">        &#125;  </span><br><span class="line">  </span><br><span class="line">        # redirect server error pages to the static page /50x.html  </span><br><span class="line">        #  </span><br><span class="line">        error_page   500 502 503 504  /50x.html;  </span><br><span class="line">        location = /50x.html &#123;  </span><br><span class="line">            root   /usr/share/nginx/html;  </span><br><span class="line">        &#125;  </span><br><span class="line">  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+              <a href="/tags/salt/" rel="tag"># salt</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/12/16/salt-config/" rel="prev" title="salt-配置文件管理之sls讲解">
+                  <i class="fa fa-chevron-left"></i> salt-配置文件管理之sls讲解
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/12/18/mesos-marathon-docker/" rel="next" title="mesos-marathon-docker 实战">
+                  mesos-marathon-docker 实战 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+  
+  
+  
+
+
+
+      
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">biglittleant</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.biglittleant.cn","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+  </script>
+
+  <meta name="description" content="sort将文件的每一行作为一个单位，相互比较，比较原则是从首字符向后，依次按ASCII码值进行比较，最后将他们按升序输出。英文翻译：sort lines of text files . 格式： 12Usage: sort [OPTION]... [FILE]...  or:  sort [OPTION]... --files0-from&#x3D;F  参数： 12345678910111213141516">
+<meta property="og:type" content="article">
+<meta property="og:title" content="sort-命令">
+<meta property="og:url" content="http://www.biglittleant.cn/2016/12/25/sort/index.html">
+<meta property="og:site_name" content="biglittleant">
+<meta property="og:description" content="sort将文件的每一行作为一个单位，相互比较，比较原则是从首字符向后，依次按ASCII码值进行比较，最后将他们按升序输出。英文翻译：sort lines of text files . 格式： 12Usage: sort [OPTION]... [FILE]...  or:  sort [OPTION]... --files0-from&#x3D;F  参数： 12345678910111213141516">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2016-12-25T09:59:19.000Z">
+<meta property="article:modified_time" content="2020-09-03T02:03:13.622Z">
+<meta property="article:author" content="biglittleant">
+<meta property="article:tag" content="linux-命令">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.biglittleant.cn/2016/12/25/sort/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>sort-命令 | biglittleant</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">biglittleant</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">不被嘲笑的梦想，是不值得去实现的</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-文章分类">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a>
+
+  </li>
+        <li class="menu-item menu-item-归档">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">biglittleant</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2016/12/25/sort/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="biglittleant">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="biglittleant">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          sort-命令
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2016-12-25 17:59:19" itemprop="dateCreated datePublished" datetime="2016-12-25T17:59:19+08:00">2016-12-25</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2020-09-03 10:03:13" itemprop="dateModified" datetime="2020-09-03T10:03:13+08:00">2020-09-03</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>sort将文件的每一行作为一个单位，相互比较，比较原则是从首字符向后，依次按ASCII码值进行比较，最后将他们按升序输出。<br>英文翻译：sort lines of text files .</p>
+<p>格式：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Usage: sort [OPTION]... [FILE]...</span><br><span class="line">  or:  sort [OPTION]... --files0-from=F</span><br></pre></td></tr></table></figure>
+
+<p>参数：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">Ordering options:</span><br><span class="line"></span><br><span class="line">-b, --ignore-leading-blanks  忽略每行前面开始出的空格字符。</span><br><span class="line">-d, --dictionary-order      排序时，处理英文字母、数字及空格字符外，忽略其他的字符。</span><br><span class="line">-f, --ignore-case           排序时，将小写字母视为大写字母。</span><br><span class="line">-g, --general-numeric-sort  按照常规数值排序</span><br><span class="line">-i, --ignore-nonprinting    排序时，除了040至176之间的ASCII字符外，忽略其他的字符。</span><br><span class="line">-M, --month-sort          将前面3个字母依照月份的缩写进行排序。</span><br><span class="line">-h, --human-numeric-sort   使用人类可读的数字(例如： 2K 1G)</span><br><span class="line">-n, --numeric-sort         依照数值的大小排序。</span><br><span class="line">-R, --random-sort           根据随机hash 排序</span><br><span class="line">--random-source=FILE    从指定文件中获得随机字节</span><br><span class="line">-r, --reverse              以相反的顺序来排序。</span><br><span class="line">--sort=WORD             按照WORD 指定的格式排序：</span><br><span class="line">                                        一般数字-g，高可读性-h，月份-M，数字-n，</span><br><span class="line">                                        随机-R，版本-V</span><br><span class="line">-V, --version-sort          按照常规数值排序</span><br><span class="line"></span><br><span class="line">Other options:</span><br><span class="line"></span><br><span class="line">--batch-size=NMERGE   一次最多合并NMERGE 个输入；如果输入更多则使用临时文件</span><br><span class="line">-c, --check, --check=diagnose-first  检查输入是否已排序，若已有序则不进行操作</span><br><span class="line">-C, --check=quiet, --check=silent  类似-c，但不报告第一个无序行</span><br><span class="line">--compress-program=PROG 使用指定程序压缩临时文件；使用该程序</span><br><span class="line">                                        的-d 参数解压缩文件</span><br><span class="line">--debug               为用于排序的行添加注释，并将有可能有问题的</span><br><span class="line">                                        用法输出到标准错误输出</span><br><span class="line">--files0-from=F      从指定文件读取以NUL 终止的名称，如果该文件被</span><br><span class="line">                                        指定为&quot;-&quot;则从标准输入读文件名</span><br><span class="line">-k, --key=KEYDEF         在位置1 开始一个key，在位置2 终止(默认为行尾)</span><br><span class="line">-m, --merge               合并已排序的文件，不再进行排序</span><br><span class="line">-o, --output=FILE         将排序后的结果存入指定的文件。</span><br><span class="line">-s, --stable              禁用last-resort 比较以稳定比较算法</span><br><span class="line">-S, --buffer-size=SIZE    禁用last-resort 比较以稳定比较算法</span><br><span class="line">-t, --field-separator=SEP  使用SEP作为排序时所用的分隔符。</span><br><span class="line">-T, --temporary-directory=DIR  使用指定目录而非$TMPDIR 或/tmp 作为</span><br><span class="line">                                        临时目录，可用多个选项指定多个目录</span><br><span class="line">--parallel=N          将同时运行的排序数改变为N</span><br><span class="line">-u, --unique              配合-c，严格校验排序；不配合-c，则只输出一次排序结果</span><br><span class="line">-z, --zero-terminated     以0 字节而非新行作为行尾标志</span><br><span class="line">--help    显示帮助</span><br><span class="line">--version 显示版本信息</span><br></pre></td></tr></table></figure>
+
+<p>常用参数:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-n 按照数字排序。</span><br><span class="line">-r 倒叙。</span><br><span class="line">-t “.”表示按点号分隔域（awk -F ,cut -d 取段 -f）。</span><br><span class="line">-u 相同的行，只输出一行。</span><br><span class="line">-k 指定列进行排序。</span><br><span class="line">-b会忽略每一行前面的所有空白部分，从第一个可见字符开始比较。</span><br></pre></td></tr></table></figure>
+
+<p>实例：<br>按照数字正序排序</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@MySQL /]# sort -n file1.txt </span><br><span class="line">10.0.0.7 f</span><br><span class="line">10.0.0.7 n</span><br><span class="line">10.0.0.8 c</span><br><span class="line">10.0.0.8 k</span><br><span class="line">10.0.0.8 z</span><br><span class="line">10.0.0.9 a</span><br><span class="line">10.0.0.9 o</span><br></pre></td></tr></table></figure>
+
+<p>按照数字排序并倒叙</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@MySQL /]# sort -nr file1.txt </span><br><span class="line">10.0.0.9 o</span><br><span class="line">10.0.0.9 a</span><br><span class="line">10.0.0.8 z</span><br><span class="line">10.0.0.8 k</span><br><span class="line">10.0.0.8 c</span><br><span class="line">10.0.0.7 n</span><br><span class="line">10.0.0.7 f</span><br></pre></td></tr></table></figure>
+
+<p>-t 指定分隔符，-k2 表示按照第二列开始倒叙排序</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@MySQL /]# sort -t&quot; &quot; -k2  -r file1.txt   </span><br><span class="line">10.0.0.8 z</span><br><span class="line">10.0.0.9 o</span><br><span class="line">10.0.0.7 n</span><br><span class="line">10.0.0.8 k</span><br><span class="line">10.0.0.7 f</span><br><span class="line">10.0.0.8 c</span><br><span class="line">10.0.0.9 a</span><br></pre></td></tr></table></figure>
+
+<p>-t 指定分隔符，-k2 表示按照第二列开始排序</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@MySQL /]# sort -t&quot; &quot; -k2  file1.txt    </span><br><span class="line">10.0.0.9 a</span><br><span class="line">10.0.0.8 c</span><br><span class="line">10.0.0.7 f</span><br><span class="line">10.0.0.8 k</span><br><span class="line">10.0.0.7 n</span><br><span class="line">10.0.0.9 o</span><br><span class="line">10.0.0.8 z</span><br></pre></td></tr></table></figure>
+
+<p>先按照第一行排序，在按第三列排序并忽略空格 。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">sort -k 1 -n -k 3 emp.data  </span></span><br><span class="line">Beth    4.00    0</span><br><span class="line">Dan     3.75    0</span><br><span class="line">kathy   4.00    10</span><br><span class="line">Susie   4.25    18</span><br><span class="line">Mark    5.00    20</span><br><span class="line">Mary    5.50    22</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux-%E5%91%BD%E4%BB%A4/" rel="tag"># linux-命令</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/12/24/uniq/" rel="prev" title="uniq-命令">
+                  <i class="fa fa-chevron-left"></i> uniq-命令
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/12/26/tomcat-install/" rel="next" title="tomcat生产环境部署">
+                  tomcat生产环境部署 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+  
+  
+  
+
+
+
+      
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">biglittleant</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

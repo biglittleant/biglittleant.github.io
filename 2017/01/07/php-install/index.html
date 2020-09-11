@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.biglittleant.cn","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+  </script>
+
+  <meta name="description" content="什么是FastCGI快速通用网关接口（Fast Common Gateway Interface／FastCGI）是一种让交互程序与Web服务器通信的协议。FastCGI是早期通用网关接口（CGI）的增强版本。FastCGI致力于减少网页服务器与CGI程序之间互动的开销，从而使服务器可以同时处理更多的网页请求。 ###FastCGI 的优点FastCGI 的优点是把动态语言和HTTP Server">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux-PHP环境安装">
+<meta property="og:url" content="http://www.biglittleant.cn/2017/01/07/php-install/index.html">
+<meta property="og:site_name" content="biglittleant">
+<meta property="og:description" content="什么是FastCGI快速通用网关接口（Fast Common Gateway Interface／FastCGI）是一种让交互程序与Web服务器通信的协议。FastCGI是早期通用网关接口（CGI）的增强版本。FastCGI致力于减少网页服务器与CGI程序之间互动的开销，从而使服务器可以同时处理更多的网页请求。 ###FastCGI 的优点FastCGI 的优点是把动态语言和HTTP Server">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-01-07T12:13:19.000Z">
+<meta property="article:modified_time" content="2020-09-03T02:03:13.619Z">
+<meta property="article:author" content="biglittleant">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.biglittleant.cn/2017/01/07/php-install/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>linux-PHP环境安装 | biglittleant</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">biglittleant</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">不被嘲笑的梦想，是不值得去实现的</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-文章分类">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a>
+
+  </li>
+        <li class="menu-item menu-item-归档">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFFastCGI"><span class="nav-number">1.</span> <span class="nav-text">什么是FastCGI</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#nginx-FastCGI%E8%BF%90%E8%A1%8C%E5%8E%9F%E7%90%86"><span class="nav-number">1.1.</span> <span class="nav-text">nginx+FastCGI运行原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#spawn-fcgi%E5%92%8CPHP-FPM%E5%AF%B9%E6%AF%94"><span class="nav-number">1.2.</span> <span class="nav-text">spawn-fcgi和PHP-FPM对比</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#php%E5%AE%89%E8%A3%85"><span class="nav-number">2.</span> <span class="nav-text">php安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E7%9B%B8%E5%85%B3%E4%BE%9D%E8%B5%96%E5%8F%8A%E8%BD%AF%E4%BB%B6"><span class="nav-number">2.1.</span> <span class="nav-text">安装相关依赖及软件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PHP%E5%AE%89%E8%A3%85"><span class="nav-number">2.2.</span> <span class="nav-text">PHP安装</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Linux-%E5%8F%AF%E4%BB%A5%E4%B8%8D%E8%A3%85MySQL%EF%BC%8C%E5%A6%82%E6%9E%9C%E8%BF%9E%E8%BD%AF%E4%BB%B6%E5%8C%85%E9%83%BD%E6%B2%A1%E6%9C%89%EF%BC%8C%E8%BF%99%E6%A0%B7%E6%83%85%E5%86%B5%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8%EF%BC%9A"><span class="nav-number">2.2.0.1.</span> <span class="nav-text">Linux 可以不装MySQL，如果连软件包都没有，这样情况可以使用：</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEPHP%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">配置PHP：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEPHP%E5%8F%8AFCGI%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86"><span class="nav-number">3.1.</span> <span class="nav-text">配置PHP及FCGI进程管理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PHP-FPM-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3"><span class="nav-number">4.</span> <span class="nav-text">PHP-FPM 配置文件详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#global-%E9%85%8D%E7%BD%AE"><span class="nav-number">4.1.</span> <span class="nav-text">[global]配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pool-Definitions-%E8%BF%9B%E7%A8%8B%E6%B1%A0%E8%AE%BE%E7%BD%AE"><span class="nav-number">4.2.</span> <span class="nav-text">Pool Definitions 进程池设置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8D%E8%A6%81%E7%9A%84%E9%85%8D%E7%BD%AE%E5%8F%82%E6%95%B0"><span class="nav-number">4.2.1.</span> <span class="nav-text">重要的配置参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%A6%E7%BB%86%E9%85%8D%E7%BD%AE%E5%8F%82%E6%95%B0"><span class="nav-number">4.2.2.</span> <span class="nav-text">详细配置参数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%A1%E7%90%86FastCGI-%E8%BF%9B%E7%A8%8B"><span class="nav-number">5.</span> <span class="nav-text">管理FastCGI 进程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8FastCGI%E8%BF%9B%E7%A8%8B"><span class="nav-number">5.1.</span> <span class="nav-text">启动FastCGI进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E4%BF%A1%E5%8F%B7%E9%87%8D%E5%90%AFphp-fpm"><span class="nav-number">5.2.</span> <span class="nav-text">使用信号重启php-fpm</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#php%E4%B8%8Eweb%E4%B8%AD%E9%97%B4%E4%BB%B6%E6%95%B4%E5%90%88"><span class="nav-number">6.</span> <span class="nav-text">php与web中间件整合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#php%E4%B8%8Enginx%E6%95%B4%E5%90%88"><span class="nav-number">6.1.</span> <span class="nav-text">php与nginx整合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95PHP%E7%A8%8B%E5%BA%8F%E6%98%AF%E5%90%A6%E6%AD%A3%E5%B8%B8"><span class="nav-number">6.2.</span> <span class="nav-text">测试PHP程序是否正常</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95MYSQL%E6%98%AF%E5%90%A6%E6%AD%A3%E5%B8%B8"><span class="nav-number">6.3.</span> <span class="nav-text">测试MYSQL是否正常</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E6%B1%87%E6%80%BB%EF%BC%9A"><span class="nav-number">7.</span> <span class="nav-text">报错汇总：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E4%B8%80-%E7%BC%96%E8%AF%91%E6%8A%A5%E9%94%99"><span class="nav-number">7.1.</span> <span class="nav-text">报错一 编译报错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E4%BA%8C-make-%E6%8A%A5%E9%94%99"><span class="nav-number">7.2.</span> <span class="nav-text">报错二 make 报错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E4%B8%89-make-%E6%8A%A5%E9%94%99"><span class="nav-number">7.3.</span> <span class="nav-text">报错三 make 报错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E5%9B%9B-%E7%BC%96%E8%AF%91%E6%8A%A5%E9%94%99%EF%BC%9A"><span class="nav-number">7.4.</span> <span class="nav-text">报错四 编译报错：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E4%BA%94%E7%BC%96%E8%AF%91%E6%8A%A5%E9%94%99%EF%BC%9A"><span class="nav-number">7.5.</span> <span class="nav-text">报错五编译报错：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E5%85%AD-configure-%E6%8A%A5%E9%94%99%EF%BC%9A"><span class="nav-number">7.6.</span> <span class="nav-text">报错六 configure 报错：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">8.</span> <span class="nav-text">参考文档</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%90%9E%E4%B8%8D%E6%B8%85FastCgi%E4%B8%8EPHP-fpm%E4%B9%8B%E9%97%B4%E6%98%AF%E4%B8%AA%E4%BB%80%E4%B9%88%E6%A0%B7%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">8.1.</span> <span class="nav-text">搞不清FastCgi与PHP-fpm之间是个什么样的关系</span></a></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">biglittleant</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2017/01/07/php-install/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="biglittleant">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="biglittleant">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          linux-PHP环境安装
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-01-07 20:13:19" itemprop="dateCreated datePublished" datetime="2017-01-07T20:13:19+08:00">2017-01-07</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2020-09-03 10:03:13" itemprop="dateModified" datetime="2020-09-03T10:03:13+08:00">2020-09-03</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="什么是FastCGI"><a href="#什么是FastCGI" class="headerlink" title="什么是FastCGI"></a>什么是FastCGI</h2><p>快速通用网关接口（Fast Common Gateway Interface／FastCGI）是一种让交互程序与Web服务器通信的协议。FastCGI是早期通用网关接口（CGI）的增强版本。<br>FastCGI致力于减少网页服务器与CGI程序之间互动的开销，从而使服务器可以同时处理更多的网页请求。</p>
+<p>###FastCGI 的优点<br>FastCGI 的优点是把动态语言和HTTP Server分离开来，所以Nginx与PHP/PHP-FPM经常被部署在不同的服务器上，以分担前端Nginx服务器的压力，使Nginx专一处理静态请求和转发动态请求，而PHP/PHP-FPM服务器专一解析PHP动态请求。</p>
+<h3 id="nginx-FastCGI运行原理"><a href="#nginx-FastCGI运行原理" class="headerlink" title="nginx+FastCGI运行原理"></a>nginx+FastCGI运行原理</h3><p>Nginx不支持对外部程序的直接调用或者解析，所有的外部程序（包括PHP）必须通过FastCGI接口来调用。FastCGI接口在Linux下是socket（这个socket可以是文件socket，也可以是ip socket）。为了调用CGI程序，还需要一个FastCGI的wrapper（wrapper可以理解为用于启动另一个程序的程序），这个wrapper绑定在某个固定socket上，如端口或者文件socket。当Nginx将CGI请求发送给这个socket的时候，通过FastCGI接口，wrapper接收到请求，然后派生出一个新的线程，这个线程调用解释器或者外部程序处理脚本并读取返回数据；接着，wrapper再将返回的数据通过FastCGI接口，沿着固定的socket传递给Nginx；最后，Nginx将返回的数据发送给客户端。这就是Nginx+FastCGI的整个运作过程。</p>
+<h3 id="spawn-fcgi和PHP-FPM对比"><a href="#spawn-fcgi和PHP-FPM对比" class="headerlink" title="spawn-fcgi和PHP-FPM对比"></a>spawn-fcgi和PHP-FPM对比</h3><ul>
+<li>ligttpd的spwan-fcgi在高并发访问的时候，会出现内存泄漏甚至自动重启FastCGI的问题。</li>
+<li>PHP-FPM作为PHP的一个补丁，在安装的时候需要和PHP源码一起编译，也就是说PHP-FPM被编译到PHP内核中，因此在处理性能方面更加优秀。同时PHP-FPM在处理高并发方面也比spawn-fcgi引擎好很多，因此，推荐使用Nginx+PHP/PHP-FPM这个组合对PHP进行解析。</li>
+</ul>
+<h2 id="php安装"><a href="#php安装" class="headerlink" title="php安装"></a>php安装</h2><ul>
+<li>尽量使用PHP和PHP-FPM版本一致，如果版本之间相差太大，可能会出现兼容问题。</li>
+<li>早期的时候fpm是PHP的一个补丁包，PHP在 5.3.3 之后已经将php-fpm写入php源码核心了。所以已经不需要另外下载了。</li>
+</ul>
+<h3 id="安装相关依赖及软件"><a href="#安装相关依赖及软件" class="headerlink" title="安装相关依赖及软件"></a>安装相关依赖及软件</h3><p>centos 5  安装包组：<code>Xsoftware Development </code><br>centos 6 </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install zlib libxml libjpeg freetype libpng gd  curl libiconv  zlib-devel libxml2-devel libjpeg-devel freetype-devel libpng-devel gd-devel curl-devel libxslt*  -y</span><br></pre></td></tr></table></figure>
+<p>iconv字符编码转换命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">tar zxf libiconv-1.14.tar.gz</span><br><span class="line">cd libiconv-1.14</span><br><span class="line">./configure --prefix=/usr/local/libiconv</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line">sleep 2</span><br><span class="line">cd ../</span><br></pre></td></tr></table></figure>
+
+<p>mcrypt 是php里面重要的加密支持扩展库，这里注意的是mcrypt软件依赖libmcrypt和mhash两个库。</p>
+<p>libmcrypt依赖库安装</p>
+<p>默认路径：/usr/local/lib/</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">wget http://downloads.sourceforge.net/mcrypt/libmcrypt-2.5.8.tar.gz</span><br><span class="line">tar zxf libmcrypt-2.5.8.tar.gz </span><br><span class="line">cd libmcrypt-2.5.8</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line">sleep 2</span><br><span class="line">/sbin/ldconfig</span><br><span class="line">cd libltdl/</span><br><span class="line">./configure --enable-ltdl-install</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line">sleep 2</span><br><span class="line">cd ../../</span><br></pre></td></tr></table></figure>
+
+<p>Mhash是基于离散数学原理的不可逆向的php加密方式扩展库，其在默认情况下不开启。mhash的可以用于创建校验数值，消息摘要，消息认证码，以及无需原文的关键信息保存（如密码）等。</p>
+<p>默认路径：/usr/local/lib/</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">wget http://downloads.sourceforge.net/mhash/mhash-0.9.9.9.tar.gz</span><br><span class="line">tar zxf mhash-0.9.9.9.tar.gz</span><br><span class="line">cd mhash-0.9.9.9/</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line">sleep 2</span><br><span class="line">cd ../</span><br></pre></td></tr></table></figure>
+
+<p>默认路径：/usr/local/bin/</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">wget http://downloads.sourceforge.net/mcrypt/mcrypt-2.6.8.tar.gz</span><br><span class="line">tar zxf mcrypt-2.6.8.tar.gz</span><br><span class="line">cd mcrypt-2.6.8/</span><br><span class="line">/sbin/ldconfig</span><br><span class="line">./configure LD_LIBRARY_PATH=/usr/local/lib</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line">sleep 2</span><br><span class="line">cd ../</span><br></pre></td></tr></table></figure>
+
+<p>配置相关连接</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">rm -f /usr/lib64/libmcrypt.*</span><br><span class="line">rm -f /usr/lib64/libmhash*</span><br><span class="line">ln -s /usr/local/lib64/libmcrypt.la /usr/lib64/libmcrypt.la</span><br><span class="line">ln -s /usr/local/lib64/libmcrypt.so /usr/lib64/libmcrypt.so</span><br><span class="line">ln -s /usr/local/lib64/libmcrypt.so.4 /usr/lib64/libmcrypt.so.4</span><br><span class="line">ln -s /usr/local/lib64/libmcrypt.so.4.4.8 /usr/lib64/libmcrypt.so.4.4.8</span><br><span class="line">ln -s /usr/local/lib64/libmhash.a /usr/lib64/libmhash.a</span><br><span class="line">ln -s /usr/local/lib64/libmhash.la /usr/lib64/libmhash.la</span><br><span class="line">ln -s /usr/local/lib64/libmhash.so /usr/lib64/libmhash.so</span><br><span class="line">ln -s /usr/local/lib64/libmhash.so.2 /usr/lib64/libmhash.so.2</span><br><span class="line">ln -s /usr/local/lib64/libmhash.so.2.0.1 /usr/lib64/libmhash.so.2.0.1</span><br><span class="line">ln -s /usr/local/bin/libmcrypt-config /usr/bin/libmcrypt-config</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ln -s /application/mysql/lib/libmysqlclient.so.18  /usr/lib64/</span><br><span class="line">mkdir  -p ext/phar/phar.phar</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="PHP安装"><a href="#PHP安装" class="headerlink" title="PHP安装"></a>PHP安装</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">./configure \</span><br><span class="line">--prefix=/application/php5.3.27 \</span><br><span class="line">--with-mysql=/application/mysql \</span><br><span class="line">--with-iconv-dir=/usr/local/libiconv \</span><br><span class="line">--with-freetype-dir \</span><br><span class="line">--with-jpeg-dir \</span><br><span class="line">--with-png-dir \</span><br><span class="line">--with-zlib \</span><br><span class="line">--with-libxml-dir=/usr \</span><br><span class="line">--enable-xml \</span><br><span class="line">--disable-rpath \</span><br><span class="line">--enable-safe-mode \</span><br><span class="line">--enable-bcmath \</span><br><span class="line">--enable-shmop \</span><br><span class="line">--enable-sysvsem \</span><br><span class="line">--enable-inline-optimization \</span><br><span class="line">--with-curl \</span><br><span class="line">--with-curlwrappers \</span><br><span class="line">--enable-mbregex \</span><br><span class="line">--enable-fpm \</span><br><span class="line">--enable-mbstring \</span><br><span class="line">--with-mcrypt \</span><br><span class="line">--with-gd \</span><br><span class="line">--enable-gd-native-ttf \</span><br><span class="line">--with-openssl \</span><br><span class="line">--with-mhash \</span><br><span class="line">--enable-pcntl \</span><br><span class="line">--enable-sockets \</span><br><span class="line">--with-xmlrpc \</span><br><span class="line">--enable-zip \</span><br><span class="line">--enable-soap \</span><br><span class="line">--enable-short-tags \</span><br><span class="line">--enable-zend-multibyte \</span><br><span class="line">--enable-static \</span><br><span class="line">--with-xsl \</span><br><span class="line">--with-fpm-user=nginx \</span><br><span class="line">--with-fpm-group=nginx \</span><br><span class="line">--enable-ftp</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">+--------------------------------------------------------------------+</span><br><span class="line">| License:                                                           |</span><br><span class="line">| This software is subject to the PHP License, available <span class="keyword">in</span> this     |</span><br><span class="line">| distribution <span class="keyword">in</span> the file LICENSE.  By continuing this installation |</span><br><span class="line">| process, you are bound by the terms of this license agreement.     |</span><br><span class="line">| If you <span class="keyword">do</span> not agree with the terms of this license, you must abort |</span><br><span class="line">| the installation process at this point.                            |</span><br><span class="line">+--------------------------------------------------------------------+</span><br><span class="line"></span><br><span class="line">Thank you <span class="keyword">for</span> using PHP.</span><br></pre></td></tr></table></figure>
+
+<p>编译和安装</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make &amp;&amp; make install </span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>配置文件补充<br><code>--enable-fastcgi</code> ：启用对PHP的FastCGI支持。<br><code>--enable-fpm</code>：激活对 FastCGI模式的fpm支持。</p>
+</blockquote>
+<h5 id="Linux-可以不装MySQL，如果连软件包都没有，这样情况可以使用："><a href="#Linux-可以不装MySQL，如果连软件包都没有，这样情况可以使用：" class="headerlink" title="Linux 可以不装MySQL，如果连软件包都没有，这样情况可以使用："></a>Linux 可以不装MySQL，如果连软件包都没有，这样情况可以使用：</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">—with-mysql=mysqlnd</span><br><span class="line">其他需要MySQL相关包场景的PHP编译参数：</span><br><span class="line">--enable-mysqlnd \</span><br><span class="line">--with-pdo-mysql=mysqlnd \</span><br><span class="line">--with-mysqli=mysqlnd \</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置PHP："><a href="#配置PHP：" class="headerlink" title="配置PHP："></a>配置PHP：</h2><p>解压包中包含两个配置文件：</p>
+<ul>
+<li>php.ini-development  ：测试环境使用配置文件，相关debug功能都开启了。</li>
+<li>php.ini-production   ：生产环境使用配置文件，相关debug功能都关闭了。</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> cp php.ini-production /application/php/lib/php.ini </span></span><br></pre></td></tr></table></figure>
+
+<p>PHP配置完毕。</p>
+<h3 id="配置PHP及FCGI进程管理"><a href="#配置PHP及FCGI进程管理" class="headerlink" title="配置PHP及FCGI进程管理"></a>配置PHP及FCGI进程管理</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ln -s /application/php5.3.27/ /application/php</span><br><span class="line">cp php.ini-production /application/php/lib/php.ini</span><br><span class="line"><span class="built_in">cd</span> /application/php/etc/</span><br><span class="line">mv php-fpm.conf.5.3.27  php-fpm.conf</span><br></pre></td></tr></table></figure>
+
+<p>php-fpm.conf </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123;pid = /app/logs/php-fpm.pid</span><br><span class="line">error_log = /app/logs/php-fpm.log</span><br><span class="line">log_level= error </span><br><span class="line">rlimit_files=32768</span><br><span class="line">listen.owner=nginx</span><br><span class="line">listen.group=nginx</span><br><span class="line">pm.max_children = 1024</span><br><span class="line">pm.start_servers = 16</span><br><span class="line">pm.min_spare_servers = 5</span><br><span class="line">pm.max_spare_servers = 20 </span><br><span class="line">pm.process_idle_timeout=15s;</span><br><span class="line">pm.max_requests=2048</span><br><span class="line">slowlog=/app/logs/$pool.log.slow&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+<p>mkdir -p /app/logs</p>
+<p>启动：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/application/php/sbin/php-fpm -t</span><br><span class="line">/application/php/sbin/php-fpm</span><br><span class="line">netstat -lntup|grep php-fpm</span><br><span class="line">ps -ef|grep php-fpm</span><br></pre></td></tr></table></figure>
+<p>添加开机自启动：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/rc.local</span><br><span class="line">/etc/init.d/nysqld start </span><br><span class="line">/application/php/sbin/php-fpm</span><br><span class="line">/application/nginx/sbin/nginx </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="PHP-FPM-配置文件详解"><a href="#PHP-FPM-配置文件详解" class="headerlink" title="PHP-FPM 配置文件详解"></a>PHP-FPM 配置文件详解</h2><h3 id="global-配置"><a href="#global-配置" class="headerlink" title="[global]配置"></a>[global]配置</h3><ul>
+<li><code>pid string</code>:  PID文件的位置。默认为空。</li>
+<li><code>error_log string</code>:  错误日志的位置。默认：安装路径 #INSTALL_PREFIX#/log/php-fpm.log。</li>
+<li><code>log_level string</code>:  错误级别。可用级别为：alert（必须立即处理），error（错误情况），warning（警告情况），notice（一般重要信息），debug（调试信息）。默认：notice。</li>
+<li><code>emergency_restart_threshold int </code>: 如果子进程在 emergency_restart_interval 设定的时间内收到该参数设定次数的 SIGSEGV 或者 SIGBUS退出信息号，则FPM会重新启动。0 表示“关闭该功能”。默认值：0（关闭）。</li>
+<li><code>emergency_restart_interval mixed </code>: emergency_restart_interval 用于设定平滑重启的间隔时间。这么做有助于解决加速器中共享内存的使用问题。可用单位：s（秒），m（分），h（小时）或者 d（天）。默认单位：s（秒）。默认值：0（关闭）。</li>
+<li><code>process_control_timeout mixed</code>:  设置子进程接受主进程复用信号的超时时间。可用单位：s（秒），m（分），h（小时）或者 d（天）。默认单位：s（秒）。默认值：0（关闭）。</li>
+<li><code>daemonize boolean</code>:  设置 FPM 在后台运行。设置“no”将 FPM 保持在前台运行用于调试。默认值：yes。</li>
+</ul>
+<h3 id="Pool-Definitions-进程池设置"><a href="#Pool-Definitions-进程池设置" class="headerlink" title="Pool Definitions 进程池设置"></a>Pool Definitions 进程池设置</h3><p>在FPM中，可以使用不同的设置来运行多个进程池。 这些设置可以针对每个进程池单独设置。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[www]</span><br><span class="line">user = nginx</span><br><span class="line">group = nginx</span><br><span class="line">listen = 127.0.0.1:9000</span><br><span class="line">listen.owner = nginx</span><br><span class="line">listen.group = nginx</span><br><span class="line">pm = dynamic</span><br><span class="line">pm.max_children = 1024</span><br><span class="line">pm.start_servers = 16</span><br><span class="line">pm.min_spare_servers = 5</span><br><span class="line">pm.max_spare_servers = 20</span><br><span class="line">pm.max_requests = 2048</span><br><span class="line">slowlog = /app/logs/$pool.log.slow</span><br><span class="line">request_slowlog_timeout = 10</span><br><span class="line">php_admin_value[sendmail_path] = /usr/sbin/sendmail -t -i -f 49000448@qq.com</span><br></pre></td></tr></table></figure>
+
+<h4 id="重要的配置参数"><a href="#重要的配置参数" class="headerlink" title="重要的配置参数"></a>重要的配置参数</h4><ul>
+<li><code> listen string</code>： 设置接受 FastCGI 请求的地址。</li>
+<li><code> user string</code>： FPM 进程运行的Unix用户。必须设置。</li>
+<li><code> group string</code>： FPM 进程运行的 Unix 用户组。如果没有设置，则默认用户的组被使用。</li>
+<li><code> pm string</code>： 设置进程管理器如何管理子进程。可用值：static，ondemand，dynamic。必须设置。</li>
+<li><code> request_terminate_timeout mixed</code>： 设置单个请求的超时中止时间。该选项可能会对 php.ini 设置中的 ‘max_execution_time’ 因为某些特殊原因没有中止运行的脚本有用。设置为 ‘0’ 表示 ‘Off’。可用单位：s（秒），m（分），h（小时）或者 d（天）。默认单位：s（秒）。默认值：0（关闭）。</li>
+<li><code> rlimit_files int</code>： 设置文件打开描述符的 rlimit 限制。默认值：系统定义值。</li>
+<li><code> pm.max_requests int</code>： 设置每个子进程重生之前服务的请求数。对于可能存在内存泄漏的第三方模块来说是非常有用的。如果设置为 ‘0’ 则一直接受请求，等同于 PHP_FCGI_MAX_REQUESTS 环境变量。默认值：0。</li>
+<li><code> listen.allowed_clients string</code>： 设置允许连接到 FastCGI 的服务器 IPV4 地址。等同于 PHP FastCGI (5.2.2+) 中的 FCGI_WEB_SERVER_ADDRS 环境变量。仅对 TCP 监听起作用。每个地址是用逗号分隔，如果没有设置或者为空，则允许任何服务器请求连接。默认值：any。</li>
+</ul>
+<h4 id="详细配置参数"><a href="#详细配置参数" class="headerlink" title="详细配置参数"></a>详细配置参数</h4><ul>
+<li><p><code> listen string</code>： 设置接受 FastCGI 请求的地址。可用格式为：’ip:port’，’port’，’/path/to/unix/socket’。每个进程池都需要设置。</p>
+</li>
+<li><p><code> listen.backlog int</code>： 设置 listen(2) 的半连接队列长度。“-1”表示无限制。默认值：-1。</p>
+</li>
+<li><p><code> listen.allowed_clients string</code>： 设置允许连接到 FastCGI 的服务器 IPV4 地址。等同于 PHP FastCGI (5.2.2+) 中的 FCGI_WEB_SERVER_ADDRS 环境变量。仅对 TCP 监听起作用。每个地址是用逗号分隔，如果没有设置或者为空，则允许任何服务器请求连接。默认值：any。</p>
+</li>
+<li><p><code> listen.owner string</code>： 如果使用，表示设置 Unix 套接字的权限。在Linux中，读写权限必须设置，以便用于 WEB 服务器连接。在很多 BSD 派生的系统中可以忽略权限允许自由连接。默认值：运行所使用的用户和组，权限为 0666。</p>
+</li>
+<li><p><code> listen.group string</code>： 参见 listen.owner。</p>
+</li>
+<li><p><code> listen.mode string</code>： 参见 listen.owner。</p>
+</li>
+<li><p><code> user string</code>： FPM 进程运行的Unix用户。必须设置。</p>
+</li>
+<li><p><code> group string</code>： FPM 进程运行的 Unix 用户组。如果没有设置，则默认用户的组被使用。</p>
+</li>
+<li><p><code> pm string</code>： 设置进程管理器如何管理子进程。可用值：static，ondemand，dynamic。必须设置。</p>
+<ul>
+<li><code> static</code>: 子进程的数量是固定的（pm.max_children）。</li>
+<li><code> ondemand</code>: 进程在有需求时才产生（当请求时，与 dynamic 相反，pm.start_servers 在服务启动时即启动。</li>
+<li><code> dynamic</code>: 子进程的数量在下面配置的基础上动态设置：pm.max_children，pm.start_servers，pm.min_spare_servers，pm.max_spare_servers。</li>
+</ul>
+</li>
+<li><p><code>pm.max_children int</code>： pm 设置为 static 时表示创建的子进程的数量，pm 设置为 dynamic 时表示最大可创建的子进程的数量。必须设置。该选项设置可以同时提供服务的请求数限制。类似 Apache 的 mpm_prefork 中 MaxClients 的设置和 普通PHP FastCGI中的 PHP_FCGI_CHILDREN 环境变量。</p>
+</li>
+<li><p><code> pm.start_servers in</code>： 设置启动时创建的子进程数目。仅在 pm 设置为 dynamic 时使用。默认值：min_spare_servers + (max_spare_servers - min_spare_servers) / 2。</p>
+</li>
+<li><p><code> pm.min_spare_servers int</code>： 设置空闲服务进程的最低数目。仅在 pm 设置为 dynamic 时使用。必须设置。</p>
+</li>
+<li><p><code> pm.max_spare_servers int</code>： 设置空闲服务进程的最大数目。仅在 pm 设置为 dynamic 时使用。必须设置。</p>
+</li>
+<li><p><code> pm.max_requests int</code>： 设置每个子进程重生之前服务的请求数。对于可能存在内存泄漏的第三方模块来说是非常有用的。如果设置为 ‘0’ 则一直接受请求，等同于 PHP_FCGI_MAX_REQUESTS 环境变量。默认值：0。</p>
+</li>
+<li><p><code> pm.status_path string</code>： FPM 状态页面的网址。如果没有设置，则无法访问状态页面，默认值：无。</p>
+</li>
+<li><p><code> ping.path string</code>： FPM 监控页面的 ping 网址。如果没有设置，则无法访问 ping 页面。该页面用于外部检测 FPM 是否存活并且可以响应请求。请注意必须以斜线开头（/）。</p>
+</li>
+<li><p><code> ping.response string</code>： 用于定义 ping 请求的返回响应。返回为 HTTP 200 的 text/plain 格式文本。默认值：pong。</p>
+</li>
+<li><p><code> request_terminate_timeout mixed</code>： 设置单个请求的超时中止时间。该选项可能会对 php.ini 设置中的 ‘max_execution_time’ 因为某些特殊原因没有中止运行的脚本有用。设置为 ‘0’ 表示 ‘Off’。可用单位：s（秒），m（分），h（小时）或者 d（天）。默认单位：s（秒）。默认值：0（关闭）。</p>
+</li>
+<li><p><code> request_slowlog_timeout mixed</code>： 当一个请求该设置的超时时间后，就会将对应的 PHP 调用堆栈信息完整写入到慢日志中。设置为 ‘0’ 表示 ‘Off’。可用单位：s（秒），m（分），h（小时）或者 d（天）。默认单位：s（秒）。默认值：0（关闭）。</p>
+</li>
+<li><p><code> slowlog string</code>： 慢请求的记录日志。默认值：#INSTALL_PREFIX#/log/php-fpm.log.slow。</p>
+</li>
+<li><p><code> rlimit_files int</code>： 设置文件打开描述符的 rlimit 限制。默认值：系统定义值。</p>
+</li>
+<li><p><code> rlimit_core int</code>： 设置核心 rlimit 最大限制值。可用值：’unlimited’，0 或者正整数。默认值：系统定义值。</p>
+</li>
+<li><p><code> chroot string</code>： 启动时的 Chroot 目录。所定义的目录需要是绝对路径。如果没有设置，则 chroot 不被使用。</p>
+</li>
+<li><p><code> chdir string</code>： 设置启动目录，启动时会自动 Chdir 到该目录。所定义的目录需要是绝对路径。默认值：当前目录，或者根目录（chroot时）。</p>
+</li>
+<li><p><code> catch_workers_output boolean</code>： 重定向运行过程中的 stdout 和 stderr 到主要的错误日志文件中。如果没有设置，stdout 和 stderr 将会根据 FastCGI 的规则被重定向到 /dev/null。默认值：无。</p>
+</li>
+</ul>
+<h2 id="管理FastCGI-进程"><a href="#管理FastCGI-进程" class="headerlink" title="管理FastCGI 进程"></a>管理FastCGI 进程</h2><h3 id="启动FastCGI进程"><a href="#启动FastCGI进程" class="headerlink" title="启动FastCGI进程"></a>启动FastCGI进程</h3><p>方法一：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/data/app/php/bin/php-cgi --fpm</span><br></pre></td></tr></table></figure>
+
+<p>方法二：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/data/app/php/sbin/php-fpm start</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>推荐采用第二种方法启动FastCGI。<br><code>php-fpm logrotate</code> 重新启用log文件。</p>
+</blockquote>
+<h3 id="使用信号重启php-fpm"><a href="#使用信号重启php-fpm" class="headerlink" title="使用信号重启php-fpm"></a>使用信号重启php-fpm</h3><ul>
+<li>INT, TERM 立刻终止</li>
+<li>QUIT 平滑终止</li>
+<li>USR1 重新打开日志文件</li>
+<li>USR2 平滑重载所有worker进程并重新载入配置和二进制模块</li>
+</ul>
+<p>示例：</p>
+<p>php-fpm 关闭：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kill -INT `cat /data/app/php/var/run/php-fpm.pid`</span><br></pre></td></tr></table></figure>
+
+<p>php-fpm 重启：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kill -USR2 `cat /data/app/php/var/run/php-fpm.pid`</span><br></pre></td></tr></table></figure>
+
+<h2 id="php与web中间件整合"><a href="#php与web中间件整合" class="headerlink" title="php与web中间件整合"></a>php与web中间件整合</h2><h3 id="php与nginx整合"><a href="#php与nginx整合" class="headerlink" title="php与nginx整合"></a>php与nginx整合</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        listen       80;</span><br><span class="line">        server_name  blog.biglittleant.cn;</span><br><span class="line">        root   www/blog;</span><br><span class="line">        location / &#123;</span><br><span class="line">            root   www/blog;</span><br><span class="line">            index  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line">    location ~ .*\.(php|php5)?$</span><br><span class="line">    &#123;      </span><br><span class="line">     fastcgi_pass  127.0.0.1:9000;</span><br><span class="line">     fastcgi_index index.php;</span><br><span class="line">     include fastcgi.conf;</span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>fastcgi的优化主要集中在nginx的fastcgi.conf配置文件中。<br>相关内容参考<a href="">死磕nginx系列–配置文档解读</a></p>
+</blockquote>
+<h3 id="测试PHP程序是否正常"><a href="#测试PHP程序是否正常" class="headerlink" title="测试PHP程序是否正常"></a>测试PHP程序是否正常</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> cat test.php </span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">phpinfo();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="测试MYSQL是否正常"><a href="#测试MYSQL是否正常" class="headerlink" title="测试MYSQL是否正常"></a>测试MYSQL是否正常</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">        <span class="comment">//$link_id=mysql_connect(&#x27;主机名&#x27;,&#x27;用户&#x27;,&#x27;密码&#x27;);</span></span><br><span class="line">        $link_id=mysql_connect(<span class="string">&#x27;localhost&#x27;</span>,<span class="string">&#x27;root&#x27;</span>,<span class="string">&#x27;oldboy123&#x27;</span>) <span class="keyword">or</span> mysql_error();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>($link_id)&#123;</span><br><span class="line">                <span class="keyword">echo</span> <span class="string">&quot;mysql successful by oldboy !\n&quot;</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="keyword">echo</span> <span class="string">&quot;mysql_error()&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="报错汇总："><a href="#报错汇总：" class="headerlink" title="报错汇总："></a>报错汇总：</h2><h3 id="报错一-编译报错"><a href="#报错一-编译报错" class="headerlink" title="报错一 编译报错"></a>报错一 编译报错</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">configure: error: Cannot find OpenSSL&#x27;s &lt;evp.h&gt; </span><br></pre></td></tr></table></figure>
+
+<p>解决办法</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum yum install openssl openssl-devel </span><br></pre></td></tr></table></figure>
+
+
+
+
+<h3 id="报错二-make-报错"><a href="#报错二-make-报错" class="headerlink" title="报错二 make 报错"></a>报错二 make 报错</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Generating phar.php</span><br><span class="line">/root/tools/php-5.3.27/sapi/cli/php: error while loading shared libraries: libmysqlclient.so.18: cannot open shared object file: No such file or directory</span><br><span class="line">make: *** [ext/phar/phar.php] Error 127</span><br></pre></td></tr></table></figure>
+<p>解决方法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ln -s /application/php5.3.27 /application/php</span><br></pre></td></tr></table></figure>
+
+<h3 id="报错三-make-报错"><a href="#报错三-make-报错" class="headerlink" title="报错三 make 报错"></a>报错三 make 报错</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Generating phar.phar</span><br><span class="line">chmod: cannot access `ext/phar/phar.phar&#x27;: No such file or directory</span><br><span class="line">make: [ext/phar/phar.phar] Error 1 (ignored)</span><br><span class="line"></span><br><span class="line">Build complete.</span><br><span class="line">Don&#x27;t forget to run &#x27;make test’.</span><br></pre></td></tr></table></figure>
+
+<p>解决办法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@test2 php-5.3.27]# mkdir  -p ext/phar/phar.phar     </span><br></pre></td></tr></table></figure>
+
+<h3 id="报错四-编译报错："><a href="#报错四-编译报错：" class="headerlink" title="报错四 编译报错："></a>报错四 编译报错：</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">configure: error: Cannot find OpenSSL&#x27;s &lt;evp.h&gt;</span><br></pre></td></tr></table></figure>
+
+<p>解决方法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@nfs-client php-5.3.27]# yum install openssl-devel -y </span><br></pre></td></tr></table></figure>
+
+<h3 id="报错五编译报错："><a href="#报错五编译报错：" class="headerlink" title="报错五编译报错："></a>报错五编译报错：</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">checking for XSL support... yes</span><br><span class="line">configure: error: xslt-config not found. Please reinstall the libxslt &gt;= 1.1.0 distribution</span><br></pre></td></tr></table></figure>
+
+<p>解决方法:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@nfs-client php-5.3.27]# yum install libxslt-devel -y </span><br></pre></td></tr></table></figure>
+
+<h3 id="报错六-configure-报错："><a href="#报错六-configure-报错：" class="headerlink" title="报错六 configure 报错："></a>报错六 configure 报错：</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">checking if we should use cURL for url streams... no</span><br><span class="line">checking for cURL in default path... not found</span><br><span class="line">configure: error: Please reinstall the libcurl distribution -</span><br><span class="line">    easy.h should be in &lt;curl-dir&gt;/include/curl/</span><br></pre></td></tr></table></figure>
+
+<p>解决办法</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ln -s /application/mysql/lib/libmysqlclient.so.18  /usr/lib64/</span><br><span class="line">mkdir  -p ext/phar/phar.phar</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a target="_blank" rel="noopener" href="http://php.net/manual/zh/install.fpm.configuration.php">官方FPM配置文件解读</a></p>
+<h3 id="搞不清FastCgi与PHP-fpm之间是个什么样的关系"><a href="#搞不清FastCgi与PHP-fpm之间是个什么样的关系" class="headerlink" title="搞不清FastCgi与PHP-fpm之间是个什么样的关系"></a>搞不清FastCgi与PHP-fpm之间是个什么样的关系</h3><p><a target="_blank" rel="noopener" href="https://segmentfault.com/q/1010000000256516">搞不清FastCgi与PHP-fpm之间是个什么样的关系</a></p>
+<p>刚开始对这个问题我也挺纠结的，看了《HTTP权威指南》后，感觉清晰了不少。</p>
+<p>首先，CGI是干嘛的？CGI是为了保证web server传递过来的数据是标准格式的，方便CGI程序的编写者。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">web server（比如说nginx）只是内容的分发者。比如，如果请求/index.html，那么web server会去文件系统中找到这个文件，发送给浏览器，这里分发的是静态数据。好了，如果现在请求的是/index.php，根据配置文件，nginx知道这个不是静态文件，需要去找PHP解析器来处理，那么他会把这个请求简单处理后交给PHP解析器。Nginx会传哪些数据给PHP解析器呢？url要有吧，查询字符串也得有吧，POST数据也要有，HTTP header不能少吧，好的，CGI就是规定要传哪些数据、以什么样的格式传递给后方处理这个请求的协议。仔细想想，你在PHP代码中使用的用户从哪里来的。</span><br><span class="line"></span><br><span class="line">当web server收到/index.php这个请求后，会启动对应的CGI程序，这里就是PHP的解析器。接下来PHP解析器会解析php.ini文件，初始化执行环境，然后处理请求，再以规定CGI规定的格式返回处理后的结果，退出进程。web server再把结果返回给浏览器。</span><br></pre></td></tr></table></figure>
+
+<p>好了，CGI是个协议，跟进程什么的没关系。那fastcgi又是什么呢？Fastcgi是用来提高CGI程序性能的。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">提高性能，那么CGI程序的性能问题在哪呢？&quot;PHP解析器会解析php.ini文件，初始化执行环境&quot;，就是这里了。标准的CGI对每个请求都会执行这些步骤（不闲累啊！启动进程很累的说！），所以处理每个时间的时间会比较长。这明显不合理嘛！那么Fastcgi是怎么做的呢？首先，Fastcgi会先启一个master，解析配置文件，初始化执行环境，然后再启动多个worker。当请求过来时，master会传递给一个worker，然后立即可以接受下一个请求。这样就避免了重复的劳动，效率自然是高。而且当worker不够用时，master可以根据配置预先启动几个worker等着；当然空闲worker太多时，也会停掉一些，这样就提高了性能，也节约了资源。这就是fastcgi的对进程的管理。</span><br></pre></td></tr></table></figure>
+
+<p>那PHP-FPM又是什么呢？是一个实现了Fastcgi的程序，被PHP官方收了。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">大家都知道，PHP的解释器是php-cgi。php-cgi只是个CGI程序，他自己本身只能解析请求，返回结果，不会进程管理（皇上，臣妾真的做不到啊！）所以就出现了一些能够调度php-cgi进程的程序，比如说由lighthttpd分离出来的spawn-fcgi。好了PHP-FPM也是这么个东东，在长时间的发展后，逐渐得到了大家的认可（要知道，前几年大家可是抱怨PHP-FPM稳定性太差的），也越来越流行。</span><br></pre></td></tr></table></figure>
+
+<p>好了，最后来回来你的问题。 网上有的说，fastcgi是一个协议，php-fpm实现了这个协议</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">对。</span><br></pre></td></tr></table></figure>
+
+<p>有的说，php-fpm是fastcgi进程的管理器，用来管理fastcgi进程的</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">对。php-fpm的管理对象是php-cgi。但不能说php-fpm是fastcgi进程的管理器，因为前面说了fastcgi是个协议，似乎没有这么个进程存在，就算存在php-fpm也管理不了他（至少目前是）。 有的说，php-fpm是php内核的一个补丁</span><br><span class="line"></span><br><span class="line">以前是对的。因为最开始的时候php-fpm没有包含在PHP内核里面，要使用这个功能，需要找到与源码版本相同的php-fpm对内核打补丁，然后再编译。后来PHP内核集成了PHP-FPM之后就方便多了，使用--enalbe-fpm这个编译参数即可。</span><br></pre></td></tr></table></figure>
+
+<p>有的说，修改了php.ini配置文件后，没办法平滑重启，所以就诞生了php-fpm</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">是的，修改php.ini之后，php-cgi进程的确是没办法平滑重启的。php-fpm对此的处理机制是新的worker用新的配置，已经存在的worker处理完手上的活就可以歇着了，通过这种机制来平滑过度。</span><br></pre></td></tr></table></figure>
+
+<p>还有的说PHP-CGI是PHP自带的FastCGI管理器，那这样的话干吗又弄出个php-fpm</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">不对。php-cgi只是解释PHP脚本的程序而已。</span><br></pre></td></tr></table></figure>
+
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/01/06/nginx-proxy-pass-error/" rel="prev" title="死磕nginx系列--proxy_pass后端斜杠问题">
+                  <i class="fa fa-chevron-left"></i> 死磕nginx系列--proxy_pass后端斜杠问题
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/01/10/apache-install/" rel="next" title="Apache学习-Apache入门">
+                  Apache学习-Apache入门 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+  
+  
+  
+
+
+
+      
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">biglittleant</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

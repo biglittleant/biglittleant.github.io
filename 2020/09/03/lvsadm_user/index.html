@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.biglittleant.cn","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+  </script>
+
+  <meta name="description" content="ipvsadm是LVS在应用层的管理命令，我们可以通过这个命令去管理LVS的配置。 命令介绍向LVS系统中添加一个用于负载均衡的virtual server（VS） 基本用法： 12ipvsadm COMMAND [protocol] service-address               [scheduling-method] [persistence options]  命令：  -A,">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ipvsadm 命令详解">
+<meta property="og:url" content="http://www.biglittleant.cn/2020/09/03/lvsadm_user/index.html">
+<meta property="og:site_name" content="biglittleant">
+<meta property="og:description" content="ipvsadm是LVS在应用层的管理命令，我们可以通过这个命令去管理LVS的配置。 命令介绍向LVS系统中添加一个用于负载均衡的virtual server（VS） 基本用法： 12ipvsadm COMMAND [protocol] service-address               [scheduling-method] [persistence options]  命令：  -A,">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-09-03T09:55:01.000Z">
+<meta property="article:modified_time" content="2020-09-03T10:05:42.966Z">
+<meta property="article:author" content="biglittleant">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="lvs">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.biglittleant.cn/2020/09/03/lvsadm_user/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>ipvsadm 命令详解 | biglittleant</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">biglittleant</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">不被嘲笑的梦想，是不值得去实现的</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-文章分类">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a>
+
+  </li>
+        <li class="menu-item menu-item-归档">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">命令介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">2.</span> <span class="nav-text">示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8DR%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.1.</span> <span class="nav-text">使用DR模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8NAT%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text">使用NAT模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2lvs%E7%9A%84%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF"><span class="nav-number">2.3.</span> <span class="nav-text">查询lvs的配置信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%9D%E5%AD%98%E5%92%8C%E9%87%8D%E8%BD%BD%E8%A7%84%E5%88%99"><span class="nav-number">2.4.</span> <span class="nav-text">保存和重载规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E6%89%80%E6%9C%89%E9%85%8D%E7%BD%AE"><span class="nav-number">2.5.</span> <span class="nav-text">请求所有配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">3.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">biglittleant</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2020/09/03/lvsadm_user/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="biglittleant">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="biglittleant">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ipvsadm 命令详解
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2020-09-03 17:55:01 / Modified: 18:05:42" itemprop="dateCreated datePublished" datetime="2020-09-03T17:55:01+08:00">2020-09-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/lvs/" itemprop="url" rel="index"><span itemprop="name">lvs</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>ipvsadm是LVS在应用层的管理命令，我们可以通过这个命令去管理LVS的配置。</p>
+<h2 id="命令介绍"><a href="#命令介绍" class="headerlink" title="命令介绍"></a>命令介绍</h2><p>向LVS系统中添加一个用于负载均衡的virtual server（VS）</p>
+<p>基本用法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ipvsadm COMMAND [protocol] service-address</span><br><span class="line">               [scheduling-method] [persistence options]</span><br></pre></td></tr></table></figure>
+
+<p>命令：</p>
+<ul>
+<li>-A, –add-service: 为ipvs虚拟服务器添加一个虚拟服务，即添加一个需要被负载均衡的虚拟地址。虚拟地址需要是ip地址，端口号，协议的形式。</li>
+<li>-E, –edit-service: 修改一个虚拟服务。</li>
+<li>-D, –delete-service: 删除一个虚拟服务。</li>
+<li>-a, –add-server: 为虚拟服务添加一个real server（RS）</li>
+<li>-e, –edit-server: 修改RS记录</li>
+<li>-d, –delete-server: 删除RS记录</li>
+<li>-C, –clear: 清除所有虚拟服务。</li>
+<li>-R, –restore: 从标准输入获取ipvsadm命令。一般结合下边的-S使用。</li>
+<li>-S, –save: 从标准输出输出虚拟服务器的规则。可以将虚拟服务器的规则保存，在以后通过-R直接读入，以实现自动化配置。</li>
+<li>-L, -l, –list: 列出虚拟服务表中的所有虚拟服务。可以指定地址。添加-c显示连接表。</li>
+<li>-Z, –zero: 将所有数据相关的记录清零。这些记录一般用于调度策略。</li>
+<li>–set tcp tcpfin udp: 修改协议的超时时间。</li>
+<li>–start-daemon state: 设置虚拟服务器的备服务器，用来实现主备服务器冗余。（注: 该功能只支持ipv4）</li>
+<li>–stop-daemon: 停止备服务器。</li>
+<li>-h, –help: 帮助。</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ipvsadm command [protocol] service-address</span><br><span class="line">               server-address [packet-forwarding-method]</span><br><span class="line">               [weight options]</span><br></pre></td></tr></table></figure>
+
+<p>用来添加或修改VS的配置，service address用来指定涉及的虚拟服务即虚拟地址，server-address指定涉及的真实地址。</p>
+<p>参数：</p>
+<ul>
+<li><p>-t, –tcp-service service-address: 指定虚拟服务为tcp服务。service-address要是host[:port]的形式。端口是0表示任意端口。如果需要将端口设置为0，还需要加上-p选项（持久连接）。</p>
+</li>
+<li><p>-u, –udp-service service-address: 使用udp服务，其他同上。</p>
+</li>
+<li><p>-f, –fwmark-service integer: 用firewall mark取代虚拟地址来指定要被负载均衡的数据包，可以通过这个命令实现把不同地址、端口的虚拟地址整合成一个虚拟服务，可以让虚拟服务器同时截获处理去往多个不同地址的数据包。fwmark可以通过iptables命令指定。如果用在ipv6需要加上-6。</p>
+</li>
+<li><p>-s, –scheduler scheduling-method: 指定调度算法。调度算法可以指定以下8种: rr（轮询），wrr（权重），lc（最后连接），wlc（权重），lblc（本地最后连接），lblcr（带复制的本地最后连接），dh（目的地址哈希），sh（源地址哈希），sed（最小期望延迟），nq（永不排队）</p>
+</li>
+<li><p>-p, –persistent [timeout]: 设置持久连接，这个模式可以使来自客户的多个请求被送到同一个真实服务器，通常用于ftp或者ssl中。</p>
+</li>
+<li><p>-M, –netmask netmask: 指定客户地址的子网掩码。用于将同属一个子网的客户的请求转发到相同服务器。</p>
+</li>
+<li><p>-r, –real-server server-address: 为虚拟服务指定数据可以转发到的真实服务器的地址。可以添加端口号。如果没有指定端口号，则等效于使用虚拟地址的端口号。</p>
+</li>
+<li><p>-w, –weight weight:设置权重。权重是0~65535的整数。如果将某个真实服务器的权重设置为0，那么它不会收到新的连接，但是已有连接还会继续维持（这点和直接把某个真实服务器删除时不同的）。</p>
+</li>
+<li><p>-x, –u-threshold uthreshold: 设置一个服务器可以维持的连接上限。0~65535。设置为0表示没有上限。</p>
+</li>
+<li><p>-y, –l-threshold lthreshold: 设置一个服务器的连接下限。当服务器的连接数低于此值的时候服务器才可以重新接收连接。如果此值未设置，则当服务器的连接数连续三次低于uthreshold时服务器才可以接收到新的连接。（PS: 笔者以为此设定可能是为了防止服务器在能否接收连接这两个状态上频繁变换）</p>
+</li>
+<li><p>–mcast-interface interface: 指定使用备服务器时候的广播接口。</p>
+</li>
+<li><p>–syncid syncid: 指定syncid，同样用于主备服务器的同步。</p>
+</li>
+<li><p><code>[packet-forwarding-method]</code>: 此选项指定某个真实服务器所使用的数据转发模式。需要对每个真实服务器分别指定模式。</p>
+<ul>
+<li>-g, –gatewaying: 使用网关（即直接路由），此模式是默认模式。</li>
+<li>-i, –ipip: 使用ipip隧道模式。</li>
+<li>-m, –masquerading: 使用NAT模式。</li>
+</ul>
+</li>
+</ul>
+<p>以下选项用于list命令:</p>
+<ul>
+<li>-c, –connection: 列出当前的IPVS连接。</li>
+<li>–timeout: 列出超时</li>
+<li>–daemon:</li>
+<li>–stats: 状态信息</li>
+<li>–rate: 传输速率</li>
+<li>–thresholds: 列出阈值</li>
+<li>–persistent-conn: 坚持连接</li>
+<li>–sor: 把列表排序。</li>
+<li>–nosort: 不排序</li>
+<li>-n, –numeric: 不对ip地址进行dns查询</li>
+<li>–exact: 单位</li>
+<li>-6: 如果fwmark用的是ipv6地址需要指定此选项。</li>
+</ul>
+<p>其他注意事项</p>
+<ul>
+<li>如果使用IPv6地址，需要在地址两端加上”【】“。例如：ipvsadm -A -t [2001:db8::80]:80 -s rr</li>
+<li>可以通过设置以下虚拟文件的值来防御DoS攻击：/proc/sys/net/ipv4/vs/drop_entry /proc/sys/net/ipv4/vs/drop_packet /proc/sys/net/ipv4/vs/secure_tcp</li>
+</ul>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><h3 id="使用DR模式"><a href="#使用DR模式" class="headerlink" title="使用DR模式"></a>使用DR模式</h3><p>主机列表及IP地址划分</p>
+<p>通过访问<code>192.168.66.250</code>可以通过<code>DR模式</code>实现请求在三台机器上轮询.</p>
+<table>
+<thead>
+<tr>
+<th>主机名</th>
+<th>IP</th>
+<th>VIP</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>node1</td>
+<td>192.168.66.11</td>
+<td>192.168.66.250(DR)</td>
+<td>lvs</td>
+</tr>
+<tr>
+<td>node2</td>
+<td>192.168.66.12</td>
+<td></td>
+<td>nginx</td>
+</tr>
+<tr>
+<td>node3</td>
+<td>192.168.66.13</td>
+<td></td>
+<td>nginx</td>
+</tr>
+</tbody></table>
+<p>node1 机器配置<br>安装 lvs软件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install ipvsadm -y</span><br></pre></td></tr></table></figure>
+
+<p>开启内核转发</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cat /proc/sys/net/ipv4/ip_forward</span><br><span class="line">echo 1 &gt; /proc/sys/net/ipv4/ip_forward</span><br><span class="line">cat /proc/sys/net/ipv4/ip_forward</span><br></pre></td></tr></table></figure>
+
+<p>开始添加配置<br>添加192.168.66.250的vip配置，指定轮询方式为rr</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ipvsadm -A -t 192.168.66.250:80 -s rr</span><br></pre></td></tr></table></figure>
+
+<p>查看配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ipvsadm -Ln</span><br><span class="line">IP Virtual Server version 1.2.1 (size=4096)</span><br><span class="line">Prot LocalAddress:Port Scheduler Flags</span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> RemoteAddress:Port           Forward Weight ActiveConn InActConn</span></span><br><span class="line">TCP  192.168.66.250:80 rr</span><br></pre></td></tr></table></figure>
+
+<p>添加真实服务器，指定传输模式为DR</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ipvsadm -a -t 192.168.66.250:80 -r 192.168.66.12:80 -g</span><br><span class="line">ipvsadm -a -t 192.168.66.250:80 -r 192.168.66.13:80 -g</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>tips: DR 模式通过修改mac地址来实现路由转发，所以vip的端口，必须和后端服务器的端口保持一致。</p>
+</blockquote>
+<p>查看配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ipvsadm -Ln</span><br><span class="line">IP Virtual Server version 1.2.1 (size=4096)</span><br><span class="line">Prot LocalAddress:Port Scheduler Flags</span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> RemoteAddress:Port           Forward Weight ActiveConn InActConn</span></span><br><span class="line">TCP  192.168.66.250:80 rr</span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> 192.168.66.12:80             Route   1      0          0</span></span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> 192.168.66.13:80             Route   1      0          0</span></span><br></pre></td></tr></table></figure>
+
+<p>node2 node3 服务器配置<br>安装 NGINX 软件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum install nginx -y</span><br><span class="line">systemctl start nginx</span><br></pre></td></tr></table></figure>
+
+<p>创建一个HTML文件用来验证</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo $HOSTNAME &gt; /usr/share/nginx/html/1.html</span><br></pre></td></tr></table></figure>
+
+<p>结果确认</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">curl 192.168.66.12/1.html</span><br><span class="line">node2</span><br><span class="line">curl 192.168.66.13/1.html</span><br><span class="line">node3</span><br></pre></td></tr></table></figure>
+
+<p>抑制ARP响应：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&quot;1&quot;</span> &gt; /proc/sys/net/ipv4/conf/lo/arp_ignore</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;2&quot;</span> &gt; /proc/sys/net/ipv4/conf/lo/arp_announce</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;1&quot;</span> &gt; /proc/sys/net/ipv4/conf/all/arp_ignore</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;2&quot;</span> &gt; /proc/sys/net/ipv4/conf/all/arp_announce</span><br></pre></td></tr></table></figure>
+
+<p>绑定vip地址</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ifconfig lo:0 192.168.66.250/32 up</span><br><span class="line">route add -host 192.168.66.250 dev lo</span><br></pre></td></tr></table></figure>
+
+<p>node1 验证结果</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 vagrant]# curl http://192.168.66.250/1.html</span><br><span class="line">node2</span><br><span class="line">[root@node1 vagrant]# curl http://192.168.66.250/1.html</span><br><span class="line">node3</span><br></pre></td></tr></table></figure>
+
+<p>回滚配置</p>
+<p>node1删除真实服务器地址</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ipvsadm -d -t 192.168.66.250:80 -r 192.168.66.12:80</span><br><span class="line">ipvsadm -d -t 192.168.66.250:80 -r 192.168.66.13:80</span><br></pre></td></tr></table></figure>
+
+<p>node1删除vip配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ipvsadm -D -t 192.168.66.250:80</span><br></pre></td></tr></table></figure>
+
+<p>查看配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ipvsadm -Ln</span><br><span class="line">IP Virtual Server version 1.2.1 (size=4096)</span><br><span class="line">Prot LocalAddress:Port Scheduler Flags</span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> RemoteAddress:Port           Forward Weight ActiveConn InActConn</span></span><br></pre></td></tr></table></figure>
+
+<p>node2,node3 关闭arp抑制</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;0&quot; &gt; /proc/sys/net/ipv4/conf/lo/arp_ignore</span><br><span class="line">echo &quot;0&quot; &gt; /proc/sys/net/ipv4/conf/lo/arp_announce</span><br><span class="line">echo &quot;0&quot; &gt; /proc/sys/net/ipv4/conf/all/arp_ignore</span><br><span class="line">echo &quot;0&quot; &gt; /proc/sys/net/ipv4/conf/all/arp_announce</span><br></pre></td></tr></table></figure>
+
+<p>node2,node3 删除网卡及路由规则</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ifconfig lo:0 down</span><br><span class="line">route del 192.168.66.250</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用NAT模式"><a href="#使用NAT模式" class="headerlink" title="使用NAT模式"></a>使用NAT模式</h3><p>主机列表及IP地址划分</p>
+<p>通过访问<code>192.168.66.251</code>可以通过<code>NAT模式</code>实现请求在三台机器上轮询.</p>
+<table>
+<thead>
+<tr>
+<th>主机名</th>
+<th>IP</th>
+<th>VIP</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>node1</td>
+<td>192.168.66.11</td>
+<td>192.168.66.251(NAT)</td>
+<td>lvs</td>
+</tr>
+<tr>
+<td>node2</td>
+<td>192.168.66.12</td>
+<td></td>
+<td>nginx</td>
+</tr>
+<tr>
+<td>node3</td>
+<td>192.168.66.13</td>
+<td></td>
+<td>nginx</td>
+</tr>
+</tbody></table>
+<p>node1 上操作</p>
+<p>添加地址为192.168.66.251:80的虚拟服务，指定调度算法为轮转。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ipvsadm -A -t 192.168.66.251:80 -s rr</span><br></pre></td></tr></table></figure>
+
+<p>添加真实服务器，指定传输模式为NAT</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ipvsadm -a -t 192.168.66.251:80 -r 192.168.66.12:80 -m</span><br><span class="line">ipvsadm -a -t 192.168.66.251:80 -r 192.168.66.13:80 -m</span><br></pre></td></tr></table></figure>
+
+<p>查看配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ipvsadm -Ln</span><br><span class="line">IP Virtual Server version 1.2.1 (size=4096)</span><br><span class="line">Prot LocalAddress:Port Scheduler Flags</span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> RemoteAddress:Port           Forward Weight ActiveConn InActConn</span></span><br><span class="line">TCP  192.168.66.251:80 rr</span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> 192.168.66.12:80             Masq    1      0          0</span></span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> 192.168.66.13:80             Masq    1      0          0</span></span><br></pre></td></tr></table></figure>
+
+<p>NAT模式是lvs的三种模式中最简单的一种。此种模式下只需要保证调度服务器与真实服务器互通就可以运行。</p>
+<p>node1 验证结果</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 vagrant]# curl http://192.168.66.251/1.html</span><br><span class="line">node3</span><br><span class="line">[root@node1 vagrant]# curl http://192.168.66.251/1.html</span><br><span class="line">node2</span><br><span class="line">[root@node1 vagrant]#</span><br></pre></td></tr></table></figure>
+
+<h3 id="查询lvs的配置信息"><a href="#查询lvs的配置信息" class="headerlink" title="查询lvs的配置信息"></a>查询lvs的配置信息</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ipvsadm -Ln</span><br><span class="line">IP Virtual Server version 1.2.1 (size=4096)</span><br><span class="line">Prot LocalAddress:Port Scheduler Flags</span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> RemoteAddress:Port           Forward Weight ActiveConn InActConn</span></span><br><span class="line">TCP  192.168.66.251:80 rr</span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> 192.168.66.12:80             Masq    1      0          0</span></span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> 192.168.66.13:80             Masq    1      0          0</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ipvsadm -L --stats</span><br><span class="line">IP Virtual Server version 1.2.1 (size=4096)</span><br><span class="line">Prot LocalAddress:Port               Conns   InPkts  OutPkts  InBytes OutBytes</span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> RemoteAddress:Port</span></span><br><span class="line">TCP  192.168.66.251:http                 2       12        8      808      912</span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> node2:http                          1        6        4      404      456</span></span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> node3:http                          1        6        4      404      456</span></span><br></pre></td></tr></table></figure>
+
+<p>说明：</p>
+<ol>
+<li>Conns    (connections scheduled)  已经转发过的连接数</li>
+<li>InPkts   (incoming packets)       入包个数</li>
+<li>OutPkts  (outgoing packets)       出包个数</li>
+<li>InBytes  (incoming bytes)         入流量（字节）</li>
+<li>OutBytes (outgoing bytes)         出流量（字节）</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ipvsadm -L --rate</span><br><span class="line">IP Virtual Server version 1.2.1 (size=4096)</span><br><span class="line">Prot LocalAddress:Port                 CPS    InPPS   OutPPS    InBPS   OutBPS</span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> RemoteAddress:Port</span></span><br><span class="line">TCP  192.168.66.251:http                 0        0        0        0        0</span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> node2:http                          0        0        0        0        0</span></span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> node3:http                          0        0        0        0        0</span></span><br></pre></td></tr></table></figure>
+
+<p>说明：</p>
+<ol>
+<li>CPS      (current connection rate)   每秒连接数</li>
+<li>InPPS    (current in packet rate)    每秒的入包个数</li>
+<li>OutPPS   (current out packet rate)   每秒的出包个数</li>
+<li>InBPS    (current in byte rate)      每秒入流量（字节）</li>
+<li>OutBPS   (current out byte rate)      每秒入流量（字节）</li>
+</ol>
+<h3 id="保存和重载规则"><a href="#保存和重载规则" class="headerlink" title="保存和重载规则"></a>保存和重载规则</h3><p>-S:使用输出重定向进行规则保存</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ipvsadm -S &gt; lvs_`date +%F`.txt</span><br><span class="line">cat lvs_2020-09-03.txt</span><br><span class="line">-A -t 192.168.66.251:http -s rr</span><br><span class="line">-a -t 192.168.66.251:http -r node2:http -m -w 1</span><br><span class="line">-a -t 192.168.66.251:http -r node3:http -m -w 1</span><br></pre></td></tr></table></figure>
+
+<p>-R:使用输入重定向载入规则</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ipvsadm -R &lt; lvs_2020-09-03.txt</span><br><span class="line">ipvsadm -Ln</span><br><span class="line">IP Virtual Server version 1.2.1 (size=4096)</span><br><span class="line">Prot LocalAddress:Port Scheduler Flags</span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> RemoteAddress:Port           Forward Weight ActiveConn InActConn</span></span><br><span class="line">TCP  192.168.66.251:80 rr</span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> 192.168.66.12:80             Masq    1      0          0</span></span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> 192.168.66.13:80             Masq    1      0          0</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="请求所有配置"><a href="#请求所有配置" class="headerlink" title="请求所有配置"></a>请求所有配置</h3><p>-Z：清空计数器<br>-C：清空ipvs规则</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ipvsadm -Z</span><br><span class="line">ipvsadm -C</span><br><span class="line">ipvsadm -Ln</span><br><span class="line">IP Virtual Server version 1.2.1 (size=4096)</span><br><span class="line">Prot LocalAddress:Port Scheduler Flags</span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> RemoteAddress:Port           Forward Weight ActiveConn InActConn</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/klb561/p/9215704.html">负载均衡集群ipvsadm命令及基本用法</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+              <a href="/tags/lvs/" rel="tag"># lvs</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/01/13/linux-install-config/" rel="prev" title="linux系统初始化配置">
+                  <i class="fa fa-chevron-left"></i> linux系统初始化配置
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+  
+  
+  
+
+
+
+      
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">biglittleant</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

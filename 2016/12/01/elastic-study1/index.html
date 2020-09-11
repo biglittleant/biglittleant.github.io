@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.biglittleant.cn","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+  </script>
+
+  <meta name="description" content="elasticsearch 简介ElasticSearch是一个基于Lucene构建的开源，分布式，RESTful搜索引擎;设计用于云计算；能够达到实时搜索，稳定，可靠，快速。 ElasticSearch的一些概念:集群 (cluster)在一个分布式系统里面,可以通过多个elasticsearch运行实例组成一个集群,这个集群里面有一个节点叫做主节点(master),elasticsearch是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="elasticsearch 生产环境配置">
+<meta property="og:url" content="http://www.biglittleant.cn/2016/12/01/elastic-study1/index.html">
+<meta property="og:site_name" content="biglittleant">
+<meta property="og:description" content="elasticsearch 简介ElasticSearch是一个基于Lucene构建的开源，分布式，RESTful搜索引擎;设计用于云计算；能够达到实时搜索，稳定，可靠，快速。 ElasticSearch的一些概念:集群 (cluster)在一个分布式系统里面,可以通过多个elasticsearch运行实例组成一个集群,这个集群里面有一个节点叫做主节点(master),elasticsearch是">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2016-12-01T02:25:14.000Z">
+<meta property="article:modified_time" content="2020-09-03T02:03:13.613Z">
+<meta property="article:author" content="biglittleant">
+<meta property="article:tag" content="elastic">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.biglittleant.cn/2016/12/01/elastic-study1/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>elasticsearch 生产环境配置 | biglittleant</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">biglittleant</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">不被嘲笑的梦想，是不值得去实现的</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-文章分类">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a>
+
+  </li>
+        <li class="menu-item menu-item-归档">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#elasticsearch-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">elasticsearch 简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ElasticSearch%E7%9A%84%E4%B8%80%E4%BA%9B%E6%A6%82%E5%BF%B5"><span class="nav-number">1.1.</span> <span class="nav-text">ElasticSearch的一些概念:</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4-cluster"><span class="nav-number">1.1.1.</span> <span class="nav-text">集群 (cluster)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8A%82%E7%82%B9-node"><span class="nav-number">1.1.2.</span> <span class="nav-text">节点(node)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95-index"><span class="nav-number">1.1.3.</span> <span class="nav-text">索引(index)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E7%89%87-shards"><span class="nav-number">1.1.4.</span> <span class="nav-text">分片(shards)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%AF%E6%9C%AC-replicas"><span class="nav-number">1.1.5.</span> <span class="nav-text">副本(replicas)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E7%8E%AF%E5%A2%83%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">实验环境介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#elastic%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">elastic安装过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85elastic%E8%BD%AF%E4%BB%B6"><span class="nav-number">3.1.</span> <span class="nav-text">安装elastic软件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%88%E5%AE%89%E8%A3%85java%E7%8E%AF%E5%A2%83"><span class="nav-number">3.1.1.</span> <span class="nav-text">先安装java环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E5%AE%89%E8%A3%85elastic"><span class="nav-number">3.1.2.</span> <span class="nav-text">开始安装elastic</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#elasticsearch-yum-%E5%AE%89%E8%A3%85"><span class="nav-number">3.1.3.</span> <span class="nav-text">elasticsearch yum 安装</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E8%BE%91elastic%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">3.2.</span> <span class="nav-text">编辑elastic的配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">3.2.1.</span> <span class="nav-text">完整的配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#elasticsearch%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%A7%A3%E9%87%8A"><span class="nav-number">3.2.2.</span> <span class="nav-text">elasticsearch配置文件解释</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85elastic%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AE%A1%E7%90%86%E6%8F%92%E4%BB%B6"><span class="nav-number">3.3.</span> <span class="nav-text">安装elastic的服务器管理插件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8head%E6%8F%92%E4%BB%B6%E6%9D%A5%E6%9F%A5%E7%9C%8B%E7%B4%A2%E5%BC%95%E6%95%B0%E6%8D%AE"><span class="nav-number">3.3.1.</span> <span class="nav-text">使用head插件来查看索引数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8kopf%E6%9D%A5%E5%A4%87%E4%BB%BD%E9%9B%86%E7%BE%A4%E8%8A%82%E7%82%B9"><span class="nav-number">3.3.2.</span> <span class="nav-text">使用kopf来备份集群节点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8bigdesk%E6%9F%A5%E7%9C%8B%E9%9B%86%E7%BE%A4%E6%80%A7%E8%83%BD"><span class="nav-number">3.3.3.</span> <span class="nav-text">使用bigdesk查看集群性能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E4%B8%AD%E6%96%87%E5%88%86%E8%AF%8D%E6%8F%92%E4%BB%B6"><span class="nav-number">3.3.4.</span> <span class="nav-text">安装中文分词插件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E5%88%86%E8%AF%8D%E6%8F%92%E4%BB%B6%E7%9A%84%E6%95%88%E6%9E%9C"><span class="nav-number">3.4.</span> <span class="nav-text">测试分词插件的效果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%AF%E5%8A%A8%E5%89%8D%E8%B0%83%E4%BC%98"><span class="nav-number">4.</span> <span class="nav-text">服务器启动前调优</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E4%BC%98%E5%8C%96%E5%8F%82%E6%95%B0"><span class="nav-number">4.1.</span> <span class="nav-text">常见优化参数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%B1%87%E6%80%BB"><span class="nav-number">4.1.1.</span> <span class="nav-text">配置汇总</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E8%A7%A3%E9%87%8A"><span class="nav-number">4.1.2.</span> <span class="nav-text">配置解释</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86"><span class="nav-number">4.1.2.1.</span> <span class="nav-text">第一部分</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E9%83%A8%E5%88%86"><span class="nav-number">4.1.2.2.</span> <span class="nav-text">第二部分</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E9%83%A8%E5%88%86"><span class="nav-number">4.1.2.3.</span> <span class="nav-text">第三部分</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E9%83%A8%E5%88%86-%E7%B4%A2%E5%BC%95%E7%9B%B8%E5%85%B3"><span class="nav-number">4.1.2.4.</span> <span class="nav-text">第四部分-索引相关</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AC%AC%E4%BA%94%E9%83%A8%E5%88%86-%E7%A1%AC%E7%9B%98%E5%86%99%E5%85%A5%E9%80%9F%E7%8E%87%E7%9A%84%E8%AE%BE%E7%BD%AE"><span class="nav-number">4.1.2.5.</span> <span class="nav-text">第五部分-硬盘写入速率的设置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AENFS%E6%9D%A5%E5%AD%98%E6%94%BEelastic%E7%9A%84%E5%A4%87%E4%BB%BD"><span class="nav-number">4.2.</span> <span class="nav-text">配置NFS来存放elastic的备份</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#java%E5%8F%82%E6%95%B0%E7%9A%84%E8%B0%83%E4%BC%98"><span class="nav-number">4.3.</span> <span class="nav-text">java参数的调优</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#elastic-%E5%BC%80%E5%90%AFjmx-%E7%9B%91%E6%8E%A7"><span class="nav-number">4.4.</span> <span class="nav-text">elastic 开启jmx 监控</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%BC%98%E5%8C%96"><span class="nav-number">4.5.</span> <span class="nav-text">服务器优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8elastic%E6%9C%8D%E5%8A%A1"><span class="nav-number">5.</span> <span class="nav-text">启动elastic服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%A1%E7%90%86%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE"><span class="nav-number">6.</span> <span class="nav-text">管理集群配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E9%9B%86%E7%BE%A4%E8%AE%BE%E7%BD%AE"><span class="nav-number">6.1.</span> <span class="nav-text">查看集群设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%81%9C%E6%AD%A2%E5%88%86%E7%89%87%E5%90%8C%E6%AD%A5"><span class="nav-number">6.2.</span> <span class="nav-text">停止分片同步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E5%88%86%E7%89%87%E5%90%8C%E6%AD%A5"><span class="nav-number">6.3.</span> <span class="nav-text">启动分片同步</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%87%E4%BB%BDelasticsearch-%E6%95%B0%E6%8D%AE"><span class="nav-number">7.</span> <span class="nav-text">备份elasticsearch 数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8API%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93"><span class="nav-number">7.1.</span> <span class="nav-text">使用API创建一个镜像仓库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%87%E4%BB%BD%E5%89%8D%E6%A3%80%E6%9F%A5%E9%85%8D%E7%BD%AE"><span class="nav-number">7.2.</span> <span class="nav-text">备份前检查配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%BF%AB%E7%85%A7"><span class="nav-number">7.3.</span> <span class="nav-text">开始创建一个快照</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E4%BB%A5%E9%80%89%E6%8B%A9%E7%9B%B8%E5%BA%94%E7%9A%84%E7%B4%A2%E5%BC%95%E8%BF%9B%E8%A1%8C%E5%A4%87%E4%BB%BD"><span class="nav-number">7.4.</span> <span class="nav-text">可以选择相应的索引进行备份</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%A4%87%E4%BB%BD%E7%8A%B6%E6%80%81"><span class="nav-number">7.5.</span> <span class="nav-text">查看备份状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%96%E6%B6%88%E5%A4%87%E4%BB%BD"><span class="nav-number">7.6.</span> <span class="nav-text">取消备份</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%89%80%E6%9C%89%E5%BF%AB%E7%85%A7%E4%BF%A1%E6%81%AF%E3%80%82"><span class="nav-number">7.7.</span> <span class="nav-text">获取所有快照信息。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%8B%E5%8A%A8%E5%88%A0%E9%99%A4%E5%BF%AB%E7%85%A7"><span class="nav-number">7.8.</span> <span class="nav-text">手动删除快照</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D"><span class="nav-number">8.</span> <span class="nav-text">备份恢复</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%81%A2%E5%A4%8D%E5%A4%87%E4%BB%BD"><span class="nav-number">8.1.</span> <span class="nav-text">恢复备份</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%89%80%E6%9C%89%E7%B4%A2%E5%BC%95%E7%9A%84%E6%81%A2%E5%A4%8D%E8%BF%9B%E5%BA%A6"><span class="nav-number">8.2.</span> <span class="nav-text">查看所有索引的恢复进度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E7%B4%A2%E5%BC%95restored-index-1%E7%9A%84%E6%81%A2%E5%A4%8D%E8%BF%9B%E5%BA%A6"><span class="nav-number">8.3.</span> <span class="nav-text">查看索引restored_index_1的恢复进度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%96%E6%B6%88%E6%81%A2%E5%A4%8D"><span class="nav-number">8.4.</span> <span class="nav-text">取消恢复</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E7%BC%A9%E5%86%99%E6%88%96%E8%80%85%E6%89%A9%E5%AE%B9%E5%89%AF%E6%9C%AC%E5%88%86%E7%89%87%E6%95%B0%E9%87%8F"><span class="nav-number">9.</span> <span class="nav-text">动态缩写或者扩容副本分片数量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3"><span class="nav-number">10.</span> <span class="nav-text">运维相关</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E9%87%8D%E5%90%AFelastic%E5%8D%95%E5%8F%B0%E8%8A%82%E7%82%B9"><span class="nav-number">10.1.</span> <span class="nav-text">如何重启elastic单台节点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#elastic-%E5%B8%AE%E5%8A%A9%E6%96%87%E6%A1%A3"><span class="nav-number">11.</span> <span class="nav-text">elastic 帮助文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#elastic-%E7%94%9F%E4%BA%A7%E9%83%A8%E7%BD%B2%E6%97%B6%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">12.</span> <span class="nav-text">elastic-生产部署时遇到的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#out-of-memory%E9%94%99%E8%AF%AF"><span class="nav-number">12.1.</span> <span class="nav-text">out of memory错误</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%8E%9F%E7%90%86"><span class="nav-number">12.1.1.</span> <span class="nav-text">问题原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95"><span class="nav-number">12.1.2.</span> <span class="nav-text">解决办法</span></a></li></ol></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">biglittleant</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2016/12/01/elastic-study1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="biglittleant">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="biglittleant">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          elasticsearch 生产环境配置
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2016-12-01 10:25:14" itemprop="dateCreated datePublished" datetime="2016-12-01T10:25:14+08:00">2016-12-01</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2020-09-03 10:03:13" itemprop="dateModified" datetime="2020-09-03T10:03:13+08:00">2020-09-03</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="elasticsearch-简介"><a href="#elasticsearch-简介" class="headerlink" title="elasticsearch 简介"></a>elasticsearch 简介</h2><p>ElasticSearch是一个基于Lucene构建的开源，分布式，RESTful搜索引擎;设计用于云计算；能够达到实时搜索，稳定，可靠，快速。</p>
+<h3 id="ElasticSearch的一些概念"><a href="#ElasticSearch的一些概念" class="headerlink" title="ElasticSearch的一些概念:"></a>ElasticSearch的一些概念:</h3><h4 id="集群-cluster"><a href="#集群-cluster" class="headerlink" title="集群 (cluster)"></a>集群 (cluster)</h4><p>在一个分布式系统里面,可以通过多个elasticsearch运行实例组成一个集群,这个集群里面有一个节点叫做主节点(master),elasticsearch是去中心化的,所以这里的主节点是动态选举出来的,不存在单点故障。</p>
+<p>在同一个子网内，只需要在每个节点上设置相同的集群名,elasticsearch就会自动的把这些集群名相同的节点组成一个集群。节点和节点之间通讯以及节点之间的数据分配和平衡全部由elasticsearch自动管理。<br>在外部看来elasticsearch就是一个整体。</p>
+<h4 id="节点-node"><a href="#节点-node" class="headerlink" title="节点(node)"></a>节点(node)</h4><p>每一个运行实例称为一个节点,每一个运行实例既可以在同一机器上,也可以在不同的机器上.所谓运行实例,就是一个服务器进程.在测试环境内,可以在一台服务器上运行多个服务器进程,在生产环境建议每台服务器运行一个服务器进程。</p>
+<h4 id="索引-index"><a href="#索引-index" class="headerlink" title="索引(index)"></a>索引(index)</h4><p>这里的索引是名词不是动词,在elasticsearch里面支持多个索引。类似于关系数据库里面每一个服务器可以支持多个数据库一样。在每一索引下面又支持多种类型，类似于关系数据库里面的一个数据库可以有多张表。但是本质上和关系数据库有很大的区别。这里暂时可以这么理解。</p>
+<h4 id="分片-shards"><a href="#分片-shards" class="headerlink" title="分片(shards)"></a>分片(shards)</h4><p>把一个索引分解为多个小的索引，每一个小的索引叫做分片。分片后就可以把各个分片分配到不同的节点中。</p>
+<h4 id="副本-replicas"><a href="#副本-replicas" class="headerlink" title="副本(replicas)"></a>副本(replicas)</h4><p>每一个分片可以有0到多个副本，每个副本都是分片的完整拷贝，可以用来增加速度，同时也可以提高系统的容错性，一旦某个节点数据损坏，其他节点可以代替他。</p>
+<h2 id="实验环境介绍"><a href="#实验环境介绍" class="headerlink" title="实验环境介绍"></a>实验环境介绍</h2><p>实验环境规划</p>
+<table>
+<thead>
+<tr>
+<th>主机名</th>
+<th>ip address</th>
+<th>操作系统</th>
+<th>职责</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>linux-node1.example.com</td>
+<td>192.168.56.11</td>
+<td>centos7</td>
+<td>elastic-master，nfs-server</td>
+</tr>
+<tr>
+<td>linux-node2.example.com</td>
+<td>192.168.56.12</td>
+<td>centos7</td>
+<td>elastic-slave</td>
+</tr>
+</tbody></table>
+<p>系统版本环境</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node1 mount10:20:25]#uname -r </span><br><span class="line">3.10.0-229.el7.x86_64</span><br><span class="line">[root@linux-node1 mount12:07:36]#uname -m </span><br><span class="line">x86_64</span><br><span class="line">[root@linux-node1 mount12:07:41]#cat  &#x2F;etc&#x2F;redhat-release </span><br><span class="line">CentOS Linux release 7.1.1503 (Core) </span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="elastic安装过程"><a href="#elastic安装过程" class="headerlink" title="elastic安装过程"></a>elastic安装过程</h2><h3 id="安装elastic软件"><a href="#安装elastic软件" class="headerlink" title="安装elastic软件"></a>安装elastic软件</h3><h4 id="先安装java环境"><a href="#先安装java环境" class="headerlink" title="先安装java环境"></a>先安装java环境</h4><p><a href="https://www.biglittleant.cn/70.html">使用saltstack快速安装java环境
+</a></p>
+<h4 id="开始安装elastic"><a href="#开始安装elastic" class="headerlink" title="开始安装elastic"></a>开始安装elastic</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;local&#x2F;src&#x2F;</span><br><span class="line">curl -L -O https:&#x2F;&#x2F;download.elastic.co&#x2F;elasticsearch&#x2F;release&#x2F;org&#x2F;elasticsearch&#x2F;distribution&#x2F;tar&#x2F;elasticsearch&#x2F;2.1.1&#x2F;elasticsearch-2.1.1.tar.gz</span><br><span class="line">tar -zxf elasticsearch-2.1.1.tar.gz </span><br><span class="line">mv elasticsearch-2.1.1 &#x2F;usr&#x2F;local&#x2F;</span><br><span class="line">cd ..&#x2F;</span><br><span class="line">ln -s elasticsearch-2.1.1&#x2F; elastic </span><br></pre></td></tr></table></figure>
+
+<p><code>以上配置linux-node1,linux-node2 都执行一遍</code></p>
+<h4 id="elasticsearch-yum-安装"><a href="#elasticsearch-yum-安装" class="headerlink" title="elasticsearch yum 安装"></a>elasticsearch yum 安装</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">rpm --import https://packages.elastic.co/GPG-KEY-elasticsearch</span><br><span class="line">cat &gt;/etc/yum.repos.d/elasticsearch.repo &lt;&lt;EOF</span><br><span class="line">[elasticsearch-2.x]</span><br><span class="line">name=Elasticsearch repository for 2.x packages</span><br><span class="line">baseurl=https://packages.elastic.co/elasticsearch/2.x/centos</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=https://packages.elastic.co/GPG-KEY-elasticsearch</span><br><span class="line">enabled=1</span><br><span class="line">EOF</span><br><span class="line">yum install elasticsearch</span><br></pre></td></tr></table></figure>
+
+<h3 id="编辑elastic的配置文件"><a href="#编辑elastic的配置文件" class="headerlink" title="编辑elastic的配置文件"></a>编辑elastic的配置文件</h3><h4 id="完整的配置文件"><a href="#完整的配置文件" class="headerlink" title="完整的配置文件"></a>完整的配置文件</h4><p>elastic主节点配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">grep &#39;^[a-z]&#39; &#x2F;usr&#x2F;local&#x2F;elastic&#x2F;config&#x2F;elasticsearch.yml</span><br><span class="line">cluster.name: biglittleant</span><br><span class="line">node.name: &quot;linux-node1&quot;</span><br><span class="line">index.number_of_shards: 5</span><br><span class="line">index.number_of_replicas: 1</span><br><span class="line">path.conf: &#x2F;usr&#x2F;local&#x2F;elastic&#x2F;config</span><br><span class="line">path.data: &#x2F;usr&#x2F;local&#x2F;elastic&#x2F;data </span><br><span class="line">path.work: &#x2F;usr&#x2F;local&#x2F;elastic&#x2F;work</span><br><span class="line">path.logs:  &#x2F;usr&#x2F;local&#x2F;elastic&#x2F;logs</span><br><span class="line">path.plugins: &#x2F;usr&#x2F;local&#x2F;elastic&#x2F;plugins</span><br><span class="line">bootstrap.mlockall: true </span><br><span class="line">transport.tcp.port: 9300</span><br><span class="line">http.port: 9200 </span><br><span class="line">network.host: 192.168.56.11</span><br><span class="line">discovery.zen.ping.multicast.enabled: false</span><br><span class="line">discovery.zen.ping.unicast.hosts: [&quot;192.168.56.11&quot;, “192.168.56.12&quot;]</span><br><span class="line">path.repo: [&quot;&#x2F;data&#x2F;mount&#x2F;&quot;]</span><br></pre></td></tr></table></figure>
+<p>elastic从节点配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cluster.name: biglittleant</span><br><span class="line">node.name: &quot;linux-node2&quot;</span><br><span class="line">discovery.zen.ping.multicast.enabled: false</span><br><span class="line">discovery.zen.ping.unicast.hosts: [&quot;192.168.56.11&quot;, “192.168.56.12&quot;]</span><br><span class="line">path.repo: [&quot;&#x2F;data&#x2F;mount&#x2F;&quot;]</span><br></pre></td></tr></table></figure>
+
+<p>elastic单节点配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">cluster.name: biglittleant</span><br><span class="line">node.name: &quot;linux-node1&quot;</span><br><span class="line">index.number_of_shards: 1</span><br><span class="line">index.number_of_replicas: 0##单节点复制集要为0</span><br><span class="line">path.conf: &#x2F;usr&#x2F;local&#x2F;elastic&#x2F;config</span><br><span class="line">path.data: &#x2F;usr&#x2F;local&#x2F;elastic&#x2F;data </span><br><span class="line">path.work: &#x2F;usr&#x2F;local&#x2F;elastic&#x2F;work</span><br><span class="line">path.logs:  &#x2F;usr&#x2F;local&#x2F;elastic&#x2F;logs</span><br><span class="line">path.plugins: &#x2F;usr&#x2F;local&#x2F;elastic&#x2F;plugins</span><br><span class="line">bootstrap.mlockall: true </span><br><span class="line">http.port: 9200 </span><br><span class="line">network.host: 192.168.56.11</span><br><span class="line">path.repo: [&quot;&#x2F;data&#x2F;mount&#x2F;&quot;]</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="elasticsearch配置文件解释"><a href="#elasticsearch配置文件解释" class="headerlink" title="elasticsearch配置文件解释"></a>elasticsearch配置文件解释</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">cluster.name: biglittleant##集群节点的名称，一旦配置后不能更改。</span><br><span class="line">node.name: &quot;linux-node1&quot;#当前节点的名称</span><br><span class="line">index.number_of_shards: 5##索引分几个分片。</span><br><span class="line">index.number_of_replicas: 1##创建几个副本。</span><br><span class="line">path.conf: &#x2F;usr&#x2F;local&#x2F;elastic&#x2F;config##config 存放的位置</span><br><span class="line">path.data: &#x2F;usr&#x2F;local&#x2F;elastic&#x2F;data ##数据存放的位置</span><br><span class="line">#path.data: &#x2F;path&#x2F;to&#x2F;data1,&#x2F;path&#x2F;to&#x2F;data2 ###可以配置多个路径。</span><br><span class="line">path.work: &#x2F;usr&#x2F;local&#x2F;elastic&#x2F;work##临时文件存放路径</span><br><span class="line">path.logs:  &#x2F;usr&#x2F;local&#x2F;elastic&#x2F;logs##日志存放的路径</span><br><span class="line">path.plugins: &#x2F;usr&#x2F;local&#x2F;elastic&#x2F;plugins##插件存放的位置</span><br><span class="line">bootstrap.mlockall: true #锁住内存</span><br><span class="line">#transport.tcp.port: 9300 ###集群交互的端口。</span><br><span class="line">http.port: 9200 ##对外的端口</span><br><span class="line">network.host: 192.168.56.11#监听的网络，如果不配置默认为127.0.0.1	</span><br><span class="line">discovery.zen.ping.multicast.enabled: false##禁用组播</span><br><span class="line">discovery.zen.ping.unicast.hosts: [&quot;192.168.56.11&quot;, “192.168.56.12&quot;]#集群服务器的ip列表</span><br><span class="line">path.repo: [&quot;&#x2F;data&#x2F;mount&#x2F;&quot;]#集群的备份仓库</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装elastic的服务器管理插件"><a href="#安装elastic的服务器管理插件" class="headerlink" title="安装elastic的服务器管理插件"></a>安装elastic的服务器管理插件</h3><h4 id="使用head插件来查看索引数据"><a href="#使用head插件来查看索引数据" class="headerlink" title="使用head插件来查看索引数据"></a>使用head插件来查看索引数据</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;usr&#x2F;local&#x2F;elastic&#x2F;bin&#x2F;plugin install  mobz&#x2F;elasticsearch-head</span><br><span class="line">http:&#x2F;&#x2F;192.168.56.11:9200&#x2F;_plugin&#x2F;head&#x2F;</span><br></pre></td></tr></table></figure>
+<h4 id="使用kopf来备份集群节点"><a href="#使用kopf来备份集群节点" class="headerlink" title="使用kopf来备份集群节点"></a>使用kopf来备份集群节点</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;usr&#x2F;local&#x2F;elastic&#x2F;bin&#x2F;plugin install   lmenezes&#x2F;elasticsearch-kopf</span><br><span class="line">http:&#x2F;&#x2F;192.168.56.11:9200&#x2F;_plugin&#x2F;kopf&#x2F;</span><br></pre></td></tr></table></figure>
+
+<h4 id="使用bigdesk查看集群性能"><a href="#使用bigdesk查看集群性能" class="headerlink" title="使用bigdesk查看集群性能"></a>使用bigdesk查看集群性能</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/elastic/bin/plugin install  hlstudio/bigdesk</span><br><span class="line">http://192.168.56.11:9200/_plugin/bigdesk/</span><br></pre></td></tr></table></figure>
+
+<h4 id="安装中文分词插件"><a href="#安装中文分词插件" class="headerlink" title="安装中文分词插件"></a>安装中文分词插件</h4><p>第一步编译分词插件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">yum install maven</span><br><span class="line">git cloen https://github.com/medcl/elasticsearch-analysis-ik</span><br><span class="line">cd elasticsearch-analysis-ik</span><br><span class="line">mvn package</span><br><span class="line"><span class="meta">#</span><span class="bash">编译完成：</span></span><br><span class="line">Downloaded: http://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/2.0.1/plexus-utils-2.0.1.jar (217 KB at 43.5 KB/sec)</span><br><span class="line">[INFO] Reading assembly descriptor: /usr/local/src/elasticsearch-analysis-ik-1.10.0/src/main/assemblies/plugin.xml</span><br><span class="line">[INFO] Building zip: /usr/local/src/elasticsearch-analysis-ik-1.10.0/target/releases/elasticsearch-analysis-ik-1.10.0.zip</span><br><span class="line">[INFO] ------------------------------------------------------------------------</span><br><span class="line">[INFO] BUILD SUCCESS</span><br><span class="line">[INFO] ------------------------------------------------------------------------</span><br><span class="line">[INFO] Total time: 16:26.127s</span><br><span class="line">[INFO] Finished at: Mon Oct 10 16:58:59 CST 2016</span><br><span class="line">[INFO] Final Memory: 25M/61M</span><br><span class="line">[INFO] ------------------------------------------------------------------------</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 将编译好的IK分词拷贝到plugins目录中。</span></span></span><br><span class="line">cd target/releases/</span><br><span class="line">unzip elasticsearch-analysis-ik-1.10.0.zip -d ik </span><br><span class="line">mv elasticsearch-analysis-ik-1.10.0 /data/app/elastic/plugins/ik</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 修改ES的配置文件，打开config/elasticsearch.yml,在最后添加配置</span></span></span><br><span class="line"></span><br><span class="line">index.analysis.analyzer.default.type: ik</span><br></pre></td></tr></table></figure>
+
+<p>第三步：重启elastic服务器，并查看日志</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart elasticsearch</span><br><span class="line"><span class="meta">#</span><span class="bash"> 重启elasticsearch即可,重启会看到以下plugins信息</span></span><br><span class="line">[2016-03-14 23:47:33,184][INFO ][plugins                  ] [Lightspeed] modules [lang-expression, lang-groovy], plugins [elasticsearch-analysis-ik], sites []</span><br></pre></td></tr></table></figure>
+
+<p>安装<code>analysis-pinyin</code>的中文插件（可以不安装，步骤跟安装ik分词插件一样）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/medcl/elasticsearch-analysis-pinyin.git</span><br><span class="line">cd elasticsearch-analysis-pinyin</span><br><span class="line">mvn clean install -Dmaven.test.skip</span><br><span class="line"><span class="meta">#</span><span class="bash">复制target/releases目录下的*-pinyin.zip并解压到elasticsearch/plugins/</span></span><br><span class="line"></span><br><span class="line">index.analysis.analyzer.default.type: keyword</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="测试分词插件的效果"><a href="#测试分词插件的效果" class="headerlink" title="测试分词插件的效果"></a>测试分词插件的效果</h3><p><code>http://192.168.0.211:9200/_analyze?analyzer=ik&amp;pretty=true&amp;text=helloworld,欢迎你</code></p>
+<blockquote>
+<p>关于分词器的详细解释可以参考文章最后elastic分词器详细解释。</p>
+</blockquote>
+<h2 id="服务器启动前调优"><a href="#服务器启动前调优" class="headerlink" title="服务器启动前调优"></a>服务器启动前调优</h2><h3 id="常见优化参数"><a href="#常见优化参数" class="headerlink" title="常见优化参数"></a>常见优化参数</h3><p>提高索引性能和速度从几下方面着手：</p>
+<ol>
+<li>增大索引实时时间设置：<code>index.engine.robin.refresh_interval :10s</code> (默认为1s) 。</li>
+<li>增大内存缓冲区： <code>indices.memory.index_buffer_size:20% </code>(默认为heap大小的10%)。</li>
+<li>增加translog方面的设置：<code> index.translog.flush_threshold:10000</code> (默认为5000）。</li>
+<li>增加分配给ES的内存， 默认为1g。</li>
+<li>减小replaca. 索引时可设置为0. 完成索引后再设置成想要的。 </li>
+<li>增加机器数。</li>
+<li><code>index.merge.policy.use_compound_file</code> 设置为false. 这样的话， 可以减少Merge （保证open file size 够 大）。</li>
+</ol>
+<h4 id="配置汇总"><a href="#配置汇总" class="headerlink" title="配置汇总"></a>配置汇总</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 第一部分</span></span></span><br><span class="line">index.analysis.analyzer.default.type: ik</span><br><span class="line">index.cache.field.type: soft</span><br><span class="line">index.cache.field.max_size: 50000</span><br><span class="line">index.cache.field.expire: 5m</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 第二部分</span></span></span><br><span class="line">index.cache.query.enable: true</span><br><span class="line">indices.cache.query.size: 5%</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 第三部分</span></span></span><br><span class="line">index.search.slowlog.level: TRACE</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 第四部分</span></span></span><br><span class="line">index.store.compress.stored: true</span><br><span class="line">index.store.compress.tv: true</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 第五部分</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">indices.store.throttle.type: none</span></span><br><span class="line">indices.store.throttle.max_bytes_per_sec: 100mb</span><br><span class="line"><span class="meta">#</span><span class="bash">index.routing.allocation.total_shards_per_node: 2</span></span><br><span class="line"><span class="meta">#</span><span class="bash">script.disable_dynamic: <span class="literal">false</span></span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="配置解释"><a href="#配置解释" class="headerlink" title="配置解释"></a>配置解释</h4><h5 id="第一部分"><a href="#第一部分" class="headerlink" title="第一部分"></a>第一部分</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. 设置es的缓存类型为Soft Reference，它的主要特点是据有较强的引用功能。只有当内存不够的时候，才进行回收这类内存，因此在内存足够的时候，它们通常不被回收。另外，这些引 用对象还能保证在Java抛出OutOfMemory 异常之前，被设置为null。它可以用于实现一些常用图片的缓存，实现Cache的功能，保证最大限度的使用内存而不引起OutOfMemory。在es的配置文件加上index.cache.field.type: soft即可。</span><br><span class="line">2. 上index.cache.field.type: soft ## 最大限度使用内存。</span><br><span class="line">3. index.cache.field.max_size: 50000## es最大缓存数据条数。</span><br><span class="line">4. index.cache.field.expire: 10m ##把过期时间设置成10分钟。</span><br></pre></td></tr></table></figure>
+
+
+<h5 id="第二部分"><a href="#第二部分" class="headerlink" title="第二部分"></a>第二部分</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">index.cache.query.enable: true ##默认配置是false。</span><br><span class="line"></span><br><span class="line">indices.cache.query.size: 2%  ## 默认配置 1%。</span><br></pre></td></tr></table></figure>
+
+<h5 id="第三部分"><a href="#第三部分" class="headerlink" title="第三部分"></a>第三部分</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">index.search.slowlog.level: TRACE</span><br></pre></td></tr></table></figure>
+
+<p>慢查询的级别：TRACE，表示追踪模式。还可以设置成info模式。</p>
+<h5 id="第四部分-索引相关"><a href="#第四部分-索引相关" class="headerlink" title="第四部分-索引相关"></a>第四部分-索引相关</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">index.store.compress.stored: true </span><br><span class="line"></span><br><span class="line">index.store.compress.tv: true</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>在elasticsearch.yml设置这两个属性可压缩数据文件，极大的减少文件的大小。</p>
+</blockquote>
+<h5 id="第五部分-硬盘写入速率的设置"><a href="#第五部分-硬盘写入速率的设置" class="headerlink" title="第五部分-硬盘写入速率的设置"></a>第五部分-硬盘写入速率的设置</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">indices.store.throttle.type: none</span></span><br><span class="line"></span><br><span class="line">indices.store.throttle.max_bytes_per_sec: 100mb</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">index.routing.allocation.total_shards_per_node: 2</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">script.disable_dynamic: <span class="literal">false</span></span></span><br></pre></td></tr></table></figure>
+
+<p>写入磁盘的速率，默认是20m/s 适用于机械硬盘，100m/s-200m/s 适用于SSD硬盘。<a target="_blank" rel="noopener" href="https://www.elastic.co/guide/en/elasticsearch/guide/current/indexing-performance.html">参考文档</a></p>
+<h3 id="配置NFS来存放elastic的备份"><a href="#配置NFS来存放elastic的备份" class="headerlink" title="配置NFS来存放elastic的备份"></a>配置NFS来存放elastic的备份</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">linux-node1上执行</span></span><br><span class="line">yum install nfs-utils rpcbind -y </span><br><span class="line">cat &gt;&gt; /etc/exports&lt;&lt;EOF</span><br><span class="line">/data/backup 192.168.56.0/24(rw,sync,all_squash)</span><br><span class="line">EOF</span><br><span class="line">mkdir /data/&#123;backup,mount&#125;  -p </span><br><span class="line">chown -R nfsnobody.nfsnobody /data/backup</span><br><span class="line">systemctl start rpcbind</span><br><span class="line">systemctl start nfs </span><br><span class="line">mount.nfs 192.168.56.11:/data/backup /data/mount/</span><br><span class="line"><span class="meta">#</span><span class="bash">linux-node2上执行</span></span><br><span class="line">yum install nfs-utils rpcbind -y</span><br><span class="line">mkdir /data/mount -p </span><br><span class="line">mount.nfs 192.168.56.11:/data/backup /data/mount/</span><br></pre></td></tr></table></figure>
+
+<h3 id="java参数的调优"><a href="#java参数的调优" class="headerlink" title="java参数的调优"></a>java参数的调优</h3><p>Heap不要超过系统可用内存的一半，并且不要超过32GB。JVM参数呢？对于初级用户来说，并不需要做特别调整，仍然遵从官方的建议，将xms和xmx设置成和heap一样大小，避免动态分配heap size就好了。虽然有针对性的调整JVM参数可以带来些许GC效率的提升，当有一些“坏”用例的时候，这些调整并不会有什么魔法效果帮你减轻heap压力，甚至可能让问题更糟糕。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">vim /usr/local/elastic/bin/elasticsearch.in.sh</span><br><span class="line">if [ &quot;x$ES_MIN_MEM&quot; = &quot;x&quot; ]; then</span><br><span class="line">    ES_MIN_MEM=256m</span><br><span class="line">fi</span><br><span class="line">if [ &quot;x$ES_MAX_MEM&quot; = &quot;x&quot; ]; then</span><br><span class="line">    ES_MAX_MEM=256m</span><br><span class="line">fi</span><br><span class="line"><span class="meta">#</span><span class="bash">虚拟机环境，所以配置了256M的内存，实际物理机器根据内存大小动态调节。</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="elastic-开启jmx-监控"><a href="#elastic-开启jmx-监控" class="headerlink" title="elastic 开启jmx 监控"></a>elastic 开启jmx 监控</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/elastic/bin/elasticsearch.in.sh</span><br><span class="line">JMX_PORT=9305</span><br><span class="line">JAVA_OPTS=&quot;$JAVA_OPTS -Dcom.sun.management.jmxremote.port=$JMX_PORT&quot;</span><br><span class="line">JAVA_OPTS=&quot;$JAVA_OPTS -Dcom.sun.management.jmxremote.ssl=false&quot;</span><br><span class="line">JAVA_OPTS=&quot;$JAVA_OPTS -Dcom.sun.management.jmxremote.authenticate=false&quot;</span><br><span class="line">JAVA_OPTS=&quot;$JAVA_OPTS -Djava.rmi.server.hostname=192.168.56.11&quot;</span><br></pre></td></tr></table></figure>
+
+<h3 id="服务器优化"><a href="#服务器优化" class="headerlink" title="服务器优化"></a>服务器优化</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sysctl -w vm.max_map_count=262144##生产上一定要打开文件描述符。</span><br><span class="line">mkdir /usr/local/elastic/&#123;data,logs,work,plugins&#125; -p##创建相应的目录</span><br><span class="line">useradd elastic ##创建启动用户</span><br><span class="line">chown -R elastic.elastic /usr/local/elasticsearch-2.1.1/</span><br></pre></td></tr></table></figure>
+
+<h2 id="启动elastic服务"><a href="#启动elastic服务" class="headerlink" title="启动elastic服务"></a>启动elastic服务</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">su -c &#39;&#x2F;usr&#x2F;local&#x2F;elastic&#x2F;bin&#x2F;elasticsearch -d &#39; elastic</span><br><span class="line">##启动服务</span><br><span class="line">##查看端口是否存在</span><br><span class="line">ss -lntup |grep 9300</span><br><span class="line">tcp    LISTEN     0      50                    :::9300                 :::*      users:((&quot;java&quot;,9757,56))</span><br><span class="line"># ss -lntup |grep 9200</span><br><span class="line">tcp    LISTEN     0      50                    :::9200                 :::*      users:((&quot;java&quot;,9757,94))</span><br><span class="line"></span><br><span class="line">##curl 查看结果 ：</span><br><span class="line">curl http:&#x2F;&#x2F;192.168.56.11:9200</span><br><span class="line">&#123;</span><br><span class="line">  &quot;status&quot; : 200,</span><br><span class="line">  &quot;name&quot; : &quot;linux-node1&quot;,</span><br><span class="line">  &quot;cluster_name&quot; : &quot;biglittleant&quot;,</span><br><span class="line">  &quot;version&quot; : &#123;</span><br><span class="line">    &quot;number&quot; : &quot;1.7.1&quot;,</span><br><span class="line">    &quot;build_hash&quot; : &quot;b88f43fc40b0bcd7f173a1f9ee2e97816de80b19&quot;,</span><br><span class="line">    &quot;build_timestamp&quot; : &quot;2015-07-29T09:54:16Z&quot;,</span><br><span class="line">    &quot;build_snapshot&quot; : false,</span><br><span class="line">    &quot;lucene_version&quot; : &quot;4.10.4&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;tagline&quot; : &quot;You Know, for Search&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="管理集群配置"><a href="#管理集群配置" class="headerlink" title="管理集群配置"></a>管理集群配置</h2><h3 id="查看集群设置"><a href="#查看集群设置" class="headerlink" title="查看集群设置"></a>查看集群设置</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET http://10.10.160.129:9200/_cluster/settings</span><br></pre></td></tr></table></figure>
+<h3 id="停止分片同步"><a href="#停止分片同步" class="headerlink" title="停止分片同步"></a>停止分片同步</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">curl -XPUT http://10.10.160.129:9200/_cluster/settings -d &#x27;&#123;</span><br><span class="line">  &quot;transient&quot; : &#123;</span><br><span class="line">    &quot;cluster.routing.allocation.enable&quot; : &quot;none&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;&#x27;</span><br></pre></td></tr></table></figure>
+
+<h3 id="启动分片同步"><a href="#启动分片同步" class="headerlink" title="启动分片同步"></a>启动分片同步</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">curl -XPUT http://10.10.160.129:9200/_cluster/settings -d &#x27;&#123;</span><br><span class="line">  &quot;transient&quot; : &#123;</span><br><span class="line">    &quot;cluster.routing.allocation.enable&quot; : &quot;all&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;&#x27;</span><br></pre></td></tr></table></figure>
+<h2 id="备份elasticsearch-数据"><a href="#备份elasticsearch-数据" class="headerlink" title="备份elasticsearch 数据"></a>备份elasticsearch 数据</h2><p>先导入一些数据进行备份</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl -XPOST &#x27;http://192.168.56.11:9200/bank/account/_bulk?pretty&#x27; --data-binary @accounts.json</span><br><span class="line">curl -XPOST &#x27;http://192.168.56.11:9200/shakespeare/_bulk?pretty&#x27; --data-binary @shakespeare.json</span><br><span class="line">curl -XPOST &#x27;http://192.168.56.11:9200/_bulk?pretty&#x27; --data-binary @logs.jsonl</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用API创建一个镜像仓库"><a href="#使用API创建一个镜像仓库" class="headerlink" title="使用API创建一个镜像仓库"></a>使用API创建一个镜像仓库</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">curl -XPOST http:&#x2F;&#x2F;192.168.56.11:9200&#x2F;_snapshot&#x2F;my_backup -d &#39;</span><br><span class="line">&#123;</span><br><span class="line">    &quot;type&quot;: &quot;fs&quot;, </span><br><span class="line">    &quot;settings&quot;: &#123; </span><br><span class="line">        &quot;location&quot;: &quot;&#x2F;data&#x2F;mount&quot;</span><br><span class="line">        &quot;compress&quot;:  true </span><br><span class="line">    &#125;</span><br><span class="line">&#125;&#39;</span><br><span class="line">##解释：</span><br><span class="line">镜像仓库的名称：my_backup</span><br><span class="line">镜像仓库的类型：fs。还支持curl，hdfs等。</span><br><span class="line">镜像仓库的位置：&#x2F;data&#x2F;mount 。这个位置必须在配置文件中定义。</span><br><span class="line">是否启用压缩：compres：true 表示启用压缩。</span><br></pre></td></tr></table></figure>
+
+<h3 id="备份前检查配置"><a href="#备份前检查配置" class="headerlink" title="备份前检查配置"></a>备份前检查配置</h3><p>必须确定备份使用的目录在配置文件中声明了，否则会爆如下错误</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;error&quot;: &#123;</span><br><span class="line">    &quot;root_cause&quot;: [</span><br><span class="line">      &#123;</span><br><span class="line">        &quot;type&quot;: &quot;repository_exception&quot;,</span><br><span class="line">        &quot;reason&quot;: &quot;[test-bakcup] failed to create repository&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    ],</span><br><span class="line">    &quot;type&quot;: &quot;repository_exception&quot;,</span><br><span class="line">    &quot;reason&quot;: &quot;[test-bakcup] failed to create repository&quot;,</span><br><span class="line">    &quot;caused_by&quot;: &#123;</span><br><span class="line">      &quot;type&quot;: &quot;creation_exception&quot;,</span><br><span class="line">      &quot;reason&quot;: &quot;Guice creation errors:\n\n1) Error injecting constructor, RepositoryException[[test-bakcup] location [/data/mount] doesn&#x27;t match any of the locations specified by path.repo because this setting is empty]\n  at org.elasticsearch.repositories.fs.FsRepository.&lt;init&gt;(Unknown Source)\n  while locating org.elasticsearch.repositories.fs.FsRepository\n  while locating org.elasticsearch.repositories.Repository\n\n1 error&quot;,</span><br><span class="line">      &quot;caused_by&quot;: &#123;</span><br><span class="line">        &quot;type&quot;: &quot;repository_exception&quot;,</span><br><span class="line">        &quot;reason&quot;: &quot;[test-bakcup] location [/data/mount] doesn&#x27;t match any of the locations specified by path.repo because this setting is empty&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;status&quot;: 500</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="开始创建一个快照"><a href="#开始创建一个快照" class="headerlink" title="开始创建一个快照"></a>开始创建一个快照</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#在后头创建一个快照</span></span></span><br><span class="line">curl -XPUT  http://192.168.56.20:9200/_snapshot/my_backup/snapshot_1 </span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#也可以在前台运行。</span></span></span><br><span class="line">curl -XPUT  http://192.168.56.11:9200/_snapshot/my_backup/snapshot_1?wait_for_completion=true</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#上面的参数会在my_backup仓库里创建一个snapshot_1 的快照。</span></span></span><br></pre></td></tr></table></figure>
+<h3 id="可以选择相应的索引进行备份"><a href="#可以选择相应的索引进行备份" class="headerlink" title="可以选择相应的索引进行备份"></a>可以选择相应的索引进行备份</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">curl -XPUT  http://192.168.56.20:9200/_snapshot/my_backup/snapshot_2 -d &#x27;</span><br><span class="line">&#123;</span><br><span class="line">    &quot;indices&quot;: &quot;bank,logstash-2015.05.18&quot;</span><br><span class="line">&#125;&#x27;</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#解释：</span></span></span><br><span class="line">创建一个snapshot_2的快照，只备份bank,logstash-2015.05.18这两个索引。</span><br></pre></td></tr></table></figure>
+
+<h3 id="查看备份状态"><a href="#查看备份状态" class="headerlink" title="查看备份状态"></a>查看备份状态</h3><p>整个备份过程中，可以通过如下命令查看备份进度</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET http://192.168.0.1:9200/_snapshot/my_backup/snapshot_20150812/_status</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>主要由如下几种状态：</p>
+<ul>
+<li>INITIALIZING 集群状态检查，检查当前集群是否可以做快照，通常这个过程会非常快</li>
+<li>STARTED 正在转移数据到仓库</li>
+<li>FINALIZING 数据转移完成，正在转移元信息</li>
+<li>DONE　完成</li>
+<li>FAILED 备份失败</li>
+</ul>
+<h3 id="取消备份"><a href="#取消备份" class="headerlink" title="取消备份"></a>取消备份</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XDELETE http://192.168.0.1:9200/_snapshot/my_backup/snapshot_20150812</span><br></pre></td></tr></table></figure>
+<h3 id="获取所有快照信息。"><a href="#获取所有快照信息。" class="headerlink" title="获取所有快照信息。"></a>获取所有快照信息。</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET http://192.168.56.20:9200/_snapshot/my_backup/_all |python -mjson.tool</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#解释</span></span></span><br><span class="line">查看my_backup仓库下的所有快照。</span><br></pre></td></tr></table></figure>
+<h3 id="手动删除快照"><a href="#手动删除快照" class="headerlink" title="手动删除快照"></a>手动删除快照</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl -XDELETE http://192.168.56.20:9200/_snapshot/my_backup/snapshot_2</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#解释</span></span></span><br><span class="line">删除my_backup仓库下的snapshot_2的快照。</span><br></pre></td></tr></table></figure>
+<h2 id="备份恢复"><a href="#备份恢复" class="headerlink" title="备份恢复"></a>备份恢复</h2><h3 id="恢复备份"><a href="#恢复备份" class="headerlink" title="恢复备份"></a>恢复备份</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XPOST http://192.168.0.1:9200/_snapshot/my_backup/snapshot_20150812/_restore</span><br></pre></td></tr></table></figure>
+<p>同备份一样，也可以设置wait_for_completion=true等待恢复结果</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XPOST http://192.168.0.1:9200/_snapshot/my_backup/snapshot_20150812/_restore?wait_for_completion=true</span><br></pre></td></tr></table></figure>
+<p>默认情况下，是恢复所有的索引，我们也可以设置一些参数来指定恢复的索引，以及重命令恢复的索引，这样可以避免覆盖原有的数据.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">curl -XPOST http://192.168.0.1:9200/_snapshot/my_backup/snapshot_20150812/_restore</span><br><span class="line">&#123;</span><br><span class="line">    &quot;indices&quot;: &quot;index_1&quot;,</span><br><span class="line">    &quot;rename_pattern&quot;: &quot;index_(.+)&quot;,</span><br><span class="line">    &quot;rename_replacement&quot;: &quot;restored_index_$1&quot;</span><br><span class="line">&#125;</span><br><span class="line">上面的indices, 表示只恢复索引’index_1’</span><br><span class="line">rename_pattern: 表示重命名索引以’index_’开头的索引.</span><br><span class="line">rename_replacement: 表示将所有的索引重命名为’restored_index_xxx’.如index_1会被重命名为restored_index_1.</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="查看所有索引的恢复进度"><a href="#查看所有索引的恢复进度" class="headerlink" title="查看所有索引的恢复进度"></a>查看所有索引的恢复进度</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET http://192.168.0.1:9200/_recovery/</span><br></pre></td></tr></table></figure>
+
+<h3 id="查看索引restored-index-1的恢复进度"><a href="#查看索引restored-index-1的恢复进度" class="headerlink" title="查看索引restored_index_1的恢复进度"></a>查看索引restored_index_1的恢复进度</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XGET http://192.168.0.1:9200/_recovery/restored_index_1</span><br></pre></td></tr></table></figure>
+<h3 id="取消恢复"><a href="#取消恢复" class="headerlink" title="取消恢复"></a>取消恢复</h3><p>只需要删除索引，即可取消恢复</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XDELETE http://192.168.0.1:9200/restored_index_1</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="动态缩写或者扩容副本分片数量"><a href="#动态缩写或者扩容副本分片数量" class="headerlink" title="动态缩写或者扩容副本分片数量"></a>动态缩写或者扩容副本分片数量</h2><p>副本节点的数量可以在运行中的集群中动态的变更，这允许我们可以根据需求扩大或者缩小规模。</p>
+<p>比如我们执行一次缩小规模操作:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">curl -XPUT  http://192.168.56.12:9200/shakespeare/_settings &#x27;</span><br><span class="line">&#123;</span><br><span class="line">   &quot;number_of_replicas&quot; : 3</span><br><span class="line">&#125;&#x27;</span><br><span class="line">执行结果返回:</span><br><span class="line">&#123;</span><br><span class="line">    &quot;acknowledged&quot;: true</span><br></pre></td></tr></table></figure>
+
+<p>这时,我们看到片的信息分又重新做了调整: 主分片分布在节点es-node1,es-node3,es-node4上.从分片分布在es-node2,es-node3,es-node4上.</p>
+<h2 id="运维相关"><a href="#运维相关" class="headerlink" title="运维相关"></a>运维相关</h2><h3 id="如何重启elastic单台节点"><a href="#如何重启elastic单台节点" class="headerlink" title="如何重启elastic单台节点"></a>如何重启elastic单台节点</h3><ul>
+<li>停止数据写入，在重启单台节点，启动后分配同步会很快。</li>
+<li>如果开启数据写入，在重启单台节点，分片同步会很耗时。</li>
+</ul>
+<h2 id="elastic-帮助文档"><a href="#elastic-帮助文档" class="headerlink" title="elastic 帮助文档"></a>elastic 帮助文档</h2><p><a target="_blank" rel="noopener" href="http://www.cnblogs.com/guguli/p/5218297.html">elastic调优参考</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Wprosdocimo/Elasticsearch-zabbix">elastic监控</a></p>
+<p><a target="_blank" rel="noopener" href="http://udn.yyuap.com/doc/mastering-elasticsearch/chapter-4/41_README.html">Mastering Elasticsearch(中文版)</a></p>
+<p><a target="_blank" rel="noopener" href="http://kibana.logstash.es/content/logstash/plugins/input/file.html">ELK-权威指南</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.learnes.net/index.html">Elasticsearch 权威指南</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.cnblogs.com/zhang-shijie/p/5377127.html">ELK 之二：ElasticSearch 和Logstash高级使用</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/elastic/elasticsearch-migration/tree/1.x">升级版本-检查插件</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.cnblogs.com/buzzlight/p/elasticsearch_analysis.html">elastic-分词器详细解释</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/mallocator/Elasticsearch-Exporter">elasticsearch-数据导出工具</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/medcl/elasticsearch-migration">elasticsearch-数据在线导出</a></p>
+<h2 id="elastic-生产部署时遇到的问题"><a href="#elastic-生产部署时遇到的问题" class="headerlink" title="elastic-生产部署时遇到的问题"></a>elastic-生产部署时遇到的问题</h2><h3 id="out-of-memory错误"><a href="#out-of-memory错误" class="headerlink" title="out of memory错误"></a>out of memory错误</h3><p>因为默认情况下es对字段数据缓存（Field Data Cache）大小是无限制的，查询时会把字段值放到内存，特别是facet查询，对内存要求非常高，它会把结果都放在内存，然后进行排序等操作，一直使用内存，直到内存用完，当内存不够用时就有可能出现out of memory错误。</p>
+<h4 id="问题原理"><a href="#问题原理" class="headerlink" title="问题原理"></a>问题原理</h4><ol>
+<li><p>设置es的缓存类型为Soft Reference，它的主要特点是据有较强的引用功能。只有当内存不够的时候，才进行回收这类内存，因此在内存足够的时候，它们通常不被回收。另外，这些引 用对象还能保证在Java抛出OutOfMemory 异常之前，被设置为null。它可以用于实现一些常用图片的缓存，实现Cache的功能，保证最大限度的使用内存而不引起OutOfMemory。在es的配置文件加上index.cache.field.type: soft即可。</p>
+</li>
+<li><p>设置es最大缓存数据条数和缓存失效时间，通过设置index.cache.field.max_size: 50000来把缓存field的最大值设置为50000，设置index.cache.field.expire: 10m把过期时间设置成10分钟。</p>
+</li>
+</ol>
+<h4 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">index.cache.field.type: soft</span><br><span class="line">index.cache.field.max_size: 50000</span><br><span class="line">index.cache.field.expire: 5m</span><br></pre></td></tr></table></figure>
+
+
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/elastic/" rel="tag"># elastic</a>
+              <a href="/tags/java/" rel="tag"># java</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/10/10/pip-%E4%BF%AE%E6%94%B9%E5%9B%BD%E5%86%85%E9%95%9C%E5%83%8F%E6%BA%90/" rel="prev" title="pip-修改国内镜像源">
+                  <i class="fa fa-chevron-left"></i> pip-修改国内镜像源
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/12/02/curator-user/" rel="next" title="curator-4.1 版本使用">
+                  curator-4.1 版本使用 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+  
+  
+  
+
+
+
+      
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">biglittleant</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

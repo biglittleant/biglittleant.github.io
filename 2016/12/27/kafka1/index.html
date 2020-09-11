@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.biglittleant.cn","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+  </script>
+
+  <meta name="description" content="kafka简介Apache Kafka是由Apache软件基金会开发的一个开源消息系统项目，由Scala写成。Kafka最初是由LinkedIn开发，并于2011年初开源。该项目的目标是为处理实时数据提供一个统一、高通量、低等待的平台。Kafka是一个分布式的、分区的、多复本的日志提交服务。它通过一种独一无二的设计提供了一个消息系统的功能。 kafka应用场景 Kafka可以应用于消息系统，比如，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kafka-生产实战">
+<meta property="og:url" content="http://www.biglittleant.cn/2016/12/27/kafka1/index.html">
+<meta property="og:site_name" content="biglittleant">
+<meta property="og:description" content="kafka简介Apache Kafka是由Apache软件基金会开发的一个开源消息系统项目，由Scala写成。Kafka最初是由LinkedIn开发，并于2011年初开源。该项目的目标是为处理实时数据提供一个统一、高通量、低等待的平台。Kafka是一个分布式的、分区的、多复本的日志提交服务。它通过一种独一无二的设计提供了一个消息系统的功能。 kafka应用场景 Kafka可以应用于消息系统，比如，">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2016-12-27T06:45:41.000Z">
+<meta property="article:modified_time" content="2020-09-03T02:03:13.615Z">
+<meta property="article:author" content="biglittleant">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="kafka">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.biglittleant.cn/2016/12/27/kafka1/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>kafka-生产实战 | biglittleant</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">biglittleant</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">不被嘲笑的梦想，是不值得去实现的</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-文章分类">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a>
+
+  </li>
+        <li class="menu-item menu-item-归档">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">kafka简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#kafka%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">1.1.</span> <span class="nav-text">kafka应用场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E6%9C%AF%E8%AF%AD"><span class="nav-number">1.2.</span> <span class="nav-text">相关术语</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka%E5%AE%9E%E6%88%98"><span class="nav-number">2.</span> <span class="nav-text">kafka实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#kafka%E5%8D%95%E8%8A%82%E7%82%B9%E5%AE%9E%E6%88%98"><span class="nav-number">2.1.</span> <span class="nav-text">kafka单节点实战</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%96%E8%BE%91zookeeper%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">2.1.1.</span> <span class="nav-text">编辑zookeeper配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%96%E8%BE%91kafka%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">2.1.2.</span> <span class="nav-text">编辑kafka配置文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kafka%E9%9B%86%E7%BE%A4%E5%AE%9E%E6%88%98"><span class="nav-number">2.2.</span> <span class="nav-text">kafka集群实战</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%89%E4%B8%AA%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">2.2.1.</span> <span class="nav-text">创建三个配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8kafka%E9%9B%86%E7%BE%A4"><span class="nav-number">2.2.2.</span> <span class="nav-text">启动kafka集群</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AAtopic-%E4%B8%80%E4%B8%AA%E5%88%86%E5%8C%BA%EF%BC%8C%E4%B8%89%E4%B8%AA%E4%B8%BB%E6%9C%BA"><span class="nav-number">2.2.3.</span> <span class="nav-text">创建一个topic 一个分区，三个主机</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8Btopics%E7%9A%84%E4%BF%A1%E6%81%AF"><span class="nav-number">2.2.4.</span> <span class="nav-text">查看topics的信息</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kafka%E5%88%9B%E5%BB%BAtopic"><span class="nav-number">2.3.</span> <span class="nav-text">kafka创建topic</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka%E7%AE%A1%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text">kafka管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#kafka%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86"><span class="nav-number">3.1.</span> <span class="nav-text">kafka配置管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kafka%E9%85%8D%E7%BD%AE%E4%BC%98%E5%8C%96"><span class="nav-number">3.2.</span> <span class="nav-text">kafka配置优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E5%92%8Cio%E6%93%8D%E4%BD%9C%E7%BA%BF%E7%A8%8B%E9%85%8D%E7%BD%AE%E4%BC%98%E5%8C%96"><span class="nav-number">3.2.1.</span> <span class="nav-text">网络和io操作线程配置优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#log%E6%95%B0%E6%8D%AE%E6%96%87%E4%BB%B6%E5%88%B7%E6%96%B0%E7%AD%96%E7%95%A5"><span class="nav-number">3.2.2.</span> <span class="nav-text">log数据文件刷新策略</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A5%E5%BF%97%E4%BF%9D%E7%95%99%E7%AD%96%E7%95%A5%E9%85%8D%E7%BD%AE"><span class="nav-number">3.2.3.</span> <span class="nav-text">日志保留策略配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%80%E5%90%AF%E8%87%AA%E5%8A%A8%E5%88%9B%E5%BB%BA%E9%85%8D%E7%BD%AE%EF%BC%9A"><span class="nav-number">3.2.4.</span> <span class="nav-text">开启自动创建配置：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAtopic"><span class="nav-number">3.3.</span> <span class="nav-text">创建topic</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%88%91%E4%BB%AC%E6%9F%A5%E7%9C%8B%E8%AF%A5Topic%E7%9A%84%E7%9B%B8%E5%85%B3%E4%BF%A1%E6%81%AF"><span class="nav-number">3.4.</span> <span class="nav-text">我们查看该Topic的相关信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E9%83%BD%E6%9C%89%E5%93%AA%E4%BA%9Btopic"><span class="nav-number">3.5.</span> <span class="nav-text">查看都有哪些topic</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E6%8B%9F%E6%95%B0%E6%8D%AE%E7%9A%84%E7%94%9F%E4%BA%A7%E5%92%8C%E6%B6%88%E8%B4%B9"><span class="nav-number">3.6.</span> <span class="nav-text">模拟数据的生产和消费</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8producer%E7%94%9F%E4%BA%A7%E6%B6%88%E6%81%AF"><span class="nav-number">3.6.1.</span> <span class="nav-text">使用producer生产消息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8consumer%E5%8E%BB%E6%B6%88%E8%B4%B9%E6%B6%88%E6%81%AF"><span class="nav-number">3.6.2.</span> <span class="nav-text">使用consumer去消费消息</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9topic%E7%9A%84partition"><span class="nav-number">3.7.</span> <span class="nav-text">修改topic的partition</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9kafka%E7%9A%84%E5%88%86%E7%89%87%E9%85%8D%E7%BD%AE"><span class="nav-number">3.8.</span> <span class="nav-text">修改kafka的分片配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8Btopic%E7%9A%84%E8%AF%A6%E7%BB%86%E4%BF%A1%E6%81%AF"><span class="nav-number">3.8.1.</span> <span class="nav-text">查看topic的详细信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">3.8.2.</span> <span class="nav-text">修改配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C"><span class="nav-number">3.8.3.</span> <span class="nav-text">执行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5%E4%BF%AE%E6%94%B9%E6%83%85%E5%86%B5"><span class="nav-number">3.8.4.</span> <span class="nav-text">检查修改情况</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96"><span class="nav-number">4.</span> <span class="nav-text">kafka性能优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka%E7%9B%91%E6%8E%A7%E5%92%8C%E5%91%8A%E8%AD%A6"><span class="nav-number">5.</span> <span class="nav-text">kafka监控和告警</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%B1%87%E6%80%BB"><span class="nav-number">6.</span> <span class="nav-text">kafka客户端汇总</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%AE%E5%8A%A9%E6%96%87%E6%A1%A3"><span class="nav-number">7.</span> <span class="nav-text">帮助文档</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">biglittleant</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2016/12/27/kafka1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="biglittleant">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="biglittleant">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          kafka-生产实战
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2016-12-27 14:45:41" itemprop="dateCreated datePublished" datetime="2016-12-27T14:45:41+08:00">2016-12-27</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2020-09-03 10:03:13" itemprop="dateModified" datetime="2020-09-03T10:03:13+08:00">2020-09-03</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="kafka简介"><a href="#kafka简介" class="headerlink" title="kafka简介"></a>kafka简介</h2><p>Apache Kafka是由Apache软件基金会开发的一个开源消息系统项目，由Scala写成。Kafka最初是由LinkedIn开发，并于2011年初开源。该项目的目标是为处理实时数据提供一个统一、高通量、低等待的平台。<br>Kafka是一个分布式的、分区的、多复本的日志提交服务。它通过一种独一无二的设计提供了一个消息系统的功能。</p>
+<h3 id="kafka应用场景"><a href="#kafka应用场景" class="headerlink" title="kafka应用场景"></a>kafka应用场景</h3><ul>
+<li>Kafka可以应用于消息系统，比如，当下较为热门的消息推送，这些消息推送系统的消息源，可以使用Kafka作为系统的核心组建来完成消息的生产和消息的消费。</li>
+<li>然后是网站的行迹，我们可以将企业的Portal，用户的操作记录等信息发送到Kafka中，按照实际业务需求，可以进行实时监控，或者做离线处理等。</li>
+<li>一个是日志收集，类似于Flume套件这样的日志收集系统，但Kafka的设计架构采用push/pull，适合异构集群，Kafka可以批量提交消息，对Producer来说，在性能方面基本上是无消耗的，而在Consumer端中，我们可以使用HDFS这类的分布式文件存储系统进行存储。</li>
+</ul>
+<h3 id="相关术语"><a href="#相关术语" class="headerlink" title="相关术语"></a>相关术语</h3><ul>
+<li>Kafka维护按类区分的消息，称为主题（topic）</li>
+<li>生产者（producer）向kafka的主题发布消息</li>
+<li>消费者（consumer）向主题注册，并且接收发布到这些主题的消息</li>
+<li>kafka以一个拥有一台或多台服务器的集群运行着，每一台服务器称为broker</li>
+<li>从高层来说，生产者（producer）通过网络发消息到kafka集群，而kafka集群则以下面这种方式对消费者进行服务。</li>
+</ul>
+<h2 id="kafka实战"><a href="#kafka实战" class="headerlink" title="kafka实战"></a>kafka实战</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/src/</span><br><span class="line">wget https://www.apache.org/dyn/closer.cgi?path=/kafka/0.10.1.0/kafka_2.11-0.10.1.0.tgz</span><br><span class="line">tar -xzf kafka_2.11-0.10.1.0.tgz</span><br><span class="line">mv kafka_2.11-0.10.1.0 /data/app/</span><br><span class="line">ln -s /data/app/kafka_2.11-0.10.1.0 /data/app/kafka</span><br><span class="line"> /data/app/kafka/bin/zookeeper-server-start.sh config/zookeeper.properties</span><br><span class="line">/data/app/kafka/bin/kafka-server-start.sh config/server.properties</span><br></pre></td></tr></table></figure>
+
+<h3 id="kafka单节点实战"><a href="#kafka单节点实战" class="headerlink" title="kafka单节点实战"></a>kafka单节点实战</h3><h4 id="编辑zookeeper配置文件"><a href="#编辑zookeeper配置文件" class="headerlink" title="编辑zookeeper配置文件"></a>编辑zookeeper配置文件</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /data/app/kafka/config/zookeeper.properties </span><br></pre></td></tr></table></figure>
+<h4 id="编辑kafka配置文件"><a href="#编辑kafka配置文件" class="headerlink" title="编辑kafka配置文件"></a>编辑kafka配置文件</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">vim /data/app/kafka/config/server.properties</span><br><span class="line">broker.id=0</span><br><span class="line">port=9092</span><br><span class="line">advertised.host.name=10.0.2.150</span><br><span class="line">num.network.threads=3</span><br><span class="line"> </span><br><span class="line">num.io.threads=8</span><br><span class="line">socket.send.buffer.bytes=102400</span><br><span class="line">socket.receive.buffer.bytes=102400</span><br><span class="line">socket.request.max.bytes=104857600</span><br><span class="line">log.dirs=/tmp/kafka-logs</span><br><span class="line">num.partitions=1</span><br><span class="line">num.recovery.threads.per.data.dir=1</span><br><span class="line">log.retention.hours=168</span><br><span class="line">log.segment.bytes=1073741824</span><br><span class="line">log.retention.check.interval.ms=300000</span><br><span class="line">log.cleaner.enable=false</span><br><span class="line">zookeeper.connect=localhost:4188</span><br><span class="line">zookeeper.connection.timeout.ms=6000</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">这三个必须得配置</span></span><br><span class="line"><span class="meta">#</span><span class="bash">这个是配置PRODUCER/CONSUMER连上来的时候使用的地址(必须得配置)</span></span><br><span class="line">advertised.host.name=192.168.56.12</span><br><span class="line"><span class="meta">#</span><span class="bash">设置KAFKA LOG路径</span></span><br><span class="line">log.dirs=$KAFKA_HOME/logs/kafka-logs</span><br><span class="line"><span class="meta">#</span><span class="bash">设置ZOOKEEPER的连接地址</span></span><br><span class="line">zookeeper.connect=192.168.56.12:2181</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>启动kafka服务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh /data/app/kafka/bin/kafka-server-start.sh /data/app/kafka/config/server.properties &gt;/dev/null 2&gt;&amp;1 &amp;  </span><br></pre></td></tr></table></figure>
+
+<h3 id="kafka集群实战"><a href="#kafka集群实战" class="headerlink" title="kafka集群实战"></a>kafka集群实战</h3><h4 id="创建三个配置文件"><a href="#创建三个配置文件" class="headerlink" title="创建三个配置文件"></a>创建三个配置文件</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">cat &gt;/data/app/kafka/config/server.properties-0&lt;&lt;EOF</span><br><span class="line">broker.id=0</span><br><span class="line">port=9090</span><br><span class="line">advertised.host.name=10.0.2.150</span><br><span class="line">num.network.threads=3</span><br><span class="line">num.io.threads=8</span><br><span class="line">socket.send.buffer.bytes=102400</span><br><span class="line">socket.receive.buffer.bytes=102400</span><br><span class="line">socket.request.max.bytes=104857600</span><br><span class="line">log.dirs=/tmp/kafka-logs-0</span><br><span class="line">num.partitions=1</span><br><span class="line">num.recovery.threads.per.data.dir=1</span><br><span class="line">log.retention.hours=168</span><br><span class="line">log.segment.bytes=1073741824</span><br><span class="line">log.retention.check.interval.ms=300000</span><br><span class="line">log.cleaner.enable=false</span><br><span class="line">zookeeper.connect=127.0.0.1:2880,127.0.0.1:2881,127.0.0.1:2882</span><br><span class="line">zookeeper.connection.timeout.ms=6000</span><br><span class="line">EOF</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">cat &gt;/data/app/kafka/config/server.properties-1&lt;&lt;EOF</span><br><span class="line">broker.id=1</span><br><span class="line">port=9091</span><br><span class="line">advertised.host.name=10.0.2.150</span><br><span class="line">num.network.threads=3 </span><br><span class="line">num.io.threads=8</span><br><span class="line">socket.send.buffer.bytes=102400</span><br><span class="line">socket.receive.buffer.bytes=102400</span><br><span class="line">socket.request.max.bytes=104857600</span><br><span class="line">log.dirs=/tmp/kafka-logs-1</span><br><span class="line">num.partitions=1</span><br><span class="line">num.recovery.threads.per.data.dir=1</span><br><span class="line">log.retention.hours=168</span><br><span class="line">log.segment.bytes=1073741824</span><br><span class="line">log.retention.check.interval.ms=300000</span><br><span class="line">log.cleaner.enable=false</span><br><span class="line">zookeeper.connect=127.0.0.1:2880,127.0.0.1:2881,127.0.0.1:2882</span><br><span class="line">zookeeper.connection.timeout.ms=6000</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">cat &gt;/data/app/kafka/config/server.properties-2&lt;&lt;EOF</span><br><span class="line">broker.id=2</span><br><span class="line">port=9092</span><br><span class="line">advertised.host.name=10.0.2.150</span><br><span class="line">num.network.threads=3</span><br><span class="line">num.io.threads=8</span><br><span class="line">socket.send.buffer.bytes=102400</span><br><span class="line">socket.receive.buffer.bytes=102400</span><br><span class="line">socket.request.max.bytes=104857600</span><br><span class="line">log.dirs=/tmp/kafka-logs-2</span><br><span class="line">num.partitions=1</span><br><span class="line">num.recovery.threads.per.data.dir=1</span><br><span class="line">log.retention.hours=168</span><br><span class="line">log.segment.bytes=1073741824</span><br><span class="line">log.retention.check.interval.ms=300000</span><br><span class="line">log.cleaner.enable=false</span><br><span class="line">zookeeper.connect=127.0.0.1:2880,127.0.0.1:2881,127.0.0.1:2882</span><br><span class="line">zookeeper.connection.timeout.ms=6000</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<h4 id="启动kafka集群"><a href="#启动kafka集群" class="headerlink" title="启动kafka集群"></a>启动kafka集群</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">./kafka-server-start.sh /data/app/kafka/config/server.properties &gt;/dev/null 2&gt;&amp;1 &amp; </span><br><span class="line">./kafka-server-start.sh /data/app/kafka/config/server.properties-1 &gt;/dev/null 2&gt;&amp;1 &amp; </span><br><span class="line">./kafka-server-start.sh /data/app/kafka/config/server.properties-2 &gt;/dev/null 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure>
+
+<h4 id="创建一个topic-一个分区，三个主机"><a href="#创建一个topic-一个分区，三个主机" class="headerlink" title="创建一个topic 一个分区，三个主机"></a>创建一个topic 一个分区，三个主机</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost kafka]# ./bin/kafka-topics.sh --create --zookeeper 127.0.0.1:2880  --replication-factor 3 --partitions 1 --topic topics  </span><br><span class="line">Created topic &quot;topics&quot;. </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>–topic指定topic name </li>
+<li>–partitions指定分区数，这个参数需要根据broker数和数据量决定，正常情况下，每个broker上两个partition最好； </li>
+<li>–replication-factor指定partition的replicas数，建议设置为2；</li>
+<li>KAFKA有几个，replication-factor就填几个</li>
+</ul>
+<h4 id="查看topics的信息"><a href="#查看topics的信息" class="headerlink" title="查看topics的信息"></a>查看topics的信息</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost kafka]# ./bin/kafka-topics.sh --describe --zookeeper 127.0.0.1:2881 --topic topics </span><br><span class="line">Topic:topics    PartitionCount:1        ReplicationFactor:3     Configs:</span><br><span class="line">        Topic: topics   Partition: 0    Leader: 1       Replicas: 1,0,2 Isr: 1,0,2</span><br><span class="line">[root@localhost kafka]# </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Leader：负责处理消息的读和写，Leader是从所有节点中随机选择的。</li>
+<li>Replicas：列出了所有的副本节点，不管节点是否在服务中。</li>
+<li>Isr：是正在服务中的节点</li>
+</ul>
+<h3 id="kafka创建topic"><a href="#kafka创建topic" class="headerlink" title="kafka创建topic"></a>kafka创建topic</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test</span><br></pre></td></tr></table></figure>
+
+<h2 id="kafka管理"><a href="#kafka管理" class="headerlink" title="kafka管理"></a>kafka管理</h2><h3 id="kafka配置管理"><a href="#kafka配置管理" class="headerlink" title="kafka配置管理"></a>kafka配置管理</h3><ul>
+<li>advertised.host.name=eventbus1.kafka</li>
+<li>num.network.threads=3 broker处理消息的最大线程数，一般情况下数量为cpu核数</li>
+<li>num.io.threads: Kafka broker 处理磁盘 IO 的线程数</li>
+<li>socket.receive.buffer.bytes: socket的接收缓冲区大小</li>
+<li>socket.send.buffer.bytes: socket的发送缓冲区大小</li>
+<li>socket.request.max.bytes=104857600 socket请求的最大数值</li>
+<li>log.dirs=/var/log/kafka  消息日志存放位置</li>
+<li>num.partitions: 创建 topic 如果不指定分区数时的默认值</li>
+<li>log.flush.interval.messages=1000 表示每当消息记录数达到1000时flush一次数据到磁盘</li>
+<li>log.flush.interval.ms=1000 表示每间隔1000毫秒flush一次数据到磁盘</li>
+<li>log.retention.bytes: topic 每个分区的最大文件大小</li>
+<li>log.retention.hours: 消息保留的最大时间</li>
+<li>log.segment.bytes =1024<em>1024</em>1024  topic的分区是以一堆segment文件存储的，这个控制每个segment的大小，会被topic创建时的指定参数覆盖</li>
+<li>log.retention.check.interval.ms=30000000 文件大小检查的周期时间</li>
+<li>auto.create.topics.enable: 自动创建 topic</li>
+<li>default.replication.factor: 创建 topic 如果不指定复制因子时的默认值</li>
+<li>delete.topic.enable: 是否支持删除 topic</li>
+<li>message.max.bytes: 消息的最大尺寸</li>
+<li>num.replica.fetchers: 从分区 Leader 复制消息的线程数</li>
+<li>queued.max.requests: 等待 IO 线程处理的请求队列最大数，若是等待 IO 的请求超过这个数值，就会停止接受外部消息</li>
+<li>zookeeper.connect = localhost:2181  zookeeper集群的地址，可以是多个用逗号分割 <code>hostname1:port1,hostname2:port2,hostname3:port3</code></li>
+<li>zookeeper.session.timeout.ms=6000 ZooKeeper的最大超时时间，就是心跳的间隔，若是没有反映，那么认为已经死了，不易过大</li>
+<li>zookeeper.connection.timeout.ms =6000 ZooKeeper的连接超时时间</li>
+<li>zookeeper.sync.time.ms =2000  ZooKeeper集群中leader和follower之间的同步时间</li>
+</ul>
+<blockquote>
+<p>这里配置broker的时候，每台机器上的broker保证唯一，从0开始。如：在另外2台机器上分别配置broker.id=1，broker.id=2</p>
+</blockquote>
+<h3 id="kafka配置优化"><a href="#kafka配置优化" class="headerlink" title="kafka配置优化"></a>kafka配置优化</h3><h4 id="网络和io操作线程配置优化"><a href="#网络和io操作线程配置优化" class="headerlink" title="网络和io操作线程配置优化"></a>网络和io操作线程配置优化</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> broker处理消息的最大线程数</span></span><br><span class="line">num.network.threads=xxx</span><br><span class="line"><span class="meta">#</span><span class="bash"> broker处理磁盘IO的线程数</span></span><br><span class="line">num.io.threads=xxx</span><br><span class="line"></span><br><span class="line">建议配置：</span><br><span class="line">一般num.network.threads主要处理网络io，读写缓冲区数据，基本没有io等待，配置线程数量为cpu核数加1.</span><br><span class="line"></span><br><span class="line">num.io.threads主要进行磁盘io操作，高峰期可能有些io等待，因此配置需要大些。配置线程数量为cpu核数2倍，最大不超过3倍.</span><br></pre></td></tr></table></figure>
+
+<h4 id="log数据文件刷新策略"><a href="#log数据文件刷新策略" class="headerlink" title="log数据文件刷新策略"></a>log数据文件刷新策略</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">为了大幅度提高producer写入吞吐量，需要定期批量写文件。</span><br><span class="line">建议配置：</span><br><span class="line"><span class="meta">#</span><span class="bash"> 每当producer写入10000条消息时，刷数据到磁盘</span></span><br><span class="line">log.flush.interval.messages=10000</span><br><span class="line"><span class="meta">#</span><span class="bash"> 每间隔1秒钟时间，刷数据到磁盘</span></span><br><span class="line">log.flush.interval.ms=1000</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="日志保留策略配置"><a href="#日志保留策略配置" class="headerlink" title="日志保留策略配置"></a>日志保留策略配置</h4><p>当kafka server的被写入海量消息后，会生成很多数据文件，且占用大量磁盘空间，如果不及时清理，可能磁盘空间不够用，kafka默认是保留7天。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">log.retention.hours=72</span><br><span class="line"><span class="meta">#</span><span class="bash"> 保留三天，也可以更短 </span></span><br><span class="line"></span><br><span class="line">log.segment.bytes=1073741824</span><br><span class="line"><span class="meta">#</span><span class="bash"> 段文件配置1GB，有利于快速回收磁盘空间，重启kafka加载也会加快(如果文件过小，则文件数量比较多，</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> kafka启动时是单线程扫描目录(log.dir)下所有数据文件)</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="开启自动创建配置："><a href="#开启自动创建配置：" class="headerlink" title="开启自动创建配置："></a>开启自动创建配置：</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">auto.create.topics.enable=true </span><br><span class="line">使用程序直接往kafka中相应的topic发送数据，如果topic不存在就会按默认配置进行创建。</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建topic"><a href="#创建topic" class="headerlink" title="创建topic"></a>创建topic</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh kafka-topics.sh --create --topic topic --replication-factor 1 --partitions 1 --zookeeper localhost:4188 </span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>KAFKA有几个，replication-factor就填几个</p>
+</blockquote>
+<h3 id="我们查看该Topic的相关信息"><a href="#我们查看该Topic的相关信息" class="headerlink" title="我们查看该Topic的相关信息"></a>我们查看该Topic的相关信息</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kafka-topics.sh --zookeeper localhost:4188 --topic topic --describe</span><br></pre></td></tr></table></figure>
+
+<h3 id="查看都有哪些topic"><a href="#查看都有哪些topic" class="headerlink" title="查看都有哪些topic"></a>查看都有哪些topic</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/kafka-topics.sh --list --zookeeper localhost:2181</span><br></pre></td></tr></table></figure>
+
+<h3 id="模拟数据的生产和消费"><a href="#模拟数据的生产和消费" class="headerlink" title="模拟数据的生产和消费"></a>模拟数据的生产和消费</h3><h4 id="使用producer生产消息"><a href="#使用producer生产消息" class="headerlink" title="使用producer生产消息"></a>使用producer生产消息</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost bin]# sh kafka-console-producer.sh --broker-list localhost:9092 --sync --topic topic </span><br><span class="line">[2015-12-10 13:54:40,460] WARN Property topic is not valid (kafka.utils.VerifiableProperties)</span><br><span class="line">hello</span><br><span class="line">你好</span><br></pre></td></tr></table></figure>
+
+<h4 id="使用consumer去消费消息"><a href="#使用consumer去消费消息" class="headerlink" title="使用consumer去消费消息"></a>使用consumer去消费消息</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost bin]# sh kafka-console-consumer.sh --zookeeper 10.0.2.150:4188 --topic topic --from-beginning          </span><br><span class="line">hello</span><br><span class="line">你好</span><br></pre></td></tr></table></figure>
+
+<h3 id="修改topic的partition"><a href="#修改topic的partition" class="headerlink" title="修改topic的partition"></a>修改topic的partition</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 通过kafka-topics.sh工具的alter命令，将topic_test的partitions从12增加到20</span></span></span><br><span class="line"> </span><br><span class="line">./bin/kafka-topics.sh –zookeeper 192.168.2.225:2183/config/mobile/mq –alter –partitions 20 –topic topic_test</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="修改kafka的分片配置"><a href="#修改kafka的分片配置" class="headerlink" title="修改kafka的分片配置"></a>修改kafka的分片配置</h3><p>操作步骤如下：</p>
+<p>操作，是指手动写扩充replicas的配置文件，然后使用工具进行操作</p>
+<h4 id="查看topic的详细信息"><a href="#查看topic的详细信息" class="headerlink" title="查看topic的详细信息"></a>查看topic的详细信息</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">lizhitao@users-MacBook-Pro-2:~$ ./bin/kafka-topics.sh –zookeeper 192.168.2.225:2183/config/mobile/mq –describe –topic test.example </span><br><span class="line">Topic:test.example PartitionCount:12 ReplicationFactor:1 Configs: </span><br><span class="line">Topic: test.example Partition: 0 Leader: 0 Replicas: 0 Isr: 0 </span><br><span class="line">Topic: test.example Partition: 1 Leader: 1 Replicas: 1 Isr: 1 </span><br><span class="line">Topic: test.example Partition: 2 Leader: 2 Replicas: 2 Isr: 2 </span><br><span class="line">Topic: test.example Partition: 3 Leader: 0 Replicas: 0 Isr: 0 </span><br><span class="line">Topic: test.example Partition: 4 Leader: 1 Replicas: 1 Isr: 1 </span><br><span class="line">Topic: test.example Partition: 5 Leader: 2 Replicas: 2 Isr: 2 </span><br><span class="line">Topic: test.example Partition: 6 Leader: 0 Replicas: 0 Isr: 0 </span><br><span class="line">Topic: test.example Partition: 7 Leader: 1 Replicas: 1 Isr: 1 </span><br><span class="line">Topic: test.example Partition: 8 Leader: 2 Replicas: 2 Isr: 2 </span><br><span class="line">Topic: test.example Partition: 9 Leader: 0 Replicas: 0 Isr: 0 </span><br><span class="line">Topic: test.example Partition: 10 Leader: 1 Replicas: 1 Isr: 1 </span><br><span class="line">Topic: test.example Partition: 11 Leader: 2 Replicas: 2 Isr: 2</span><br></pre></td></tr></table></figure>
+
+<h4 id="修改配置文件"><a href="#修改配置文件" class="headerlink" title="修改配置文件"></a>修改配置文件</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">将原有replicas为[0]扩充为[0,4], [1]扩充为[1,5],[2]扩充为[2,3] </span><br><span class="line">[sankuai@data-kafka01 kafka]$ cat partitions-to-move.json </span><br><span class="line">&#123; </span><br><span class="line">“partitions”: </span><br><span class="line">[ </span><br><span class="line">&#123; </span><br><span class="line">“topic”: “test.example”, </span><br><span class="line">“partition”: 0, </span><br><span class="line">“replicas”: [0,4] </span><br><span class="line">&#125;, </span><br><span class="line">..... </span><br><span class="line">&#123; </span><br><span class="line">“topic”: “test.example”, </span><br><span class="line">“partition”: 11, </span><br><span class="line">“replicas”: [2,3] </span><br><span class="line">&#125; </span><br><span class="line">], </span><br><span class="line">“version”:1 </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="执行"><a href="#执行" class="headerlink" title="执行"></a>执行</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/kafka-reassign-partitions.sh –zookeeper 192.168.2.225:2183/config/mobile/mq –reassignment-json-file partitions-to-move.json –execute</span><br></pre></td></tr></table></figure>
+
+<h4 id="检查修改情况"><a href="#检查修改情况" class="headerlink" title="检查修改情况"></a>检查修改情况</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[sankuai@data-kafka01 kafka]$ ./bin/kafka-topics.sh –zookeeper 192.168.2.225:2183/config/mobile/mq –describe –topic test.example </span><br><span class="line">Topic:test.example PartitionCount:12 ReplicationFactor:2 Configs: </span><br><span class="line">Topic: test.example Partition: 0 Leader: 0 Replicas: 0,4 Isr: 0,4 </span><br><span class="line">Topic: test.example Partition: 1 Leader: 1 Replicas: 1,5 Isr: 1,5 </span><br><span class="line">Topic: test.example Partition: 2 Leader: 2 Replicas: 2,3 Isr: 2,3 </span><br><span class="line">Topic: test.example Partition: 3 Leader: 0 Replicas: 0,4 Isr: 0,4 </span><br><span class="line">Topic: test.example Partition: 4 Leader: 1 Replicas: 1,5 Isr: 1,5 </span><br><span class="line">Topic: test.example Partition: 5 Leader: 2 Replicas: 2,3 Isr: 2,3 </span><br><span class="line">Topic: test.example Partition: 6 Leader: 0 Replicas: 0,4 Isr: 0,4 </span><br><span class="line">Topic: test.example Partition: 7 Leader: 1 Replicas: 1,5 Isr: 1,5 </span><br><span class="line">Topic: test.example Partition: 8 Leader: 2 Replicas: 2,3 Isr: 2,3 </span><br><span class="line">Topic: test.example Partition: 9 Leader: 0 Replicas: 0,4 Isr: 0,4 </span><br><span class="line">Topic: test.example Partition: 10 Leader: 1 Replicas: 1,5 Isr: 1,5 </span><br><span class="line">Topic: test.example Partition: 11 Leader: 2 Replicas: 2,3 Isr: 2,3</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="kafka性能优化"><a href="#kafka性能优化" class="headerlink" title="kafka性能优化"></a>kafka性能优化</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">###  配置jmx服务</span></span></span><br><span class="line">kafka server中默认是不启动jmx端口的，需要用户自己配置</span><br><span class="line">vim bin/kafka-run-class.sh</span><br><span class="line"><span class="meta">#</span><span class="bash">最前面添加一行</span></span><br><span class="line">JMX_PORT=8060</span><br></pre></td></tr></table></figure>
+
+<h2 id="kafka监控和告警"><a href="#kafka监控和告警" class="headerlink" title="kafka监控和告警"></a>kafka监控和告警</h2><p>通过使用，个人总结以上三种监控程序的优缺点：</p>
+<p>Kafka Web Console：监控功能较为全面，可以预览消息，监控Offset、Lag等信息，但存在bug，不建议在生产环境中使用。</p>
+<p>Kafka Manager：偏向Kafka集群管理，若操作不当，容易导致集群出现故障。对Kafka实时生产和消费消息是通过JMX实现的。没有记录Offset、Lag等信息。</p>
+<p>KafkaOffsetMonitor：程序一个jar包的形式运行，部署较为方便。只有监控功能，使用起来也较为安全。</p>
+<p>若只需要监控功能，推荐使用KafkaOffsetMonito，若偏重Kafka集群管理，推荐使用Kafka Manager。</p>
+<p>因为都是开源程序，稳定性欠缺。故需先了解清楚目前已存在哪些Bug，多测试一下，避免出现类似于Kafka Web Console的问题。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line">描述：所有的topic的消息速率(消息数/秒)</span><br><span class="line">Mbean名：&quot;kafka.server&quot;:name=&quot;AllTopicsMessagesInPerSec&quot;,type=&quot;BrokerTopicMetrics&quot;</span><br><span class="line">正常的值：</span><br><span class="line"> </span><br><span class="line">描述：所有的topic的流入数据速率(字节/秒)</span><br><span class="line">Mbean名：&quot;kafka.server&quot;:name=&quot;AllTopicsBytesInPerSec&quot;,type=&quot;BrokerTopicMetrics&quot;</span><br><span class="line">正常的值：</span><br><span class="line"> </span><br><span class="line">描述：producer或Fetch-consumer或Fetch-follower的请求速率(请求次数/秒)</span><br><span class="line">Mbean名：&quot;kafka.network&quot;:name=&quot;&#123;Produce|Fetch-consumer|Fetch-follower&#125;-RequestsPerSec&quot;,type=&quot;RequestMetrics&quot;</span><br><span class="line">正常的值：</span><br><span class="line"> </span><br><span class="line">描述：所有的topic的流出数据速率(字节/秒)</span><br><span class="line">Mbean名： &quot;kafka.server&quot;:name=&quot;AllTopicsBytesOutPerSec&quot;,type=&quot;BrokerTopicMetrics&quot;</span><br><span class="line">正常的值：</span><br><span class="line"> </span><br><span class="line">描述：刷日志的速率和耗时</span><br><span class="line">Mbean名： &quot;kafka.log&quot;:name=&quot;LogFlushRateAndTimeMs&quot;,type=&quot;LogFlushStats&quot;</span><br><span class="line">正常的值：</span><br><span class="line"> </span><br><span class="line">描述：正在做复制的partition的数量(|ISR| &lt; |all replicas|)</span><br><span class="line">Mbean名：&quot;kafka.server&quot;:name=&quot;UnderReplicatedPartitions&quot;,type=&quot;ReplicaManager&quot;</span><br><span class="line">正常的值：0</span><br><span class="line"> </span><br><span class="line">描述：当前的broker是否为controller</span><br><span class="line">Mbean名：&quot;kafka.controller&quot;:name=&quot;ActiveControllerCount&quot;,type=&quot;KafkaController&quot;</span><br><span class="line">正常的值：在集群中只有一个broker的这个值为1</span><br><span class="line"> </span><br><span class="line">描述：选举leader的速率</span><br><span class="line">Mbean名：&quot;kafka.controller&quot;:name=&quot;LeaderElectionRateAndTimeMs&quot;,type=&quot;ControllerStats&quot;</span><br><span class="line">正常的值：如果有broker挂了，此值非0</span><br><span class="line"> </span><br><span class="line">描述：Unclean的leader选举速率</span><br><span class="line">Mbean名：&quot;kafka.controller&quot;:name=&quot;UncleanLeaderElectionsPerSec&quot;,type=&quot;ControllerStats&quot;</span><br><span class="line">正常的值：0</span><br><span class="line"> </span><br><span class="line">描述：该broker上的partition的数量</span><br><span class="line">Mbean名： &quot;kafka.server&quot;:name=&quot;PartitionCount&quot;,type=&quot;ReplicaManager&quot;</span><br><span class="line">正常的值：应在各个broker中平均分布</span><br><span class="line"> </span><br><span class="line">描述：Leader的replica的数量</span><br><span class="line">Mbean名： &quot;kafka.server&quot;:name=&quot;LeaderCount&quot;,type=&quot;ReplicaManager&quot;</span><br><span class="line">正常的值：应在各个broker中平均分布</span><br><span class="line"> </span><br><span class="line">描述：ISR的收缩(shrink)速率</span><br><span class="line">Mbean名：&quot;kafka.server&quot;:name=&quot;ISRShrinksPerSec&quot;,type=&quot;ReplicaManager&quot;</span><br><span class="line">正常的值：如果一个broker挂掉了，一些partition的ISR会收缩。当那个broker重新起来时，一旦它的replica完全跟上，ISR会扩大(expand)。除此之外，正常情况下，此值和下面的扩大速率都是0。</span><br><span class="line"> </span><br><span class="line">描述：ISR的扩大(expansion)速率</span><br><span class="line">Mbean名： &quot;kafka.server&quot;:name=&quot;ISRExpandsPerSec&quot;,type=&quot;ReplicaManager&quot;</span><br><span class="line">正常的值：参见ISR的收缩(shrink)速率</span><br><span class="line"> </span><br><span class="line">描述：follower落后leader replica的最大的消息数量</span><br><span class="line">Mbean名：&quot;kafka.server&quot;:name=&quot;([-.\w]+)-MaxLag&quot;,type=&quot;ReplicaFetcherManager&quot;</span><br><span class="line">正常的值：小于replica.lag.max.messages</span><br><span class="line"> </span><br><span class="line">描述：每个follower replica落后的消息速率</span><br><span class="line">Mbean名：&quot;kafka.server&quot;:name=&quot;([-.\w]+)-ConsumerLag&quot;,type=&quot;FetcherLagMetrics&quot;</span><br><span class="line">正常的值：小于replica.lag.max.messages</span><br><span class="line"> </span><br><span class="line">描述：等待producer purgatory的请求数</span><br><span class="line">Mbean名：&quot;kafka.server&quot;:name=&quot;PurgatorySize&quot;,type=&quot;ProducerRequestPurgatory&quot;</span><br><span class="line">正常的值：如果ack=-1，应为非0值</span><br><span class="line"> </span><br><span class="line">描述：等待fetch purgatory的请求数</span><br><span class="line">Mbean名：&quot;kafka.server&quot;:name=&quot;PurgatorySize&quot;,type=&quot;FetchRequestPurgatory&quot;</span><br><span class="line">正常的值：依赖于consumer的fetch.wait.max.ms的设置</span><br><span class="line"> </span><br><span class="line">描述：一个请求(producer,Fetch-Consumer,Fetch-Follower)耗费的所有时间</span><br><span class="line">Mbean名：&quot;kafka.network&quot;:name=&quot;&#123;Produce|Fetch-Consumer|Fetch-Follower&#125;-TotalTimeMs&quot;,type=&quot;RequestMetrics&quot;</span><br><span class="line">正常的值：包括了queue, local, remote和response send time</span><br><span class="line"> </span><br><span class="line">描述：请求(producer,Fetch-Consumer,Fetch-Follower)在请求队列中的等待时间</span><br><span class="line">Mbean名：&quot;kafka.network&quot;:name=&quot;&#123;Produce|Fetch-Consumer|Fetch-Follower&#125;-QueueTimeMs&quot;,type=&quot;RequestMetrics&quot;</span><br><span class="line">正常的值：</span><br><span class="line"> </span><br><span class="line">描述：请求(producer,Fetch-Consumer,Fetch-Follower)在leader处理请求花的时间</span><br><span class="line">Mbean名：&quot;kafka.network&quot;:name=&quot;&#123;Produce|Fetch-Consumer|Fetch-Follower&#125;-LocalTimeMs&quot;,type=&quot;RequestMetrics&quot;</span><br><span class="line">正常的值：</span><br><span class="line"> </span><br><span class="line">描述：请求(producer,Fetch-Consumer,Fetch-Follower)等待follower花费的时间</span><br><span class="line">Mbean名：&quot;kafka.network&quot;:name=&quot;&#123;Produce|Fetch-Consumer|Fetch-Follower&#125;-RemoteTimeMs&quot;,type=&quot;RequestMetrics&quot;</span><br><span class="line">正常的值：producer的ack=-1时，非0才正常</span><br><span class="line"> </span><br><span class="line">描述：发送响应花费的时间</span><br><span class="line">Mbean名：&quot;kafka.network&quot;:name=&quot;&#123;Produce|Fetch-Consumer|Fetch-Follower&#125;-ResponseSendTimeMs&quot;,type=&quot;RequestMetrics&quot;</span><br><span class="line">正常的值：</span><br><span class="line"> </span><br><span class="line">描述：consumer落后producer的消息数量</span><br><span class="line">Mbean名：&quot;kafka.consumer&quot;:name=&quot;([-.\w]+)-MaxLag&quot;,type=&quot;ConsumerFetcherManager&quot;</span><br><span class="line">正常的值：</span><br><span class="line"> </span><br><span class="line">建议对GC耗时和其他参数和诸如系统CPU，I/O时间等等进行监控。在client端，建议对&quot;消息数量/字节数&quot;的速率(全局的和对于每一个topic)，请求的&quot;速率/大小/耗时&quot;进行监控。还有consumer端，所有partition的最大的落后情况和最小的fetch请求的速率。consumer为了能跟上，最大落后数量需要少于一个threshold并且最小fetch速率需要大于0.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="kafka客户端汇总"><a href="#kafka客户端汇总" class="headerlink" title="kafka客户端汇总"></a>kafka客户端汇总</h2><p><code>pip install kafka-python</code><br><a target="_blank" rel="noopener" href="http://kafka-python.readthedocs.io/en/master/install.html">kafka官方文档</a></p>
+<h2 id="帮助文档"><a href="#帮助文档" class="headerlink" title="帮助文档"></a>帮助文档</h2><p>分布式消息中间件应用实践<br><a target="_blank" rel="noopener" href="http://www.ibm.com/developerworks/cn/opensource/os-cn-kafka-distributed/">http://www.ibm.com/developerworks/cn/opensource/os-cn-kafka-distributed/</a><br>Apache kafka 工作原理介绍<br><a target="_blank" rel="noopener" href="http://www.ibm.com/developerworks/cn/opensource/os-cn-kafka/index.html">http://www.ibm.com/developerworks/cn/opensource/os-cn-kafka/index.html</a></p>
+<p>kafka 快速入门手册<br><a target="_blank" rel="noopener" href="http://www.blogjava.net/paulwong/archive/2014/05/11/413506.html">http://www.blogjava.net/paulwong/archive/2014/05/11/413506.html</a></p>
+<p>kafka 集群安装与扩容<br><a target="_blank" rel="noopener" href="http://my.oschina.net/MaTech/blog/292090">http://my.oschina.net/MaTech/blog/292090</a><br><a target="_blank" rel="noopener" href="http://my.oschina.net/MaTech/blog/292090">http://my.oschina.net/MaTech/blog/292090</a></p>
+<p>kafka入门：简介、使用场景、设计原理、主要配置及集群搭建（转）</p>
+<p>kafka 性能测试<br><a target="_blank" rel="noopener" href="https://engineering.linkedin.com/kafka/benchmarking-apache-kafka-2-million-writes-second-three-cheap-machines">https://engineering.linkedin.com/kafka/benchmarking-apache-kafka-2-million-writes-second-three-cheap-machines</a></p>
+<p>青云kafka集群介绍</p>
+<p><a target="_blank" rel="noopener" href="https://docs.qingcloud.com/guide/queue.html#id7">https://docs.qingcloud.com/guide/queue.html#id7</a></p>
+<p>kafka python+zabbix 监控脚本<br><a target="_blank" rel="noopener" href="http://club.oneapm.com/t/zabbix-kafka/854">http://club.oneapm.com/t/zabbix-kafka/854</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+              <a href="/tags/kafka/" rel="tag"># kafka</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/12/26/tomcat-install/" rel="prev" title="tomcat生产环境部署">
+                  <i class="fa fa-chevron-left"></i> tomcat生产环境部署
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/12/28/kafka-python/" rel="next" title="kafka-python-client-example">
+                  kafka-python-client-example <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+  
+  
+  
+
+
+
+      
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">biglittleant</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
