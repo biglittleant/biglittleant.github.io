@@ -30,7 +30,7 @@
 <meta property="og:description" content="uniq作用：只能对相邻的相同行去重。 格式1Usage: uniq [OPTION]... [INPUT [OUTPUT]]  参数12345678910-c, --count：在行首显示该行重复出现的次数。-d, --repeated：仅显示重复的列。-D, --all-repeated[&#x3D;METHOD]  仅显示重复行。-f, --skip-fields&#x3D;N   忽略比较指定的栏位-i, -">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2016-12-24T09:53:01.000Z">
-<meta property="article:modified_time" content="2020-09-03T02:03:13.623Z">
+<meta property="article:modified_time" content="2020-09-16T09:42:15.309Z">
 <meta property="article:author" content="biglittleant">
 <meta property="article:tag" content="linux-命令">
 <meta name="twitter:card" content="summary">
@@ -195,18 +195,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-count">42</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">35</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -276,10 +276,26 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-03 10:03:13" itemprop="dateModified" datetime="2020-09-03T10:03:13+08:00">2020-09-03</time>
+        <time title="Modified: 2020-09-16 17:42:15" itemprop="dateModified" datetime="2020-09-16T17:42:15+08:00">2020-09-16</time>
       </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+    </span>
 
   
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
 </div>
 
         </div>
@@ -297,7 +313,7 @@
 <h3 id="常用参数"><a href="#常用参数" class="headerlink" title="常用参数"></a>常用参数</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-c, —count 打印每一重复行出现的次数。</span><br></pre></td></tr></table></figure>
 
 <h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><h3 id="uniq-去重"><a href="#uniq-去重" class="headerlink" title="uniq 去重"></a>uniq 去重</h3><p>第一步sort将相似的进行排序，uniq去掉重复行</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node2 tmp16:03:32]#sort a.txt </span><br><span class="line">10.10.0.1</span><br><span class="line">10.10.0.1</span><br><span class="line">10.10.0.2</span><br><span class="line">10.10.0.3</span><br><span class="line">10.10.0.3</span><br><span class="line">10.10.0.4</span><br><span class="line">10.10.0.4</span><br><span class="line">10.10.0.5</span><br><span class="line">10.10.0.8</span><br><span class="line">[root@linux-node2 tmp16:03:51]#sort a.txt |uniq </span><br><span class="line">10.10.0.1</span><br><span class="line">10.10.0.2</span><br><span class="line">10.10.0.3</span><br><span class="line">10.10.0.4</span><br><span class="line">10.10.0.5</span><br><span class="line">10.10.0.8</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node2 tmp16:03:32]#sort a.txt</span><br><span class="line">10.10.0.1</span><br><span class="line">10.10.0.1</span><br><span class="line">10.10.0.2</span><br><span class="line">10.10.0.3</span><br><span class="line">10.10.0.3</span><br><span class="line">10.10.0.4</span><br><span class="line">10.10.0.4</span><br><span class="line">10.10.0.5</span><br><span class="line">10.10.0.8</span><br><span class="line">[root@linux-node2 tmp16:03:51]#sort a.txt |uniq</span><br><span class="line">10.10.0.1</span><br><span class="line">10.10.0.2</span><br><span class="line">10.10.0.3</span><br><span class="line">10.10.0.4</span><br><span class="line">10.10.0.5</span><br><span class="line">10.10.0.8</span><br></pre></td></tr></table></figure>
 
 <h3 id="uniq-统计出现的次数"><a href="#uniq-统计出现的次数" class="headerlink" title="uniq 统计出现的次数"></a>uniq 统计出现的次数</h3><p>uniq -c 去掉重复行，并统计出现次数</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node2 tmp16:04:12]#sort a.txt |uniq -c</span><br><span class="line">      2 10.10.0.1</span><br><span class="line">      1 10.10.0.2</span><br><span class="line">      2 10.10.0.3</span><br><span class="line">      2 10.10.0.4</span><br><span class="line">      1 10.10.0.5</span><br><span class="line">      1 10.10.0.8</span><br></pre></td></tr></table></figure>
@@ -379,6 +395,24 @@
   </span>
   <span class="author" itemprop="copyrightHolder">biglittleant</span>
 </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
   </div>
 
@@ -406,6 +440,7 @@
 
 
   
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
 

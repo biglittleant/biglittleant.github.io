@@ -30,8 +30,9 @@
 <meta property="og:description" content="使用nginx做负载均衡的两大模块：  upstream 定义负载节点池。 location 模块 进行URL匹配。 proxy模块 发送请求给upstream定义的节点池。  相关功能模块讲解upstream模块解读nginx 的负载均衡功能依赖于 ngx_http_upstream_module模块，所支持的代理方式有 proxy_pass(一般用于反向代理),fastcgi_pass(一般用">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2017-01-03T00:11:57.000Z">
-<meta property="article:modified_time" content="2020-09-03T02:03:13.618Z">
+<meta property="article:modified_time" content="2020-09-16T09:36:40.230Z">
 <meta property="article:author" content="biglittleant">
+<meta property="article:tag" content="死磕nginx系列">
 <meta property="article:tag" content="nginx">
 <meta name="twitter:card" content="summary">
 
@@ -195,18 +196,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-count">42</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">35</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -276,10 +277,30 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-03 10:03:13" itemprop="dateModified" datetime="2020-09-03T10:03:13+08:00">2020-09-03</time>
+        <time title="Modified: 2020-09-16 17:36:40" itemprop="dateModified" datetime="2020-09-16T17:36:40+08:00">2020-09-16</time>
       </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/nginx/" itemprop="url" rel="index"><span itemprop="name">nginx</span></a>
+        </span>
+    </span>
 
   
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
 </div>
 
         </div>
@@ -298,7 +319,7 @@
 <h2 id="相关功能模块讲解"><a href="#相关功能模块讲解" class="headerlink" title="相关功能模块讲解"></a>相关功能模块讲解</h2><h3 id="upstream模块解读"><a href="#upstream模块解读" class="headerlink" title="upstream模块解读"></a>upstream模块解读</h3><p>nginx 的负载均衡功能依赖于 ngx_http_upstream_module模块，所支持的代理方式有 proxy_pass(一般用于反向代理),fastcgi_pass(一般用于和动态程序交互),memcached_pass,proxy_next_upstream,fastcgi_next_pass,memcached_next_pass 。</p>
 <p>upstream 模块应该放于http{}标签内。</p>
 <p>模块写法：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">upstream backend &#123;</span><br><span class="line">    ip_hash; </span><br><span class="line">    server backend1.example.com       weight=5;</span><br><span class="line">    server backend2.example.com:8080;</span><br><span class="line">    server backup1.example.com:8080   backup;</span><br><span class="line">    server backup2.example.com:8080   backup;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">upstream backend &#123;</span><br><span class="line">    ip_hash;</span><br><span class="line">    server backend1.example.com       weight=5;</span><br><span class="line">    server backend2.example.com:8080;</span><br><span class="line">    server backup1.example.com:8080   backup;</span><br><span class="line">    server backup2.example.com:8080   backup;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>实例一：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">upstream dynamic &#123;</span><br><span class="line">    zone upstream_dynamic 64k;</span><br><span class="line"></span><br><span class="line">    server backend1.example.com      weight=5;</span><br><span class="line">    server backend2.example.com:8080 fail_timeout=5s slow_start=30s;</span><br><span class="line">    server 192.0.2.1                 max_fails=3;</span><br><span class="line">    server backend3.example.com      resolve;</span><br><span class="line"></span><br><span class="line">    server backup1.example.com:8080  backup;</span><br><span class="line">    server backup2.example.com:8080  backup;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -342,12 +363,12 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">location / &#123;</span><br><span class="line">           return 401;</span><br><span class="line">        &#125;</span><br><span class="line">        location = / &#123;</span><br><span class="line">            return 402;</span><br><span class="line">        &#125;</span><br><span class="line">        location /documents/ &#123;</span><br><span class="line">            return 403;</span><br><span class="line">        &#125;</span><br><span class="line">        location ^~ /images/ &#123;</span><br><span class="line">            return 404;</span><br><span class="line">        &#125;</span><br><span class="line">        location ~* \.(gif|jpg|jpeg)$ &#123;</span><br><span class="line">            return 500;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
 
 <p>测试结果（重点看）：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@lb01 conf]# curl -I -s -o /dev/null -w &quot;%&#123;http_code&#125;\n&quot; http://10.0.0.7/</span><br><span class="line">402</span><br><span class="line">[root@lb01 conf]# curl -I -s -o /dev/null -w &quot;%&#123;http_code&#125;\n&quot; http://10.0.0.7/index.html</span><br><span class="line">401</span><br><span class="line">[root@lb01 conf]# curl -I -s -o /dev/null -w &quot;%&#123;http_code&#125;\n&quot; http://10.0.0.7/documents/document.html </span><br><span class="line">403</span><br><span class="line">[root@lb01 conf]# curl -I -s -o /dev/null -w &quot;%&#123;http_code&#125;\n&quot; http://10.0.0.7/images/1.gif</span><br><span class="line">404</span><br><span class="line">[root@lb01 conf]# curl -I -s -o /dev/null -w &quot;%&#123;http_code&#125;\n&quot; http://10.0.0.7/dddd/1.gif  </span><br><span class="line">500</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@lb01 conf]# curl -I -s -o /dev/null -w &quot;%&#123;http_code&#125;\n&quot; http://10.0.0.7/</span><br><span class="line">402</span><br><span class="line">[root@lb01 conf]# curl -I -s -o /dev/null -w &quot;%&#123;http_code&#125;\n&quot; http://10.0.0.7/index.html</span><br><span class="line">401</span><br><span class="line">[root@lb01 conf]# curl -I -s -o /dev/null -w &quot;%&#123;http_code&#125;\n&quot; http://10.0.0.7/documents/document.html</span><br><span class="line">403</span><br><span class="line">[root@lb01 conf]# curl -I -s -o /dev/null -w &quot;%&#123;http_code&#125;\n&quot; http://10.0.0.7/images/1.gif</span><br><span class="line">404</span><br><span class="line">[root@lb01 conf]# curl -I -s -o /dev/null -w &quot;%&#123;http_code&#125;\n&quot; http://10.0.0.7/dddd/1.gif</span><br><span class="line">500</span><br></pre></td></tr></table></figure>
 
 <p>结果总结：<br>匹配的优先顺序，<code>=</code>&gt;<code>^~</code>（匹配固定字符串，忽略正则）&gt;<code> 完全相等</code>&gt;<code>~*</code>&gt;<code>空</code>&gt;<code>/</code> 。</p>
 <h2 id="proxy-pass-模块解读"><a href="#proxy-pass-模块解读" class="headerlink" title="proxy_pass 模块解读"></a>proxy_pass 模块解读</h2><p>proxy_pass 指令属于ngx_http_proxy_module 模块，此模块可以将请求转发到另一台服务器。</p>
 <p>写法：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">proxy_pass http://localhost:8000/uri/; </span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">proxy_pass http://localhost:8000/uri/;</span><br></pre></td></tr></table></figure>
 
 <p>实例一：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">upstream blog_real_servers &#123;</span><br><span class="line">     server 10.0.0.9:80  weight=5;</span><br><span class="line">     server 10.0.0.10:80  weight=10;</span><br><span class="line">     server 10.0.0.19:82  weight=15;</span><br><span class="line">&#125;</span><br><span class="line">server &#123;</span><br><span class="line">   listen       80;</span><br><span class="line">   server_name  blog.etiantian.org;</span><br><span class="line">   location / &#123;</span><br><span class="line">    proxy_pass http://blog_real_servers;</span><br><span class="line">   proxy_set_header host $host;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -386,7 +407,7 @@
 </ul>
 <h2 id="一个完整的nginx实例"><a href="#一个完整的nginx实例" class="headerlink" title="一个完整的nginx实例"></a>一个完整的nginx实例</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">[root@lb01 conf]# cat nginx.conf</span><br><span class="line">worker_processes  1;</span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections  1024;</span><br><span class="line">&#125;</span><br><span class="line">http &#123;</span><br><span class="line">    include       mime.types;</span><br><span class="line">    default_type  application/octet-stream;</span><br><span class="line">    sendfile        on;</span><br><span class="line">    keepalive_timeout  65;</span><br><span class="line">    #blog lb by oldboy at 201303</span><br><span class="line">    upstream blog_real_servers &#123;</span><br><span class="line">   server   10.0.0.9:80 weight=1 max_fails=1 fail_timeout=10s;</span><br><span class="line">   server   10.0.0.10:80 weight=1 max_fails=2 fail_timeout=20s;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    server &#123;</span><br><span class="line">       listen       80;</span><br><span class="line">       server_name  blog.etiantian.org;</span><br><span class="line">       location / &#123;</span><br><span class="line">        proxy_pass http://blog_real_servers;</span><br><span class="line">        include proxy.conf;</span><br><span class="line">       &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@lb01 conf]# cat proxy.conf </span><br><span class="line">        proxy_set_header Host $host;</span><br><span class="line">        proxy_set_header X-Forwarded-For $remote_addr;</span><br><span class="line">        proxy_connect_timeout 90;        </span><br><span class="line">        proxy_send_timeout 90;</span><br><span class="line">        proxy_read_timeout 90;</span><br><span class="line">        proxy_buffer_size 4k;</span><br><span class="line">        proxy_buffers 4 32k;</span><br><span class="line">        proxy_busy_buffers_size 64k; proxy_temp_file_write_size 64k;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@lb01 conf]# cat proxy.conf</span><br><span class="line">        proxy_set_header Host $host;</span><br><span class="line">        proxy_set_header X-Forwarded-For $remote_addr;</span><br><span class="line">        proxy_connect_timeout 90;</span><br><span class="line">        proxy_send_timeout 90;</span><br><span class="line">        proxy_read_timeout 90;</span><br><span class="line">        proxy_buffer_size 4k;</span><br><span class="line">        proxy_buffers 4 32k;</span><br><span class="line">        proxy_busy_buffers_size 64k; proxy_temp_file_write_size 64k;</span><br></pre></td></tr></table></figure>
 
 
 <h2 id="扩展补充"><a href="#扩展补充" class="headerlink" title="扩展补充"></a>扩展补充</h2><h3 id="只允许使用GET-HEAD-POST方法去请求"><a href="#只允许使用GET-HEAD-POST方法去请求" class="headerlink" title="只允许使用GET,HEAD,POST方法去请求"></a>只允许使用GET,HEAD,POST方法去请求</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># Only allow these request methods ##</span></span></span><br><span class="line">     if ($request_method !~ ^(GET|HEAD|POST)$ ) &#123;</span><br><span class="line">         return 444;</span><br><span class="line">     &#125;</span><br></pre></td></tr></table></figure>
@@ -398,7 +419,7 @@
 <li>图片这些静态文件去访问10.0.0.9。</li>
 <li>/upload/的URL都去访问10.0.0.10。</li>
 </ol>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">[root@lb01 conf]# cat nginx.conf</span><br><span class="line">worker_processes  1;</span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections  1024;</span><br><span class="line">&#125;</span><br><span class="line">http &#123;</span><br><span class="line">    include       mime.types;</span><br><span class="line">    default_type  application/octet-stream;</span><br><span class="line">    sendfile        on;</span><br><span class="line">    keepalive_timeout  65;</span><br><span class="line">    #blog lb by oldboy at 201303</span><br><span class="line"></span><br><span class="line">    upstream static_pools &#123;</span><br><span class="line">      server 10.0.0.9:80;</span><br><span class="line">    &#125;</span><br><span class="line">    upstream dynamic_pools &#123;</span><br><span class="line">      server 10.0.0.10:80;</span><br><span class="line">    &#125;</span><br><span class="line">     upstream upload_pools &#123;</span><br><span class="line">      server 10.0.0.9:80;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    server &#123;</span><br><span class="line">       listen       80;</span><br><span class="line">       server_name  blog.biglittleant.cn;</span><br><span class="line">       </span><br><span class="line">        location / &#123;</span><br><span class="line">        proxy_pass http://static_pools;</span><br><span class="line">        include proxy.conf;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       location /static/ &#123; </span><br><span class="line">        proxy_pass http://static_pools;</span><br><span class="line">        include proxy.conf;</span><br><span class="line">       &#125;</span><br><span class="line">       </span><br><span class="line">        location ~* \.(gif|jpg|jpeg)$ &#123;</span><br><span class="line">         proxy_pass http://static_pools;</span><br><span class="line">         include proxy.conf;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">       location /dynamic/ &#123; </span><br><span class="line">        proxy_pass http://dynamic_pools;</span><br><span class="line">        include proxy.conf;</span><br><span class="line">       &#125;</span><br><span class="line">       location /upload/ &#123;</span><br><span class="line">        proxy_pass http://upload_pools;</span><br><span class="line">        include proxy.conf;</span><br><span class="line">       &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">[root@lb01 conf]# cat nginx.conf</span><br><span class="line">worker_processes  1;</span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections  1024;</span><br><span class="line">&#125;</span><br><span class="line">http &#123;</span><br><span class="line">    include       mime.types;</span><br><span class="line">    default_type  application/octet-stream;</span><br><span class="line">    sendfile        on;</span><br><span class="line">    keepalive_timeout  65;</span><br><span class="line">    #blog lb by oldboy at 201303</span><br><span class="line"></span><br><span class="line">    upstream static_pools &#123;</span><br><span class="line">      server 10.0.0.9:80;</span><br><span class="line">    &#125;</span><br><span class="line">    upstream dynamic_pools &#123;</span><br><span class="line">      server 10.0.0.10:80;</span><br><span class="line">    &#125;</span><br><span class="line">     upstream upload_pools &#123;</span><br><span class="line">      server 10.0.0.9:80;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    server &#123;</span><br><span class="line">       listen       80;</span><br><span class="line">       server_name  blog.biglittleant.cn;</span><br><span class="line"></span><br><span class="line">        location / &#123;</span><br><span class="line">        proxy_pass http://static_pools;</span><br><span class="line">        include proxy.conf;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       location /static/ &#123;</span><br><span class="line">        proxy_pass http://static_pools;</span><br><span class="line">        include proxy.conf;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">        location ~* \.(gif|jpg|jpeg)$ &#123;</span><br><span class="line">         proxy_pass http://static_pools;</span><br><span class="line">         include proxy.conf;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">       location /dynamic/ &#123;</span><br><span class="line">        proxy_pass http://dynamic_pools;</span><br><span class="line">        include proxy.conf;</span><br><span class="line">       &#125;</span><br><span class="line">       location /upload/ &#123;</span><br><span class="line">        proxy_pass http://upload_pools;</span><br><span class="line">        include proxy.conf;</span><br><span class="line">       &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
 
@@ -415,6 +436,7 @@
 
     <footer class="post-footer">
           <div class="post-tags">
+              <a href="/tags/%E6%AD%BB%E7%A3%95nginx%E7%B3%BB%E5%88%97/" rel="tag"># 死磕nginx系列</a>
               <a href="/tags/nginx/" rel="tag"># nginx</a>
           </div>
 
@@ -482,6 +504,24 @@
   </span>
   <span class="author" itemprop="copyrightHolder">biglittleant</span>
 </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
   </div>
 
@@ -509,6 +549,7 @@
 
 
   
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
 

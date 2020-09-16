@@ -22,17 +22,18 @@
     var CONFIG = {"hostname":"www.biglittleant.cn","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
   </script>
 
-  <meta name="description" content="它类似于静态语言中的数据类型声明，比如声明一个字段为String， 以后这个变量都只能存储String类型的数据。同样的， 一个number类型的 mapping  字段只能存储number类型的数据。 如何理解elastic中各参数的定义 index —-&gt; database type  —–&gt; table  mapping —-&gt; 表结构  默认情况不需要自定义mapping">
+  <meta name="description" content="它类似于静态语言中的数据类型声明，比如声明一个字段为String， 以后这个变量都只能存储String类型的数据。同样的， 一个number类型的 mapping  字段只能存储number类型的数据。 如何理解elastic中各参数的定义 index —-&gt; database type  —–&gt; table mapping —-&gt; 表结构  默认情况不需要自定义mapping，">
 <meta property="og:type" content="article">
 <meta property="og:title" content="elasticsearch-mapping学习">
 <meta property="og:url" content="http://www.biglittleant.cn/2016/12/04/elastic-mapping/index.html">
 <meta property="og:site_name" content="biglittleant">
-<meta property="og:description" content="它类似于静态语言中的数据类型声明，比如声明一个字段为String， 以后这个变量都只能存储String类型的数据。同样的， 一个number类型的 mapping  字段只能存储number类型的数据。 如何理解elastic中各参数的定义 index —-&gt; database type  —–&gt; table  mapping —-&gt; 表结构  默认情况不需要自定义mapping">
+<meta property="og:description" content="它类似于静态语言中的数据类型声明，比如声明一个字段为String， 以后这个变量都只能存储String类型的数据。同样的， 一个number类型的 mapping  字段只能存储number类型的数据。 如何理解elastic中各参数的定义 index —-&gt; database type  —–&gt; table mapping —-&gt; 表结构  默认情况不需要自定义mapping，">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2016-12-04T10:14:15.000Z">
-<meta property="article:modified_time" content="2020-09-03T02:03:13.613Z">
+<meta property="article:modified_time" content="2020-09-16T09:20:44.760Z">
 <meta property="article:author" content="biglittleant">
 <meta property="article:tag" content="elastic">
+<meta property="article:tag" content="elasticsearch-mapping">
 <meta name="twitter:card" content="summary">
 
 
@@ -195,18 +196,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-count">42</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">35</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -276,10 +277,30 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-03 10:03:13" itemprop="dateModified" datetime="2020-09-03T10:03:13+08:00">2020-09-03</time>
+        <time title="Modified: 2020-09-16 17:20:44" itemprop="dateModified" datetime="2020-09-16T17:20:44+08:00">2020-09-16</time>
       </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/elastic/" itemprop="url" rel="index"><span itemprop="name">elastic</span></a>
+        </span>
+    </span>
 
   
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
 </div>
 
         </div>
@@ -292,12 +313,12 @@
         <p>它类似于静态语言中的数据类型声明，比如声明一个字段为String， 以后这个变量都只能存储String类型的数据。同样的， 一个number类型的 mapping  字段只能存储number类型的数据。</p>
 <h2 id="如何理解elastic中各参数的定义"><a href="#如何理解elastic中各参数的定义" class="headerlink" title="如何理解elastic中各参数的定义"></a>如何理解elastic中各参数的定义</h2><ul>
 <li>index —-&gt; database</li>
-<li>type  —–&gt; table </li>
+<li>type  —–&gt; table</li>
 <li>mapping —-&gt; 表结构</li>
 </ul>
 <p>默认情况不需要自定义mapping， 当新的type或者field引入时，Elasticsearch会自动创建并且注册有合理的默认值的mapping， 只有要覆盖默认值时才必须要提供mapping定义。</p>
 <h2 id="mapping字段"><a href="#mapping字段" class="headerlink" title="mapping字段"></a>mapping字段</h2><h3 id="自定义Mapping"><a href="#自定义Mapping" class="headerlink" title="自定义Mapping"></a>自定义Mapping</h3><p>下面是一个简单的Mapping定义：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">curl -XPUT &#x27;http://localhost:9200/test-index&#x27; -d &#x27;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;settings&quot;</span>: &#123;</span><br><span class="line">        <span class="attr">&quot;number_of_shards&quot;</span>: <span class="number">3</span>,    <span class="comment">//设置分片</span></span><br><span class="line">        <span class="attr">&quot;number_of_replicas&quot;</span>: <span class="number">1</span>   <span class="comment">//设置副本集</span></span><br><span class="line">    &#125;, </span><br><span class="line">  <span class="attr">&quot;mappings&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;user&quot;</span>: &#123;   <span class="comment">// 对应type名</span></span><br><span class="line">      <span class="attr">&quot;_all&quot;</span>:       &#123; <span class="attr">&quot;enabled&quot;</span>: <span class="literal">false</span>  &#125;, </span><br><span class="line">      <span class="attr">&quot;properties&quot;</span>: &#123;  <span class="comment">//指定每个字段的映射类型或属性。</span></span><br><span class="line">        <span class="attr">&quot;title&quot;</span>:    &#123; <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;string&quot;</span>  &#125;, </span><br><span class="line">        <span class="attr">&quot;body&quot;</span>:     &#123; <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;string&quot;</span>  &#125;, </span><br><span class="line">        <span class="attr">&quot;user_id&quot;</span>:  &#123;</span><br><span class="line">          <span class="attr">&quot;type&quot;</span>:   <span class="string">&quot;string&quot;</span>, </span><br><span class="line">          <span class="attr">&quot;index&quot;</span>:  <span class="string">&quot;not_analyzed&quot;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">&quot;created&quot;</span>:  &#123;</span><br><span class="line">          <span class="attr">&quot;type&quot;</span>:   <span class="string">&quot;date&quot;</span>, </span><br><span class="line">          <span class="attr">&quot;format&quot;</span>: <span class="string">&quot;strict_date_optional_time||epoch_millis&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">curl -XPUT &#x27;http://localhost:9200/test-index&#x27; -d &#x27;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;settings&quot;</span>: &#123;</span><br><span class="line">        <span class="attr">&quot;number_of_shards&quot;</span>: <span class="number">3</span>,    <span class="comment">//设置分片</span></span><br><span class="line">        <span class="attr">&quot;number_of_replicas&quot;</span>: <span class="number">1</span>   <span class="comment">//设置副本集</span></span><br><span class="line">    &#125;,</span><br><span class="line">  <span class="attr">&quot;mappings&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;user&quot;</span>: &#123;   <span class="comment">// 对应type名</span></span><br><span class="line">      <span class="attr">&quot;_all&quot;</span>:       &#123; <span class="attr">&quot;enabled&quot;</span>: <span class="literal">false</span>  &#125;,</span><br><span class="line">      <span class="attr">&quot;properties&quot;</span>: &#123;  <span class="comment">//指定每个字段的映射类型或属性。</span></span><br><span class="line">        <span class="attr">&quot;title&quot;</span>:    &#123; <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;string&quot;</span>  &#125;,</span><br><span class="line">        <span class="attr">&quot;body&quot;</span>:     &#123; <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;string&quot;</span>  &#125;,</span><br><span class="line">        <span class="attr">&quot;user_id&quot;</span>:  &#123;</span><br><span class="line">          <span class="attr">&quot;type&quot;</span>:   <span class="string">&quot;string&quot;</span>,</span><br><span class="line">          <span class="attr">&quot;index&quot;</span>:  <span class="string">&quot;not_analyzed&quot;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">&quot;created&quot;</span>:  &#123;</span><br><span class="line">          <span class="attr">&quot;type&quot;</span>:   <span class="string">&quot;date&quot;</span>,</span><br><span class="line">          <span class="attr">&quot;format&quot;</span>: <span class="string">&quot;strict_date_optional_time||epoch_millis&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
 <p>其中login_log是type（相当于关系数据库中的表），在login_log中我们定义了name、age、about、ip、last_time这6个列。</p>
 <h4 id="type字段"><a href="#type字段" class="headerlink" title="type字段"></a>type字段</h4><p>type字段用来规定字段的数据类型。<br>Elasticsearch支持以下数据类型：</p>
@@ -311,7 +332,7 @@
 <li><p>no：Don’t index this field at all. This field will not be<br>searchable.</p>
 </li>
 </ul>
-<p>对于string类型的filed index 默认值是： analyzed.对于URL这些不需要分词的字段 ，我们可以将它设置为：not_analyzed。 </p>
+<p>对于string类型的filed index 默认值是： analyzed.对于URL这些不需要分词的字段 ，我们可以将它设置为：not_analyzed。</p>
 <h4 id="analyzer-字段"><a href="#analyzer-字段" class="headerlink" title="analyzer 字段"></a>analyzer 字段</h4><p>analyzer 字段用来指定改字段用什么分词器去分词。<br>elastic默认的分词是：standard analyzer 。<br>elastic其他分词器：whitespace, simple, or english 。<br>我们也可以自己安装指定的分词器并指定。</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123; <span class="attr">&quot;name&quot;</span>: &#123; <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;string&quot;</span>, <span class="attr">&quot;analyzer&quot;</span>: <span class="string">&quot;ik&quot;</span> &#125;</span><br><span class="line">\\ 指定使用ik分词器对name字段进行分词。</span><br></pre></td></tr></table></figure>
 
@@ -374,6 +395,7 @@
     <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/elastic/" rel="tag"># elastic</a>
+              <a href="/tags/elasticsearch-mapping/" rel="tag"># elasticsearch-mapping</a>
           </div>
 
         
@@ -440,6 +462,24 @@
   </span>
   <span class="author" itemprop="copyrightHolder">biglittleant</span>
 </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
   </div>
 
@@ -467,6 +507,7 @@
 
 
   
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
 

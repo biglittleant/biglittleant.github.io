@@ -30,9 +30,8 @@
 <meta property="og:description" content="ipvsadm是LVS在应用层的管理命令，我们可以通过这个命令去管理LVS的配置。 命令介绍向LVS系统中添加一个用于负载均衡的virtual server（VS） 基本用法： 12ipvsadm COMMAND [protocol] service-address               [scheduling-method] [persistence options]  命令：  -A,">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-09-03T09:55:01.000Z">
-<meta property="article:modified_time" content="2020-09-03T10:05:42.966Z">
+<meta property="article:modified_time" content="2020-09-16T09:33:58.551Z">
 <meta property="article:author" content="biglittleant">
-<meta property="article:tag" content="linux">
 <meta property="article:tag" content="lvs">
 <meta name="twitter:card" content="summary">
 
@@ -196,18 +195,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-count">42</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">35</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -269,10 +268,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2020-09-03 17:55:01 / Modified: 18:05:42" itemprop="dateCreated datePublished" datetime="2020-09-03T17:55:01+08:00">2020-09-03</time>
+      <time title="Created: 2020-09-03 17:55:01" itemprop="dateCreated datePublished" datetime="2020-09-03T17:55:01+08:00">2020-09-03</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2020-09-16 17:33:58" itemprop="dateModified" datetime="2020-09-16T17:33:58+08:00">2020-09-16</time>
+      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -288,6 +293,13 @@
     </span>
 
   
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
 </div>
 
         </div>
@@ -547,7 +559,6 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/linux/" rel="tag"># linux</a>
               <a href="/tags/lvs/" rel="tag"># lvs</a>
           </div>
 
@@ -560,6 +571,9 @@
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/2020/09/11/install_k8s_by_kuberadm/" rel="next" title="使用 Kubeadm 安装 kubernetes 集群">
+                  使用 Kubeadm 安装 kubernetes 集群 <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
     </footer>
@@ -612,6 +626,24 @@
   </span>
   <span class="author" itemprop="copyrightHolder">biglittleant</span>
 </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
   </div>
 
@@ -639,6 +671,7 @@
 
 
   
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
 

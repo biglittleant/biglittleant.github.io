@@ -22,15 +22,15 @@
     var CONFIG = {"hostname":"www.biglittleant.cn","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
   </script>
 
-  <meta name="description" content="需求今天测试了一下centos7，发现centos7的网卡名的后缀变成随机的了。以前写的基于eth0和eth1的脚本已经不能用了，为了我的脚本，我只能把centos7的网卡命名规则改回来了。 实战过程123cd &#x2F;etc&#x2F;sysconfig&#x2F;network-scripts&#x2F;mv ifcfg-eno1* ifcfg-eth0 mv ifcfg-eno3* ifcfg-eth1   重写网卡的配置文件">
+  <meta name="description" content="需求今天测试了一下centos7，发现centos7的网卡名的后缀变成随机的了。以前写的基于eth0和eth1的脚本已经不能用了，为了我的脚本，我只能把centos7的网卡命名规则改回来了。 实战过程123cd &#x2F;etc&#x2F;sysconfig&#x2F;network-scripts&#x2F;mv ifcfg-eno1* ifcfg-eth0mv ifcfg-eno3* ifcfg-eth1  重写网卡的配置文件快速">
 <meta property="og:type" content="article">
 <meta property="og:title" content="centos7-修改网卡名称">
 <meta property="og:url" content="http://www.biglittleant.cn/2016/12/20/change-centos7-networkname/index.html">
 <meta property="og:site_name" content="biglittleant">
-<meta property="og:description" content="需求今天测试了一下centos7，发现centos7的网卡名的后缀变成随机的了。以前写的基于eth0和eth1的脚本已经不能用了，为了我的脚本，我只能把centos7的网卡命名规则改回来了。 实战过程123cd &#x2F;etc&#x2F;sysconfig&#x2F;network-scripts&#x2F;mv ifcfg-eno1* ifcfg-eth0 mv ifcfg-eno3* ifcfg-eth1   重写网卡的配置文件">
+<meta property="og:description" content="需求今天测试了一下centos7，发现centos7的网卡名的后缀变成随机的了。以前写的基于eth0和eth1的脚本已经不能用了，为了我的脚本，我只能把centos7的网卡命名规则改回来了。 实战过程123cd &#x2F;etc&#x2F;sysconfig&#x2F;network-scripts&#x2F;mv ifcfg-eno1* ifcfg-eth0mv ifcfg-eno3* ifcfg-eth1  重写网卡的配置文件快速">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2016-12-20T02:53:31.000Z">
-<meta property="article:modified_time" content="2020-09-03T02:03:13.611Z">
+<meta property="article:modified_time" content="2020-09-16T09:25:39.961Z">
 <meta property="article:author" content="biglittleant">
 <meta property="article:tag" content="linux">
 <meta property="article:tag" content="centos7">
@@ -196,18 +196,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-count">42</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">35</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -277,10 +277,30 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-03 10:03:13" itemprop="dateModified" datetime="2020-09-03T10:03:13+08:00">2020-09-03</time>
+        <time title="Modified: 2020-09-16 17:25:39" itemprop="dateModified" datetime="2020-09-16T17:25:39+08:00">2020-09-16</time>
       </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/keepalived/" itemprop="url" rel="index"><span itemprop="name">keepalived</span></a>
+        </span>
+    </span>
 
   
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
 </div>
 
         </div>
@@ -291,23 +311,21 @@
     
     <div class="post-body" itemprop="articleBody">
         <h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>今天测试了一下centos7，发现centos7的网卡名的后缀变成随机的了。<br>以前写的基于eth0和eth1的脚本已经不能用了，为了我的脚本，我只能把centos7的网卡命名规则改回来了。</p>
-<h3 id="实战过程"><a href="#实战过程" class="headerlink" title="实战过程"></a>实战过程</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/sysconfig/network-scripts/</span><br><span class="line">mv ifcfg-eno1* ifcfg-eth0 </span><br><span class="line">mv ifcfg-eno3* ifcfg-eth1</span><br></pre></td></tr></table></figure>
-
+<h3 id="实战过程"><a href="#实战过程" class="headerlink" title="实战过程"></a>实战过程</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/sysconfig/network-scripts/</span><br><span class="line">mv ifcfg-eno1* ifcfg-eth0</span><br><span class="line">mv ifcfg-eno3* ifcfg-eth1</span><br></pre></td></tr></table></figure>
 
 <h3 id="重写网卡的配置文件"><a href="#重写网卡的配置文件" class="headerlink" title="重写网卡的配置文件"></a>重写网卡的配置文件</h3><h4 id="快速修改etho0网卡配置文件"><a href="#快速修改etho0网卡配置文件" class="headerlink" title="快速修改etho0网卡配置文件"></a>快速修改etho0网卡配置文件</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cat &gt;ifcfg-eth0&lt;&lt;EOF</span><br><span class="line">DEVICE=eth0</span><br><span class="line">ONBOOT=yes</span><br><span class="line">BOOTPROTO=dhcp</span><br><span class="line">DNS=8.8.8.8</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
 <h4 id="快速修改etho1网卡配置文件"><a href="#快速修改etho1网卡配置文件" class="headerlink" title="快速修改etho1网卡配置文件"></a>快速修改etho1网卡配置文件</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">cat &gt;ifcfg-eth1&lt;&lt;EOF</span><br><span class="line">DEVICE=eth1</span><br><span class="line">ONBOOT=yes</span><br><span class="line">BOOTPROTO=static</span><br><span class="line">IPADDR=10.0.2.192</span><br><span class="line">NETWORK=255.255.255.0</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
 
-<h4 id="备份grub配置文件，方便回滚"><a href="#备份grub配置文件，方便回滚" class="headerlink" title="备份grub配置文件，方便回滚"></a>备份grub配置文件，方便回滚</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cp /etc/default/grub /etc/default/grub_`date +%F`</span><br><span class="line">vim /etc/sysconfig/grub </span><br><span class="line">GRUB_CMDLINE_LINUX=&quot;net.ifnames=0 biosdevname=0 rhgb quiet&quot;</span><br></pre></td></tr></table></figure>
+<h4 id="备份grub配置文件，方便回滚"><a href="#备份grub配置文件，方便回滚" class="headerlink" title="备份grub配置文件，方便回滚"></a>备份grub配置文件，方便回滚</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cp /etc/default/grub /etc/default/grub_`date +%F`</span><br><span class="line">vim /etc/sysconfig/grub</span><br><span class="line">GRUB_CMDLINE_LINUX=&quot;net.ifnames=0 biosdevname=0 rhgb quiet&quot;</span><br></pre></td></tr></table></figure>
 
+<h4 id="生成新的配置文件"><a href="#生成新的配置文件" class="headerlink" title="生成新的配置文件"></a>生成新的配置文件</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grub2-mkconfig -o /boot/grub2/grub.cfg</span><br></pre></td></tr></table></figure>
 
-<h4 id="生成新的配置文件"><a href="#生成新的配置文件" class="headerlink" title="生成新的配置文件"></a>生成新的配置文件</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grub2-mkconfig -o /boot/grub2/grub.cfg </span><br></pre></td></tr></table></figure>
+<h4 id="关闭多余的开机启动项"><a href="#关闭多余的开机启动项" class="headerlink" title="关闭多余的开机启动项"></a>关闭多余的开机启动项</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl list-unit-files |grep enabled |awk &#x27;&#123;print $1&#125;&#x27; |egrep -v &quot;sshd.service|rsyslog.service|crond.service&quot;| sed -rn &#x27;s#(.*)#systemctl disable \1 #gp&#x27; |bash</span><br></pre></td></tr></table></figure>
 
-<h4 id="关闭多余的开机启动项"><a href="#关闭多余的开机启动项" class="headerlink" title="关闭多余的开机启动项"></a>关闭多余的开机启动项</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl list-unit-files |grep enabled |awk &#x27;&#123;print $1&#125;&#x27; |egrep -v &quot;sshd.service|rsyslog.service|crond.service&quot;| sed -rn &#x27;s#(.*)#systemctl disable \1 #gp&#x27; |bash </span><br></pre></td></tr></table></figure>
-<h4 id="重启系统"><a href="#重启系统" class="headerlink" title="重启系统"></a>重启系统</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reboot </span><br></pre></td></tr></table></figure>
+<h4 id="重启系统"><a href="#重启系统" class="headerlink" title="重启系统"></a>重启系统</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reboot</span><br></pre></td></tr></table></figure>
 
-<h4 id="重启后登录系统查看IP地址已经修改成功"><a href="#重启后登录系统查看IP地址已经修改成功" class="headerlink" title="重启后登录系统查看IP地址已经修改成功"></a>重启后登录系统查看IP地址已经修改成功</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">ip addr </span><br><span class="line"></span><br><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN </span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 ::1/128 scope host </span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP qlen 1000</span><br><span class="line">    link/ether 00:50:56:39:b1:45 brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 192.168.0.128/24 brd 192.168.0.255 scope global dynamic eth0</span><br><span class="line">       valid_lft 1122sec preferred_lft 1122sec</span><br><span class="line">    inet6 fe80::250:56ff:fe39:b145/64 scope link </span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">3: eth1: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP qlen 1000</span><br><span class="line">    link/ether 00:50:56:36:b7:0a brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 192.168.2.169/24 brd 192.168.2.255 scope global dynamic eth1</span><br><span class="line">       valid_lft 1721sec preferred_lft 1721sec</span><br><span class="line">    inet6 fe80::250:56ff:fe36:b70a/64 scope link </span><br><span class="line">       valid_lft forever preferred_lft forever</span><br></pre></td></tr></table></figure>
-
-
+<h4 id="重启后登录系统查看IP地址已经修改成功"><a href="#重启后登录系统查看IP地址已经修改成功" class="headerlink" title="重启后登录系统查看IP地址已经修改成功"></a>重启后登录系统查看IP地址已经修改成功</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">ip addr</span><br><span class="line"></span><br><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 ::1/128 scope host</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP qlen 1000</span><br><span class="line">    link/ether 00:50:56:39:b1:45 brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 192.168.0.128/24 brd 192.168.0.255 scope global dynamic eth0</span><br><span class="line">       valid_lft 1122sec preferred_lft 1122sec</span><br><span class="line">    inet6 fe80::250:56ff:fe39:b145/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">3: eth1: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP qlen 1000</span><br><span class="line">    link/ether 00:50:56:36:b7:0a brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 192.168.2.169/24 brd 192.168.2.255 scope global dynamic eth1</span><br><span class="line">       valid_lft 1721sec preferred_lft 1721sec</span><br><span class="line">    inet6 fe80::250:56ff:fe36:b70a/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -385,6 +403,24 @@
   </span>
   <span class="author" itemprop="copyrightHolder">biglittleant</span>
 </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
   </div>
 
@@ -412,6 +448,7 @@
 
 
   
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
 

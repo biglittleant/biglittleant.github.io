@@ -22,15 +22,15 @@
     var CONFIG = {"hostname":"www.biglittleant.cn","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
   </script>
 
-  <meta name="description" content="原理日志轮询实际是基于logrotate命令对日志进行切割。也可以通过修改配置文件，logrotate自动将要执行的命令，添加到crontab中。 12345678910111213logrotate --help Usage: logrotate [OPTION...] &lt;configfile&gt;  -d, --debug               Don&amp;#x27;t do any">
+  <meta name="description" content="原理日志轮询实际是基于logrotate命令对日志进行切割。也可以通过修改配置文件，logrotate自动将要执行的命令，添加到crontab中。 12345678910111213logrotate --helpUsage: logrotate [OPTION...] &lt;configfile&gt;  -d, --debug               Don&amp;#x27;t do anyt">
 <meta property="og:type" content="article">
 <meta property="og:title" content="logrotate 日志管理和轮询">
 <meta property="og:url" content="http://www.biglittleant.cn/2016/12/22/logrotate/index.html">
 <meta property="og:site_name" content="biglittleant">
-<meta property="og:description" content="原理日志轮询实际是基于logrotate命令对日志进行切割。也可以通过修改配置文件，logrotate自动将要执行的命令，添加到crontab中。 12345678910111213logrotate --help Usage: logrotate [OPTION...] &lt;configfile&gt;  -d, --debug               Don&amp;#x27;t do any">
+<meta property="og:description" content="原理日志轮询实际是基于logrotate命令对日志进行切割。也可以通过修改配置文件，logrotate自动将要执行的命令，添加到crontab中。 12345678910111213logrotate --helpUsage: logrotate [OPTION...] &lt;configfile&gt;  -d, --debug               Don&amp;#x27;t do anyt">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2016-12-22T03:44:51.000Z">
-<meta property="article:modified_time" content="2020-09-03T02:03:13.616Z">
+<meta property="article:modified_time" content="2020-09-16T09:33:46.284Z">
 <meta property="article:author" content="biglittleant">
 <meta property="article:tag" content="linux">
 <meta property="article:tag" content="logrotate">
@@ -196,18 +196,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-count">42</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">35</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -277,10 +277,30 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-03 10:03:13" itemprop="dateModified" datetime="2020-09-03T10:03:13+08:00">2020-09-03</time>
+        <time title="Modified: 2020-09-16 17:33:46" itemprop="dateModified" datetime="2020-09-16T17:33:46+08:00">2020-09-16</time>
       </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/logrotate/" itemprop="url" rel="index"><span itemprop="name">logrotate</span></a>
+        </span>
+    </span>
 
   
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
 </div>
 
         </div>
@@ -291,18 +311,18 @@
     
     <div class="post-body" itemprop="articleBody">
         <h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>日志轮询实际是基于logrotate命令对日志进行切割。<br>也可以通过修改配置文件，logrotate自动将要执行的命令，添加到crontab中。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">logrotate --help </span><br><span class="line">Usage: logrotate [OPTION...] &lt;configfile&gt;</span><br><span class="line">  -d, --debug               Don&#x27;t do anything, just test (implies -v)</span><br><span class="line">  -f, --force               Force file rotation</span><br><span class="line">  -m, --mail=command        Command to send mail (instead of `/bin/mail&#x27;)</span><br><span class="line">  -s, --state=statefile     Path of state file</span><br><span class="line">  -v, --verbose             Display messages during rotation</span><br><span class="line">  --version                 Display version information</span><br><span class="line"></span><br><span class="line">Help options:</span><br><span class="line">  -?, --help                Show this help message</span><br><span class="line">  --usage                   Display brief usage message</span><br><span class="line">  </span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">logrotate --help</span><br><span class="line">Usage: logrotate [OPTION...] &lt;configfile&gt;</span><br><span class="line">  -d, --debug               Don&#x27;t do anything, just test (implies -v)</span><br><span class="line">  -f, --force               Force file rotation</span><br><span class="line">  -m, --mail=command        Command to send mail (instead of `/bin/mail&#x27;)</span><br><span class="line">  -s, --state=statefile     Path of state file</span><br><span class="line">  -v, --verbose             Display messages during rotation</span><br><span class="line">  --version                 Display version information</span><br><span class="line"></span><br><span class="line">Help options:</span><br><span class="line">  -?, --help                Show this help message</span><br><span class="line">  --usage                   Display brief usage message</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <h3 id="中文翻译"><a href="#中文翻译" class="headerlink" title="中文翻译"></a>中文翻译</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Usage: logrotate [OPTION...] &lt;configfile&gt;</span><br><span class="line">  -d, --debug               测试文件是否正常，不执行。</span><br><span class="line">  -f, --force               强制转储文件。</span><br><span class="line">  -m, --mail=command        发送邮件(instead of `/bin/mail&#x27;)</span><br><span class="line">  -s, --state=statefile     指定状态文件</span><br><span class="line">  -v, --verbose             显示转储过程</span><br><span class="line">  --version                 显示版本信息</span><br><span class="line"></span><br><span class="line">Help options:</span><br><span class="line">  -?, --help                显示帮助信息</span><br><span class="line">  --usage                   显示简短的用法消息</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<h2 id="配置文件解释"><a href="#配置文件解释" class="headerlink" title="配置文件解释"></a>配置文件解释</h2><p>logrotate 默认配置文件<code>/etc/logrotate.conf </code> . </p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">weekly   ## 所有的日志文件每周转储一次。</span><br><span class="line">rotate 4  ## 转储的文件分为4份。</span><br><span class="line">create     ## logrotate自动创建新的日志文件。</span><br><span class="line">dateext   ## 轮询文件中包含日期信息</span><br><span class="line"><span class="meta">#</span><span class="bash">compress ：<span class="comment">## 压缩日志文件。默认是注释掉的。</span></span></span><br><span class="line">include /etc/logrotate.d ## 将/etc/logrotate.d/ 目录中的文件include 进来。</span><br><span class="line">/var/log/wtmp &#123;  ## 指定日志的路径，支持通配符</span><br><span class="line">    monthly             ## 按月切割 </span><br><span class="line">    create 0664 root utmp   ##切割文件的权限</span><br><span class="line">        minsize 1M      ## 文件最小大小 </span><br><span class="line">    rotate 1                  ## 保留一个文件</span><br><span class="line">&#125;</span><br><span class="line">/var/log/btmp &#123;</span><br><span class="line">    missingok     ## 如果日志不存在则忽略改日志的警告信息。</span><br><span class="line">    daily                ## 按天切割</span><br><span class="line">    create 0600 root utmp</span><br><span class="line">    rotate 1</span><br><span class="line">    ## 补充配置</span><br><span class="line">    postrotate</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">## sendall </span></span></span><br><span class="line">echo &quot;backup log OK&quot; </span><br><span class="line">    endscript</span><br><span class="line">    ## postrotate/endscript: 在所有其它指令完成后，postrotate和endscript里面指定的命令将被执行。在这种情况下，rsyslogd 进程将立即再次读取其配置并继续运行。</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="配置文件解释"><a href="#配置文件解释" class="headerlink" title="配置文件解释"></a>配置文件解释</h2><p>logrotate 默认配置文件<code>/etc/logrotate.conf </code> .</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">weekly   ## 所有的日志文件每周转储一次。</span><br><span class="line">rotate 4  ## 转储的文件分为4份。</span><br><span class="line">create     ## logrotate自动创建新的日志文件。</span><br><span class="line">dateext   ## 轮询文件中包含日期信息</span><br><span class="line"><span class="meta">#</span><span class="bash">compress ：<span class="comment">## 压缩日志文件。默认是注释掉的。</span></span></span><br><span class="line">include /etc/logrotate.d ## 将/etc/logrotate.d/ 目录中的文件include 进来。</span><br><span class="line">/var/log/wtmp &#123;  ## 指定日志的路径，支持通配符</span><br><span class="line">    monthly             ## 按月切割</span><br><span class="line">    create 0664 root utmp   ##切割文件的权限</span><br><span class="line">        minsize 1M      ## 文件最小大小</span><br><span class="line">    rotate 1                  ## 保留一个文件</span><br><span class="line">&#125;</span><br><span class="line">/var/log/btmp &#123;</span><br><span class="line">    missingok     ## 如果日志不存在则忽略改日志的警告信息。</span><br><span class="line">    daily                ## 按天切割</span><br><span class="line">    create 0600 root utmp</span><br><span class="line">    rotate 1</span><br><span class="line">    ## 补充配置</span><br><span class="line">    postrotate</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">## sendall</span></span></span><br><span class="line">echo &quot;backup log OK&quot;</span><br><span class="line">    endscript</span><br><span class="line">    ## postrotate/endscript: 在所有其它指令完成后，postrotate和endscript里面指定的命令将被执行。在这种情况下，rsyslogd 进程将立即再次读取其配置并继续运行。</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
 <h2 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h2><h3 id="配置logstash的日志切割"><a href="#配置logstash的日志切割" class="headerlink" title="配置logstash的日志切割"></a>配置logstash的日志切割</h3><p> 执行命令 <code>vim /etc/logrotate.d/logstash </code> ：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">/var/log/logstash/*.log /var/log/logstash/*.err /var/log/logstash/*.stdout &#123;    ###配置要压缩的日志。</span><br><span class="line">        daily                   ### 按天切割。</span><br><span class="line">        rotate 7             ## 保留七天。</span><br><span class="line">        copytruncate     ## 先copy running.log内容至历史文件，然后清空running.log的内容。</span><br><span class="line">        compress            ## 对轮询出来的文件用gzip压缩。</span><br><span class="line">        delaycompress   ## 与compress成对出现，不要将最近的归档压缩，压缩将在下一次轮循周期进行。这在你或任何软件仍然需要读取最新归档时很有用。</span><br><span class="line">        missingok         ## 在日志轮循期间，忽略所有错误。</span><br><span class="line">        notifempty      ## 如果日志文件为空，轮循不会进行。</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="测试配置文件是否写正确"><a href="#测试配置文件是否写正确" class="headerlink" title="测试配置文件是否写正确"></a>测试配置文件是否写正确</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash">  logrotate -d /etc/logrotate.d/logstash </span></span><br><span class="line">reading config file /etc/logrotate.d/logstash</span><br><span class="line"></span><br><span class="line">Handling 1 logs</span><br><span class="line"></span><br><span class="line">rotating pattern: /data/logs/logstash/*.log /data/logs/logstash/*.err /data/logs/logstash/*.stdout  after 1 days (7 rotations)</span><br><span class="line">empty log files are not rotated, old logs are removed</span><br><span class="line">considering log /data/logs/logstash/logstash.log</span><br><span class="line">  log does not need rotating</span><br><span class="line">considering log /data/logs/logstash/*.err</span><br><span class="line">  log /data/logs/logstash/*.err does not exist -- skipping</span><br><span class="line">considering log /data/logs/logstash/*.stdout</span><br><span class="line">  log /data/logs/logstash/*.stdout does not exist -- skipping</span><br><span class="line">[root@10.10.235.228 logrotate.d]# </span><br></pre></td></tr></table></figure>
+<h3 id="测试配置文件是否写正确"><a href="#测试配置文件是否写正确" class="headerlink" title="测试配置文件是否写正确"></a>测试配置文件是否写正确</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash">  logrotate -d /etc/logrotate.d/logstash</span></span><br><span class="line">reading config file /etc/logrotate.d/logstash</span><br><span class="line"></span><br><span class="line">Handling 1 logs</span><br><span class="line"></span><br><span class="line">rotating pattern: /data/logs/logstash/*.log /data/logs/logstash/*.err /data/logs/logstash/*.stdout  after 1 days (7 rotations)</span><br><span class="line">empty log files are not rotated, old logs are removed</span><br><span class="line">considering log /data/logs/logstash/logstash.log</span><br><span class="line">  log does not need rotating</span><br><span class="line">considering log /data/logs/logstash/*.err</span><br><span class="line">  log /data/logs/logstash/*.err does not exist -- skipping</span><br><span class="line">considering log /data/logs/logstash/*.stdout</span><br><span class="line">  log /data/logs/logstash/*.stdout does not exist -- skipping</span><br><span class="line">[root@10.10.235.228 logrotate.d]#</span><br></pre></td></tr></table></figure>
 
 
 
@@ -382,6 +402,24 @@
   </span>
   <span class="author" itemprop="copyrightHolder">biglittleant</span>
 </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
   </div>
 
@@ -409,6 +447,7 @@
 
 
   
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
 

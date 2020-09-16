@@ -30,7 +30,7 @@
 <meta property="og:description" content="sort将文件的每一行作为一个单位，相互比较，比较原则是从首字符向后，依次按ASCII码值进行比较，最后将他们按升序输出。英文翻译：sort lines of text files . 格式： 12Usage: sort [OPTION]... [FILE]...  or:  sort [OPTION]... --files0-from&#x3D;F  参数： 12345678910111213141516">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2016-12-25T09:59:19.000Z">
-<meta property="article:modified_time" content="2020-09-03T02:03:13.622Z">
+<meta property="article:modified_time" content="2020-09-16T09:40:51.194Z">
 <meta property="article:author" content="biglittleant">
 <meta property="article:tag" content="linux-命令">
 <meta name="twitter:card" content="summary">
@@ -194,18 +194,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-count">42</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">35</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -275,10 +275,26 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-03 10:03:13" itemprop="dateModified" datetime="2020-09-03T10:03:13+08:00">2020-09-03</time>
+        <time title="Modified: 2020-09-16 17:40:51" itemprop="dateModified" datetime="2020-09-16T17:40:51+08:00">2020-09-16</time>
       </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+    </span>
 
   
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
 </div>
 
         </div>
@@ -299,19 +315,19 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-n 按照数字排序。</span><br><span class="line">-r 倒叙。</span><br><span class="line">-t “.”表示按点号分隔域（awk -F ,cut -d 取段 -f）。</span><br><span class="line">-u 相同的行，只输出一行。</span><br><span class="line">-k 指定列进行排序。</span><br><span class="line">-b会忽略每一行前面的所有空白部分，从第一个可见字符开始比较。</span><br></pre></td></tr></table></figure>
 
 <p>实例：<br>按照数字正序排序</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@MySQL /]# sort -n file1.txt </span><br><span class="line">10.0.0.7 f</span><br><span class="line">10.0.0.7 n</span><br><span class="line">10.0.0.8 c</span><br><span class="line">10.0.0.8 k</span><br><span class="line">10.0.0.8 z</span><br><span class="line">10.0.0.9 a</span><br><span class="line">10.0.0.9 o</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@MySQL /]# sort -n file1.txt</span><br><span class="line">10.0.0.7 f</span><br><span class="line">10.0.0.7 n</span><br><span class="line">10.0.0.8 c</span><br><span class="line">10.0.0.8 k</span><br><span class="line">10.0.0.8 z</span><br><span class="line">10.0.0.9 a</span><br><span class="line">10.0.0.9 o</span><br></pre></td></tr></table></figure>
 
 <p>按照数字排序并倒叙</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@MySQL /]# sort -nr file1.txt </span><br><span class="line">10.0.0.9 o</span><br><span class="line">10.0.0.9 a</span><br><span class="line">10.0.0.8 z</span><br><span class="line">10.0.0.8 k</span><br><span class="line">10.0.0.8 c</span><br><span class="line">10.0.0.7 n</span><br><span class="line">10.0.0.7 f</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@MySQL /]# sort -nr file1.txt</span><br><span class="line">10.0.0.9 o</span><br><span class="line">10.0.0.9 a</span><br><span class="line">10.0.0.8 z</span><br><span class="line">10.0.0.8 k</span><br><span class="line">10.0.0.8 c</span><br><span class="line">10.0.0.7 n</span><br><span class="line">10.0.0.7 f</span><br></pre></td></tr></table></figure>
 
 <p>-t 指定分隔符，-k2 表示按照第二列开始倒叙排序</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@MySQL /]# sort -t&quot; &quot; -k2  -r file1.txt   </span><br><span class="line">10.0.0.8 z</span><br><span class="line">10.0.0.9 o</span><br><span class="line">10.0.0.7 n</span><br><span class="line">10.0.0.8 k</span><br><span class="line">10.0.0.7 f</span><br><span class="line">10.0.0.8 c</span><br><span class="line">10.0.0.9 a</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@MySQL /]# sort -t&quot; &quot; -k2  -r file1.txt</span><br><span class="line">10.0.0.8 z</span><br><span class="line">10.0.0.9 o</span><br><span class="line">10.0.0.7 n</span><br><span class="line">10.0.0.8 k</span><br><span class="line">10.0.0.7 f</span><br><span class="line">10.0.0.8 c</span><br><span class="line">10.0.0.9 a</span><br></pre></td></tr></table></figure>
 
 <p>-t 指定分隔符，-k2 表示按照第二列开始排序</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@MySQL /]# sort -t&quot; &quot; -k2  file1.txt    </span><br><span class="line">10.0.0.9 a</span><br><span class="line">10.0.0.8 c</span><br><span class="line">10.0.0.7 f</span><br><span class="line">10.0.0.8 k</span><br><span class="line">10.0.0.7 n</span><br><span class="line">10.0.0.9 o</span><br><span class="line">10.0.0.8 z</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@MySQL /]# sort -t&quot; &quot; -k2  file1.txt</span><br><span class="line">10.0.0.9 a</span><br><span class="line">10.0.0.8 c</span><br><span class="line">10.0.0.7 f</span><br><span class="line">10.0.0.8 k</span><br><span class="line">10.0.0.7 n</span><br><span class="line">10.0.0.9 o</span><br><span class="line">10.0.0.8 z</span><br></pre></td></tr></table></figure>
 
 <p>先按照第一行排序，在按第三列排序并忽略空格 。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">sort -k 1 -n -k 3 emp.data  </span></span><br><span class="line">Beth    4.00    0</span><br><span class="line">Dan     3.75    0</span><br><span class="line">kathy   4.00    10</span><br><span class="line">Susie   4.25    18</span><br><span class="line">Mark    5.00    20</span><br><span class="line">Mary    5.50    22</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">sort -k 1 -n -k 3 emp.data</span></span><br><span class="line">Beth    4.00    0</span><br><span class="line">Dan     3.75    0</span><br><span class="line">kathy   4.00    10</span><br><span class="line">Susie   4.25    18</span><br><span class="line">Mark    5.00    20</span><br><span class="line">Mary    5.50    22</span><br></pre></td></tr></table></figure>
 
 
     </div>
@@ -389,6 +405,24 @@
   </span>
   <span class="author" itemprop="copyrightHolder">biglittleant</span>
 </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
   </div>
 
@@ -416,6 +450,7 @@
 
 
   
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
 

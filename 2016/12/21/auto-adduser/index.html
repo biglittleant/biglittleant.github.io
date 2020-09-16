@@ -22,15 +22,15 @@
     var CONFIG = {"hostname":"www.biglittleant.cn","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
   </script>
 
-  <meta name="description" content="脚本简介这是一个用来生成用户名密码的软件。  脚本演示123456789#sh adduser.sh usage: adduser.sh [add | del ] username ## 添加用户#sh adduser.sh add niu1 USERNAME : niu1  PASSWORD : kvgSOxUMJQb6k69M  ## 删除用户#sh adduser.sh del niu1">
+  <meta name="description" content="脚本简介这是一个用来生成用户名密码的软件 脚本演示123456789#sh adduser.shusage: adduser.sh [add | del ] username## 添加用户#sh adduser.sh add niu1 USERNAME : niu1 PASSWORD : kvgSOxUMJQb6k69M ## 删除用户#sh adduser.sh del niu1 delete">
 <meta property="og:type" content="article">
 <meta property="og:title" content="生成用户名密码的脚本">
 <meta property="og:url" content="http://www.biglittleant.cn/2016/12/21/auto-adduser/index.html">
 <meta property="og:site_name" content="biglittleant">
-<meta property="og:description" content="脚本简介这是一个用来生成用户名密码的软件。  脚本演示123456789#sh adduser.sh usage: adduser.sh [add | del ] username ## 添加用户#sh adduser.sh add niu1 USERNAME : niu1  PASSWORD : kvgSOxUMJQb6k69M  ## 删除用户#sh adduser.sh del niu1">
+<meta property="og:description" content="脚本简介这是一个用来生成用户名密码的软件 脚本演示123456789#sh adduser.shusage: adduser.sh [add | del ] username## 添加用户#sh adduser.sh add niu1 USERNAME : niu1 PASSWORD : kvgSOxUMJQb6k69M ## 删除用户#sh adduser.sh del niu1 delete">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2016-12-21T03:01:09.000Z">
-<meta property="article:modified_time" content="2020-09-03T02:03:13.610Z">
+<meta property="article:modified_time" content="2020-09-16T09:26:48.579Z">
 <meta property="article:author" content="biglittleant">
 <meta property="article:tag" content="linux">
 <meta property="article:tag" content="shell">
@@ -196,18 +196,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-count">42</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">35</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -277,10 +277,30 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-03 10:03:13" itemprop="dateModified" datetime="2020-09-03T10:03:13+08:00">2020-09-03</time>
+        <time title="Modified: 2020-09-16 17:26:48" itemprop="dateModified" datetime="2020-09-16T17:26:48+08:00">2020-09-16</time>
       </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/shell/" itemprop="url" rel="index"><span itemprop="name">shell</span></a>
+        </span>
+    </span>
 
   
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
 </div>
 
         </div>
@@ -290,11 +310,11 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h3 id="脚本简介"><a href="#脚本简介" class="headerlink" title="脚本简介"></a>脚本简介</h3><p><code>这是一个用来生成用户名密码的软件。 </code></p>
-<h3 id="脚本演示"><a href="#脚本演示" class="headerlink" title="脚本演示"></a>脚本演示</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">sh adduser.sh </span></span><br><span class="line">usage: adduser.sh [add | del ] username </span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 添加用户</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">sh adduser.sh add niu1</span></span><br><span class="line"> USERNAME : niu1 </span><br><span class="line"> PASSWORD : kvgSOxUMJQb6k69M </span><br><span class="line"><span class="meta"> #</span><span class="bash"><span class="comment"># 删除用户</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">sh adduser.sh del niu1 </span></span><br><span class="line"> delete niu1 successful .... </span><br></pre></td></tr></table></figure>
+        <h3 id="脚本简介"><a href="#脚本简介" class="headerlink" title="脚本简介"></a>脚本简介</h3><p><code>这是一个用来生成用户名密码的软件</code></p>
+<h3 id="脚本演示"><a href="#脚本演示" class="headerlink" title="脚本演示"></a>脚本演示</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">sh adduser.sh</span></span><br><span class="line">usage: adduser.sh [add | del ] username</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 添加用户</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">sh adduser.sh add niu1</span></span><br><span class="line"> USERNAME : niu1</span><br><span class="line"> PASSWORD : kvgSOxUMJQb6k69M</span><br><span class="line"><span class="meta"> #</span><span class="bash"><span class="comment"># 删除用户</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">sh adduser.sh del niu1</span></span><br><span class="line"> delete niu1 successful ....</span><br></pre></td></tr></table></figure>
 
 
-<h3 id="脚本具体内容"><a href="#脚本具体内容" class="headerlink" title="脚本具体内容"></a>脚本具体内容</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">USERNAME=&quot;$2&quot;</span><br><span class="line">RETVAL=&quot;0&quot;</span><br><span class="line"></span><br><span class="line">color_shell()&#123;</span><br><span class="line"></span><br><span class="line">	RED_COLOR=&#x27;\E[1;31m&#x27;</span><br><span class="line">	GREEN_COLOR=&#x27;\E[1;32m&#x27;</span><br><span class="line">	YELLOW_COLOR=&#x27;\E[1;33m&#x27;</span><br><span class="line">	BLUE_COLOR=&#x27;\E[1;34m&#x27;</span><br><span class="line">	RES=&#x27;\E[0m&#x27;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">	usage()&#123;</span><br><span class="line">	echo $&quot;usage: $0 [add | del ] username &quot;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">create_passwd()&#123;</span><br><span class="line"></span><br><span class="line">	GENPASSWD=`strings /dev/urandom | grep -o &#x27;[[:alnum:]]&#x27; | head -n 16 | tr -d &#x27;\n&#x27;; echo`</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">create_username()&#123;</span><br><span class="line"></span><br><span class="line">	id $USERNAME &amp;&gt;/dev/null</span><br><span class="line">	RETVAL=&quot;$?&quot;</span><br><span class="line">	if [[ $RETVAL -eq 0  ]]; then</span><br><span class="line">		echo &quot;$USERNAME cunzai&quot;</span><br><span class="line">	else</span><br><span class="line">		useradd $USERNAME</span><br><span class="line">		echo $GENPASSWD | passwd $USERNAME --stdin &amp;&gt;/dev/null </span><br><span class="line">		echo -e &quot;$GREEN_COLOR USERNAME : $USERNAME $RES&quot;</span><br><span class="line">		echo -e &quot;$GREEN_COLOR PASSWORD : $GENPASSWD $RES&quot;</span><br><span class="line">	fi</span><br><span class="line">	mkdir /home/$USERNAME/tools -p </span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">delete_username()&#123;</span><br><span class="line"></span><br><span class="line">	userdel -r $USERNAME</span><br><span class="line">	RETVAL=$?</span><br><span class="line">	if [[ $RETVAL -eq 0 ]]; then</span><br><span class="line">		echo -e &quot;$GREEN_COLOR delete $USERNAME successful .... $RES&quot;</span><br><span class="line">	else </span><br><span class="line">		echo -e &quot;$RED_COLOR $USERNAME not delete ..... $RES&quot;</span><br><span class="line">	fi </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">color_shell</span><br><span class="line"></span><br><span class="line">case $1 in</span><br><span class="line">	add )</span><br><span class="line">	create_passwd</span><br><span class="line">	create_username</span><br><span class="line">	;;</span><br><span class="line">	del )</span><br><span class="line">	delete_username</span><br><span class="line">	;;</span><br><span class="line">	*   )</span><br><span class="line">	usage</span><br><span class="line">	;;</span><br><span class="line">esac</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="脚本具体内容"><a href="#脚本具体内容" class="headerlink" title="脚本具体内容"></a>脚本具体内容</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">USERNAME=&quot;$2&quot;</span><br><span class="line">RETVAL=&quot;0&quot;</span><br><span class="line"></span><br><span class="line">color_shell()&#123;</span><br><span class="line"></span><br><span class="line">	RED_COLOR=&#x27;\E[1;31m&#x27;</span><br><span class="line">	GREEN_COLOR=&#x27;\E[1;32m&#x27;</span><br><span class="line">	YELLOW_COLOR=&#x27;\E[1;33m&#x27;</span><br><span class="line">	BLUE_COLOR=&#x27;\E[1;34m&#x27;</span><br><span class="line">	RES=&#x27;\E[0m&#x27;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">	usage()&#123;</span><br><span class="line">	echo $&quot;usage: $0 [add | del ] username &quot;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">create_passwd()&#123;</span><br><span class="line"></span><br><span class="line">	GENPASSWD=`strings /dev/urandom | grep -o &#x27;[[:alnum:]]&#x27; | head -n 16 | tr -d &#x27;\n&#x27;; echo`</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">create_username()&#123;</span><br><span class="line"></span><br><span class="line">	id $USERNAME &amp;&gt;/dev/null</span><br><span class="line">	RETVAL=&quot;$?&quot;</span><br><span class="line">	if [[ $RETVAL -eq 0  ]]; then</span><br><span class="line">		echo &quot;$USERNAME cunzai&quot;</span><br><span class="line">	else</span><br><span class="line">		useradd $USERNAME</span><br><span class="line">		echo $GENPASSWD | passwd $USERNAME --stdin &amp;&gt;/dev/null</span><br><span class="line">		echo -e &quot;$GREEN_COLOR USERNAME : $USERNAME $RES&quot;</span><br><span class="line">		echo -e &quot;$GREEN_COLOR PASSWORD : $GENPASSWD $RES&quot;</span><br><span class="line">	fi</span><br><span class="line">	mkdir /home/$USERNAME/tools -p</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">delete_username()&#123;</span><br><span class="line"></span><br><span class="line">	userdel -r $USERNAME</span><br><span class="line">	RETVAL=$?</span><br><span class="line">	if [[ $RETVAL -eq 0 ]]; then</span><br><span class="line">		echo -e &quot;$GREEN_COLOR delete $USERNAME successful .... $RES&quot;</span><br><span class="line">	else</span><br><span class="line">		echo -e &quot;$RED_COLOR $USERNAME not delete ..... $RES&quot;</span><br><span class="line">	fi</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">color_shell</span><br><span class="line"></span><br><span class="line">case $1 in</span><br><span class="line">	add )</span><br><span class="line">	create_passwd</span><br><span class="line">	create_username</span><br><span class="line">	;;</span><br><span class="line">	del )</span><br><span class="line">	delete_username</span><br><span class="line">	;;</span><br><span class="line">	*   )</span><br><span class="line">	usage</span><br><span class="line">	;;</span><br><span class="line">esac</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 
 
@@ -375,6 +395,24 @@
   </span>
   <span class="author" itemprop="copyrightHolder">biglittleant</span>
 </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
   </div>
 
@@ -402,6 +440,7 @@
 
 
   
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
 

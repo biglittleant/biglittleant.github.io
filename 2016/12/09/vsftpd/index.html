@@ -22,16 +22,17 @@
     var CONFIG = {"hostname":"www.biglittleant.cn","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
   </script>
 
-  <meta name="description" content="VSFTP简介FTP是仅基于TCP的服务，不支持UDP。与众不同的是FTP使用2个端口，一个数据端口和一个命令端口（也可叫做控制端口）。通常来说这两个端口是21（命令端口）和20（数据端口）。但FTP工作方式的不同，数据端口并不总是20。这就是主动与被动FTP的最大不同之处。     vsftpd提供了3种ftp登录形式:anonymous(匿名帐号)使用anonymous是应用广泛的一种FTP服">
+  <meta name="description" content="VSFTP简介FTP是仅基于TCP的服务，不支持UDP。与众不同的是FTP使用2个端口，一个数据端口和一个命令端口（也可叫做控制端口）。通常来说这两个端口是21（命令端口）和20（数据端口）。但FTP工作方式的不同，数据端口并不总是20。这就是主动与被动FTP的最大不同之处。   vsftpd提供了3种ftp登录形式:anonymous(匿名帐号)使用anonymous是应用广泛的一种FTP服务器">
 <meta property="og:type" content="article">
 <meta property="og:title" content="vsftpd-实战安装">
 <meta property="og:url" content="http://www.biglittleant.cn/2016/12/09/vsftpd/index.html">
 <meta property="og:site_name" content="biglittleant">
-<meta property="og:description" content="VSFTP简介FTP是仅基于TCP的服务，不支持UDP。与众不同的是FTP使用2个端口，一个数据端口和一个命令端口（也可叫做控制端口）。通常来说这两个端口是21（命令端口）和20（数据端口）。但FTP工作方式的不同，数据端口并不总是20。这就是主动与被动FTP的最大不同之处。     vsftpd提供了3种ftp登录形式:anonymous(匿名帐号)使用anonymous是应用广泛的一种FTP服">
+<meta property="og:description" content="VSFTP简介FTP是仅基于TCP的服务，不支持UDP。与众不同的是FTP使用2个端口，一个数据端口和一个命令端口（也可叫做控制端口）。通常来说这两个端口是21（命令端口）和20（数据端口）。但FTP工作方式的不同，数据端口并不总是20。这就是主动与被动FTP的最大不同之处。   vsftpd提供了3种ftp登录形式:anonymous(匿名帐号)使用anonymous是应用广泛的一种FTP服务器">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2016-12-09T10:04:23.000Z">
-<meta property="article:modified_time" content="2020-09-03T02:03:13.623Z">
+<meta property="article:modified_time" content="2020-09-16T09:42:49.902Z">
 <meta property="article:author" content="biglittleant">
+<meta property="article:tag" content="vsftpd">
 <meta name="twitter:card" content="summary">
 
 
@@ -194,18 +195,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-count">42</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">35</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -275,10 +276,30 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-03 10:03:13" itemprop="dateModified" datetime="2020-09-03T10:03:13+08:00">2020-09-03</time>
+        <time title="Modified: 2020-09-16 17:42:49" itemprop="dateModified" datetime="2020-09-16T17:42:49+08:00">2020-09-16</time>
       </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/vsftpd/" itemprop="url" rel="index"><span itemprop="name">vsftpd</span></a>
+        </span>
+    </span>
 
   
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
 </div>
 
         </div>
@@ -288,17 +309,17 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h2 id="VSFTP简介"><a href="#VSFTP简介" class="headerlink" title="VSFTP简介"></a>VSFTP简介</h2><p>FTP是仅基于TCP的服务，不支持UDP。与众不同的是FTP使用2个端口，一个数据端口和一个命令端口（也可叫做控制端口）。通常来说这两个端口是21（命令端口）和20（数据端口）。但FTP工作方式的不同，数据端口并不总是20。这就是主动与被动FTP的最大不同之处。 </p>
-<p>  </p>
+        <h2 id="VSFTP简介"><a href="#VSFTP简介" class="headerlink" title="VSFTP简介"></a>VSFTP简介</h2><p>FTP是仅基于TCP的服务，不支持UDP。与众不同的是FTP使用2个端口，一个数据端口和一个命令端口（也可叫做控制端口）。通常来说这两个端口是21（命令端口）和20（数据端口）。但FTP工作方式的不同，数据端口并不总是20。这就是主动与被动FTP的最大不同之处。</p>
+<p> </p>
 <h3 id="vsftpd提供了3种ftp登录形式"><a href="#vsftpd提供了3种ftp登录形式" class="headerlink" title="vsftpd提供了3种ftp登录形式:"></a>vsftpd提供了3种ftp登录形式:</h3><h4 id="anonymous-匿名帐号"><a href="#anonymous-匿名帐号" class="headerlink" title="anonymous(匿名帐号)"></a>anonymous(匿名帐号)</h4><p>使用anonymous是应用广泛的一种FTP服务器.如果用户在FTP服务器上没有帐号,那么用户可以以anonymous为用户名,以自己的电子邮件地址为密码进行登录.当匿名用户登录FTP服务器后,其登录目录为匿名FTP服务器的根目录/var/ftp.为了减轻FTP服务器的负载,一般情况下,应关闭匿名帐号的上传功能.</p>
 <h4 id="real-真实帐号"><a href="#real-真实帐号" class="headerlink" title="real(真实帐号)"></a>real(真实帐号)</h4><p>real也称为本地帐号,就是以真实的用户名和密码进行登录,但前提条件是用户在FTP服务器上拥有自己的帐号.用真实帐号登录后,其登录的目录为用户自己的目录,该目录在系统建立帐号时系统就自动创建.</p>
 <h4 id="guest-虚拟帐号"><a href="#guest-虚拟帐号" class="headerlink" title="guest(虚拟帐号)"></a>guest(虚拟帐号)</h4><p>如果用户在FTP服务器上拥有帐号,但此帐号只能用于文件传输服务,那么该帐号就是guest,guest是真实帐号的一种形式,它们的不同之处在于,geust登录FTP服务器后,不能访问除宿主目录以外的内容.</p>
-<h2 id="安装vsftpd"><a href="#安装vsftpd" class="headerlink" title="安装vsftpd"></a>安装vsftpd</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">yum install vsftpd </span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 启动ftp</span></span></span><br><span class="line">systemctl start vsftpd</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 或者</span></span></span><br><span class="line">/etc/init.d/vsftpd start </span><br></pre></td></tr></table></figure>
+<h2 id="安装vsftpd"><a href="#安装vsftpd" class="headerlink" title="安装vsftpd"></a>安装vsftpd</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">yum install vsftpd</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 启动ftp</span></span></span><br><span class="line">systemctl start vsftpd</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 或者</span></span></span><br><span class="line">/etc/init.d/vsftpd start</span><br></pre></td></tr></table></figure>
 
 <p>查看服务器端口是否存在</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ss -lntup |grep 22 </span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ss -lntup |grep 22</span><br></pre></td></tr></table></figure>
 
-<h2 id="配置文件解释"><a href="#配置文件解释" class="headerlink" title="配置文件解释"></a>配置文件解释</h2><h3 id="生产配置文件"><a href="#生产配置文件" class="headerlink" title="生产配置文件"></a>生产配置文件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">egrep -v &quot;#|^$&quot; /etc/vsftpd/vsftpd.conf</span><br><span class="line">anonymous_enable=no ##禁止匿名账号登录</span><br><span class="line">local_enable=YES  </span><br><span class="line">write_enable=YES</span><br><span class="line">local_umask=022</span><br><span class="line">dirmessage_enable=YES</span><br><span class="line">xferlog_enable=YES</span><br><span class="line">connect_from_port_20=YES</span><br><span class="line">xferlog_file=/var/log/xferlog</span><br><span class="line">xferlog_std_format=YES</span><br><span class="line">chroot_local_user=YES</span><br><span class="line">listen=NO</span><br><span class="line">listen_ipv6=YES</span><br><span class="line">pam_service_name=vsftpd</span><br><span class="line">userlist_enable=YES</span><br><span class="line">tcp_wrappers=YES</span><br></pre></td></tr></table></figure>
+<h2 id="配置文件解释"><a href="#配置文件解释" class="headerlink" title="配置文件解释"></a>配置文件解释</h2><h3 id="生产配置文件"><a href="#生产配置文件" class="headerlink" title="生产配置文件"></a>生产配置文件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">egrep -v &quot;#|^$&quot; /etc/vsftpd/vsftpd.conf</span><br><span class="line">anonymous_enable=no ##禁止匿名账号登录</span><br><span class="line">local_enable=YES</span><br><span class="line">write_enable=YES</span><br><span class="line">local_umask=022</span><br><span class="line">dirmessage_enable=YES</span><br><span class="line">xferlog_enable=YES</span><br><span class="line">connect_from_port_20=YES</span><br><span class="line">xferlog_file=/var/log/xferlog</span><br><span class="line">xferlog_std_format=YES</span><br><span class="line">chroot_local_user=YES</span><br><span class="line">listen=NO</span><br><span class="line">listen_ipv6=YES</span><br><span class="line">pam_service_name=vsftpd</span><br><span class="line">userlist_enable=YES</span><br><span class="line">tcp_wrappers=YES</span><br></pre></td></tr></table></figure>
 
 <h3 id="默认配置"><a href="#默认配置" class="headerlink" title="默认配置"></a>默认配置</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">使用户不能离开主目录</span></span><br><span class="line">chroot_list_enable=YES</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">设定不允许匿名访问</span></span><br><span class="line">anonymous_enable=NO</span><br><span class="line"><span class="meta">#</span><span class="bash">设定本地用户可以访问。注：如使用虚拟宿主用户，在该项目设定为NO的情况下所有虚拟用户将无法访问</span></span><br><span class="line">local_enable=YES</span><br><span class="line"></span><br><span class="line">write_enable=YES</span><br><span class="line">local_umask=022</span><br><span class="line">dirmessage_enable=YES</span><br><span class="line">xferlog_enable=YES</span><br><span class="line">connect_from_port_20=YES</span><br><span class="line">xferlog_std_format=YES</span><br><span class="line"><span class="meta">#</span><span class="bash">服务器独立运行</span></span><br><span class="line">listen=YES</span><br><span class="line"></span><br><span class="line">pam_service_name=vsftpd</span><br><span class="line">userlist_enable=YES</span><br><span class="line">tcp_wrappers=YES</span><br></pre></td></tr></table></figure>
 
@@ -307,7 +328,7 @@
 <blockquote>
 <p>如果启用vsftpd日志需手动建立日志文件</p>
 </blockquote>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">touch /var/log/xfer.log </span><br><span class="line">touch /var/log/vsftpd.log</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">touch /var/log/xfer.log</span><br><span class="line">touch /var/log/vsftpd.log</span><br></pre></td></tr></table></figure>
 
 <blockquote>
 <p>配置到这里，一个普通的ftp就可以交付使用。<br>使用系统账号可以登录自己的ftp。</p>
@@ -337,7 +358,7 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/vsftpd/vsftpd.conf</span><br><span class="line"><span class="meta">#</span><span class="bash">PAM认证文件名。PAM将根据/etc/pam.d/vsftpd进行认证</span></span><br><span class="line">pam_service_name=vsftpd</span><br><span class="line"><span class="meta">#</span><span class="bash">设定启用虚拟用户功能</span></span><br><span class="line">guest_enable=YES</span><br><span class="line"><span class="meta">#</span><span class="bash">指定虚拟用户的宿主用户，CentOS中已经有内置的ftp用户了</span></span><br><span class="line">guest_username=ftp</span><br><span class="line"><span class="meta">#</span><span class="bash">设定虚拟用户个人vsftp的CentOS FTP服务文件存放路径。存放虚拟用户个性的CentOS FTP服务文件(配置文件名=虚拟用户名)</span></span><br><span class="line">user_config_dir=/etc/vsftpd/vuser_conf</span><br><span class="line"><span class="meta">#</span><span class="bash">配置vsftpd日志（可选）</span></span><br><span class="line">xferlog_enable=YES</span><br><span class="line">xferlog_std_format=YES</span><br><span class="line">xferlog_file=/var/log/xferlog</span><br><span class="line">dual_log_enable=YES</span><br><span class="line">vsftpd_log_file=/var/log/vsftpd.log</span><br></pre></td></tr></table></figure>
 
 <p>进行认证</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">安装Berkeley DB工具</span></span><br><span class="line"></span><br><span class="line">yum install db4 db4-utils -y </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">创建用户密码本，注意奇行是用户名，偶行是密码</span></span><br><span class="line">cat &gt;&gt;/etc/vsftpd/vuser_passwd.txt&lt;&lt;EOF</span><br><span class="line">test</span><br><span class="line">123456</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">生成虚拟用户认证的db文件</span></span><br><span class="line">db_load -T -t hash -f /etc/vsftpd/vuser_passwd.txt /etc/vsftpd/vuser_passwd.db</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 指定认证文件名称，全部注释掉原来语句，再增加以下两句</span></span><br><span class="line">vi /etc/pam.d/vsftpd</span><br><span class="line"></span><br><span class="line">auth required pam_userdb.so db=/etc/vsftpd/vuser_passwd</span><br><span class="line">account required pam_userdb.so db=/etc/vsftpd/vuser_passwd</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">创建虚拟用户配置文件，为虚拟用户配置独立的权限</span></span><br><span class="line">mkdir /etc/vsftpd/vuser_conf/</span><br><span class="line"><span class="meta">#</span><span class="bash">文件名等于vuser_passwd.txt里面的账户名，否则下面设置无效</span></span><br><span class="line">vi /etc/vsftpd/vuser_conf/test</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">虚拟用户根目录,根据实际情况修改</span></span><br><span class="line">local_root=/data/ftp</span><br><span class="line">write_enable=YES</span><br><span class="line">anon_umask=022</span><br><span class="line">anon_world_readable_only=NO</span><br><span class="line">anon_upload_enable=YES</span><br><span class="line">anon_mkdir_write_enable=YES</span><br><span class="line">anon_other_write_enable=YES</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">安装Berkeley DB工具</span></span><br><span class="line"></span><br><span class="line">yum install db4 db4-utils -y</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">创建用户密码本，注意奇行是用户名，偶行是密码</span></span><br><span class="line">cat &gt;&gt;/etc/vsftpd/vuser_passwd.txt&lt;&lt;EOF</span><br><span class="line">test</span><br><span class="line">123456</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">生成虚拟用户认证的db文件</span></span><br><span class="line">db_load -T -t hash -f /etc/vsftpd/vuser_passwd.txt /etc/vsftpd/vuser_passwd.db</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 指定认证文件名称，全部注释掉原来语句，再增加以下两句</span></span><br><span class="line">vi /etc/pam.d/vsftpd</span><br><span class="line"></span><br><span class="line">auth required pam_userdb.so db=/etc/vsftpd/vuser_passwd</span><br><span class="line">account required pam_userdb.so db=/etc/vsftpd/vuser_passwd</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">创建虚拟用户配置文件，为虚拟用户配置独立的权限</span></span><br><span class="line">mkdir /etc/vsftpd/vuser_conf/</span><br><span class="line"><span class="meta">#</span><span class="bash">文件名等于vuser_passwd.txt里面的账户名，否则下面设置无效</span></span><br><span class="line">vi /etc/vsftpd/vuser_conf/test</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">虚拟用户根目录,根据实际情况修改</span></span><br><span class="line">local_root=/data/ftp</span><br><span class="line">write_enable=YES</span><br><span class="line">anon_umask=022</span><br><span class="line">anon_world_readable_only=NO</span><br><span class="line">anon_upload_enable=YES</span><br><span class="line">anon_mkdir_write_enable=YES</span><br><span class="line">anon_other_write_enable=YES</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>虚拟用户根目录必须具有FTP账号的权限。<br>为了使服务器能够使用上述生成的数据库文件，对客户端进行身份验证，需要调用系统的PAM模块。<br>PAM(Plugable Authentication Module)为可插拔认证模块，不必重新安装应用系统，通过修改指定的配置文件，调整对该程序的认证方式。<br>PAM模块配置文件路径为/etc/pam.d/目录，此目录下保存着大量与认证有关的配置文件，并以服务名称命名。</p>
 </blockquote>
@@ -373,6 +394,9 @@
     
 
     <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/vsftpd/" rel="tag"># vsftpd</a>
+          </div>
 
         
 
@@ -438,6 +462,24 @@
   </span>
   <span class="author" itemprop="copyrightHolder">biglittleant</span>
 </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
   </div>
 
@@ -465,6 +507,7 @@
 
 
   
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
 

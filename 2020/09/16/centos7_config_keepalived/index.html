@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.biglittleant.cn","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+  </script>
+
+  <meta name="description" content="keepalived 服务配置keepalived 起初是专为LVS设计的，专门用来监控LVS集群系统中各个服务节点的状态，后来又加入VRRP的功能，因此除了配合LVS服务外，也可以作为其他服务（nginx，haproxy）的高可用软件。VRRP（virtual router redundancy protocol）虚拟路由器冗余协议：处理的目的就是为了解决静态路由传销的单点故障问题，keepal">
+<meta property="og:type" content="article">
+<meta property="og:title" content="keepalived 服务配置">
+<meta property="og:url" content="http://www.biglittleant.cn/2020/09/16/centos7_config_keepalived/index.html">
+<meta property="og:site_name" content="biglittleant">
+<meta property="og:description" content="keepalived 服务配置keepalived 起初是专为LVS设计的，专门用来监控LVS集群系统中各个服务节点的状态，后来又加入VRRP的功能，因此除了配合LVS服务外，也可以作为其他服务（nginx，haproxy）的高可用软件。VRRP（virtual router redundancy protocol）虚拟路由器冗余协议：处理的目的就是为了解决静态路由传销的单点故障问题，keepal">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-09-16T09:03:38.159Z">
+<meta property="article:modified_time" content="2020-09-16T09:25:33.248Z">
+<meta property="article:author" content="biglittleant">
+<meta property="article:tag" content="keepalived">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.biglittleant.cn/2020/09/16/centos7_config_keepalived/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>keepalived 服务配置 | biglittleant</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">biglittleant</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">不被嘲笑的梦想，是不值得去实现的</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-文章分类">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a>
+
+  </li>
+        <li class="menu-item menu-item-归档">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#keepalived-%E6%9C%8D%E5%8A%A1%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">keepalived 服务配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E6%9C%BA%E8%A7%84%E5%88%92"><span class="nav-number">1.1.</span> <span class="nav-text">主机规划</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-lvs-%E8%BD%AF%E4%BB%B6"><span class="nav-number">1.2.</span> <span class="nav-text">安装 lvs 软件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#keepalived-%E5%AE%89%E8%A3%85"><span class="nav-number">1.3.</span> <span class="nav-text">keepalived 安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E6%88%98"><span class="nav-number">1.4.</span> <span class="nav-text">实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0-keepalived-%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6"><span class="nav-number">1.4.1.</span> <span class="nav-text">添加 keepalived 启动文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0-keepalived-%E4%B8%BB%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">1.4.2.</span> <span class="nav-text">添加 keepalived 主配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0-virtual-server-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">1.4.3.</span> <span class="nav-text">添加 virtual_server 配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0-keepalived-%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6-1"><span class="nav-number">1.4.4.</span> <span class="nav-text">添加 keepalived 启动文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81%E6%9C%8D%E5%8A%A1%E5%90%AF%E5%8A%A8"><span class="nav-number">1.4.5.</span> <span class="nav-text">验证服务启动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%8B%E5%8A%A8%E5%85%B3%E9%97%AD%E4%B8%BB%E8%8A%82%E7%82%B9%EF%BC%8C%E9%AA%8C%E8%AF%81%E8%99%9A%E6%8B%9FIP%E8%87%AA%E5%8A%A8%E6%BC%82%E7%A7%BB"><span class="nav-number">1.4.6.</span> <span class="nav-text">手动关闭主节点，验证虚拟IP自动漂移</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E6%B1%87%E6%80%BB"><span class="nav-number">1.5.</span> <span class="nav-text">报错汇总</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">1.6.</span> <span class="nav-text">参考文档</span></a></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">biglittleant</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2020/09/16/centos7_config_keepalived/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="biglittleant">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="biglittleant">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          keepalived 服务配置
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2020-09-16 17:03:38 / Modified: 17:25:33" itemprop="dateCreated datePublished" datetime="2020-09-16T17:03:38+08:00">2020-09-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/keepalived/" itemprop="url" rel="index"><span itemprop="name">keepalived</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="keepalived-服务配置"><a href="#keepalived-服务配置" class="headerlink" title="keepalived 服务配置"></a>keepalived 服务配置</h1><p>keepalived 起初是专为LVS设计的，专门用来监控LVS集群系统中各个服务节点的状态，后来又加入VRRP的功能，因此除了配合LVS服务外，也可以作为其他服务（nginx，haproxy）的高可用软件。<br>VRRP（virtual router redundancy protocol）虚拟路由器冗余协议：处理的目的就是为了解决静态路由传销的单点故障问题，<br>keepalived两大功能：healthcheck &amp; failover 。</p>
+<h2 id="主机规划"><a href="#主机规划" class="headerlink" title="主机规划"></a>主机规划</h2><table>
+<thead>
+<tr>
+<th>主机名</th>
+<th>IP</th>
+<th>VIP</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>node8</td>
+<td>192.168.66.18</td>
+<td>192.168.66.250(DR)</td>
+<td>lvs+keepalived(主节点)</td>
+</tr>
+<tr>
+<td>node9</td>
+<td>192.168.66.19</td>
+<td>192.168.66.250(DR)</td>
+<td>lvs+keepalived(备节点)</td>
+</tr>
+<tr>
+<td>node1</td>
+<td>192.168.66.11</td>
+<td></td>
+<td>nginx</td>
+</tr>
+<tr>
+<td>node2</td>
+<td>192.168.66.12</td>
+<td></td>
+<td>nginx</td>
+</tr>
+</tbody></table>
+<h2 id="安装-lvs-软件"><a href="#安装-lvs-软件" class="headerlink" title="安装 lvs 软件"></a>安装 lvs 软件</h2><blockquote>
+<p>两台机器上都要操作</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install ipvsadm -y</span><br></pre></td></tr></table></figure>
+
+<p>开启内核转发</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cat /proc/sys/net/ipv4/ip_forward</span><br><span class="line">echo 1 &gt; /proc/sys/net/ipv4/ip_forward</span><br><span class="line">cat /proc/sys/net/ipv4/ip_forward</span><br></pre></td></tr></table></figure>
+
+<h2 id="keepalived-安装"><a href="#keepalived-安装" class="headerlink" title="keepalived 安装"></a>keepalived 安装</h2><blockquote>
+<p>两台机器上都要操作</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install curl gcc openssl-devel libnl3-devel net-snmp-devel -y</span><br></pre></td></tr></table></figure>
+
+<p>二进制安装</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/src</span><br><span class="line">wget https://www.keepalived.org/software/keepalived-2.1.5.tar.gz</span><br><span class="line">tar -zxf keepalived-2.1.5.tar.gz</span><br><span class="line">cd keepalived-2.1.5.tar.gz</span><br><span class="line">./configure --prefix=/usr/local/src/keepalived-2.1.5_bin</span><br><span class="line">make &amp;&amp; make install</span><br><span class="line">cd /usr/local/src/keepalived-2.1.5_bin</span><br><span class="line">cp sbin/keepalived /usr/sbin/</span><br><span class="line">cp bin/genhash /usr/bin/</span><br></pre></td></tr></table></figure>
+
+<h2 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h2><h3 id="添加-keepalived-启动文件"><a href="#添加-keepalived-启动文件" class="headerlink" title="添加 keepalived 启动文件"></a>添加 keepalived 启动文件</h3><blockquote>
+<p>两台机器上都要操作</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/sysconfig/keepalived</span><br><span class="line"><span class="meta">#</span><span class="bash"> Options <span class="keyword">for</span> keepalived. See `keepalived --<span class="built_in">help</span><span class="string">&#x27; output and keepalived(8) and</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> keepalived.conf(5) man pages <span class="keyword">for</span> a list of all options. Here are the most</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> common ones :</span></span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> --vrrp               -P    Only run with VRRP subsystem.</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> --check              -C    Only run with Health-checker subsystem.</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> --dont-release-vrrp  -V    Dont remove VRRP VIPs &amp; VROUTEs on daemon stop.</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> --dont-release-ipvs  -I    Dont remove IPVS topology on daemon stop.</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> --dump-conf          -d    Dump the configuration data.</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> --<span class="built_in">log</span>-detail         -D    Detailed <span class="built_in">log</span> messages.</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> --<span class="built_in">log</span>-facility       -S    0-7 Set <span class="built_in">local</span> syslog facility (default=LOG_DAEMON)</span></span><br><span class="line"><span class="meta">#</span></span><br><span class="line"></span><br><span class="line">KEEPALIVED_OPTIONS=&quot;-D&quot;</span><br></pre></td></tr></table></figure>
+
+<h3 id="添加-keepalived-主配置文件"><a href="#添加-keepalived-主配置文件" class="headerlink" title="添加 keepalived 主配置文件"></a>添加 keepalived 主配置文件</h3><blockquote>
+<p>node8上都要操作</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /etc/keepalived/</span><br><span class="line">vim /etc/keepalived/keepalived.conf</span><br><span class="line">! Configuration File for keepalived</span><br><span class="line"></span><br><span class="line">global_defs &#123;</span><br><span class="line">   notification_email &#123;</span><br><span class="line">     biglittleant@admin.com</span><br><span class="line">   &#125;</span><br><span class="line">   notification_email_from Alexandre.Cassen@firewall.loc</span><br><span class="line">   smtp_server 192.168.200.1</span><br><span class="line">   smtp_connect_timeout 30</span><br><span class="line">   router_id node8 #修改为本机名</span><br><span class="line">   vrrp_skip_check_adv_addr</span><br><span class="line">   vrrp_strict</span><br><span class="line">   vrrp_garp_interval 0</span><br><span class="line">   vrrp_gna_interval 0</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">vrrp_instance VI_1 &#123;</span><br><span class="line">    state MASTER # 主节点</span><br><span class="line">    interface eth1</span><br><span class="line">    virtual_router_id 51</span><br><span class="line">    priority 100 # 要大于备节点的值</span><br><span class="line">    advert_int 1</span><br><span class="line">    authentication &#123;</span><br><span class="line">        auth_type PASS</span><br><span class="line">        auth_pass 1111</span><br><span class="line">    &#125;</span><br><span class="line">    virtual_ipaddress &#123;</span><br><span class="line">        192.168.66.250</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">include keepalived.d/*.conf</span><br></pre></td></tr></table></figure>
+
+<p>备节点配置文件</p>
+<blockquote>
+<p>node9上都要操作</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /etc/keepalived/</span><br><span class="line">vim /etc/keepalived/keepalived.conf</span><br><span class="line">! Configuration File for keepalived</span><br><span class="line"></span><br><span class="line">global_defs &#123;</span><br><span class="line">   notification_email &#123;</span><br><span class="line">     biglittleant@admin.com</span><br><span class="line">   &#125;</span><br><span class="line">   notification_email_from Alexandre.Cassen@firewall.loc</span><br><span class="line">   smtp_server 192.168.200.1</span><br><span class="line">   smtp_connect_timeout 30</span><br><span class="line">   router_id node9 #修改为本机名</span><br><span class="line">   vrrp_skip_check_adv_addr</span><br><span class="line">   vrrp_strict</span><br><span class="line">   vrrp_garp_interval 0</span><br><span class="line">   vrrp_gna_interval 0</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">vrrp_instance VI_1 &#123;</span><br><span class="line">    state BACKUP # 备节点</span><br><span class="line">    interface eth1</span><br><span class="line">    virtual_router_id 51</span><br><span class="line">    priority 99 # 要小于主节点的值</span><br><span class="line">    advert_int 1</span><br><span class="line">    authentication &#123;</span><br><span class="line">        auth_type PASS</span><br><span class="line">        auth_pass 1111</span><br><span class="line">    &#125;</span><br><span class="line">    virtual_ipaddress &#123;</span><br><span class="line">        192.168.66.250</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">include keepalived.d/*.conf</span><br></pre></td></tr></table></figure>
+
+<h3 id="添加-virtual-server-配置文件"><a href="#添加-virtual-server-配置文件" class="headerlink" title="添加 virtual_server 配置文件"></a>添加 virtual_server 配置文件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /etc/keepalived/keepalived.d</span><br><span class="line">vim /etc/keepalived/keepalived.d/vs-192.168.66.250_80.conf</span><br><span class="line">virtual_server 192.168.66.250 80 &#123;</span><br><span class="line">    delay_loop 6</span><br><span class="line">    lb_algo wrr</span><br><span class="line">    lb_kind DR</span><br><span class="line">    persistence_timeout 50</span><br><span class="line">    protocol TCP</span><br><span class="line"></span><br><span class="line">    real_server 192.168.66.11 80 &#123;</span><br><span class="line">        weight 1</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    real_server 192.168.66.12 80 &#123;</span><br><span class="line">        weight 2</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="添加-keepalived-启动文件-1"><a href="#添加-keepalived-启动文件-1" class="headerlink" title="添加 keepalived 启动文件"></a>添加 keepalived 启动文件</h3><blockquote>
+<p>两台机器上都要操作</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 添加keepalived 启动文件</span></span><br><span class="line">vim /usr/lib/systemd/system/keepalived.service</span><br><span class="line">[Unit]</span><br><span class="line">Description=LVS and VRRP High Availability Monitor</span><br><span class="line">After=syslog.target network-online.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type=forking</span><br><span class="line">PIDFile=/var/run/keepalived.pid</span><br><span class="line">KillMode=process</span><br><span class="line">EnvironmentFile=-/etc/sysconfig/keepalived</span><br><span class="line">ExecStart=/usr/sbin/keepalived $KEEPALIVED_OPTIONS</span><br><span class="line">ExecReload=/bin/kill -HUP $MAINPID</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 启动keepalvied &amp; 加入开机自启动</span></span><br><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl enable keepalived</span><br><span class="line">Created symlink from /etc/systemd/system/multi-user.target.wants/keepalived.service to /usr/lib/systemd/system/keepalived.service.</span><br><span class="line">systemctl start keepalived</span><br></pre></td></tr></table></figure>
+
+<h3 id="验证服务启动"><a href="#验证服务启动" class="headerlink" title="验证服务启动"></a>验证服务启动</h3><blockquote>
+<p>node8上操作</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">Sep 15 17:10:34 node8 Keepalived_vrrp[30389]: Using LinkWatch kernel netlink reflector...</span><br><span class="line">Sep 15 17:10:34 node8 Keepalived_vrrp[30389]: VRRP sockpool: [ifindex(3), proto(112), unicast(0), fd(10,11)]</span><br><span class="line">Sep 15 17:10:34 node8 Keepalived_healthcheckers[30388]: Got SIGHUP, reloading checker configuration</span><br><span class="line">Sep 15 17:10:34 node8 Keepalived_healthcheckers[30388]: Initializing ipvs</span><br><span class="line">Sep 15 17:10:34 node8 Keepalived_healthcheckers[30388]: Opening file &#x27;/etc/keepalived/keepalived.conf&#x27;.</span><br><span class="line">Sep 15 17:10:34 node8 Keepalived_healthcheckers[30388]: Opening file &#x27;keepalived.d/vs-192.168.66.250_80.conf&#x27;.</span><br><span class="line">Sep 15 17:10:34 node8 Keepalived_healthcheckers[30388]: service [192.168.66.13]:80 no longer exist</span><br><span class="line">Sep 15 17:10:34 node8 Keepalived_healthcheckers[30388]: Gained quorum 1+0=1 &lt;= 2 for VS [192.168.66.250]:80</span><br><span class="line">Sep 15 17:10:34 node8 systemd[1]: Reloaded LVS and VRRP High Availability Monitor.</span><br><span class="line">Sep 15 17:10:35 node8 Keepalived_vrrp[30389]: VRRP_Instance(VI_1) Transition to MASTER STATE</span><br><span class="line"></span><br><span class="line">[root@node8 ~]# ip addr list eth1</span><br><span class="line">3: eth1: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP group default qlen 1000</span><br><span class="line">    link/ether 08:00:27:89:7e:4b brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 192.168.66.18/24 brd 192.168.66.255 scope global noprefixroute eth1</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet 192.168.66.250/32 scope global eth1</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 fe80::a00:27ff:fe89:7e4b/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line"></span><br><span class="line">[root@node8 ~]# ipvsadm -Ln</span><br><span class="line">IP Virtual Server version 1.2.1 (size=4096)</span><br><span class="line">Prot LocalAddress:Port Scheduler Flags</span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> RemoteAddress:Port           Forward Weight ActiveConn InActConn</span></span><br><span class="line">TCP  192.168.66.250:80 wrr persistent 50</span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> 192.168.66.11:80             Route   1      0          0</span></span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> 192.168.66.12:80             Route   2      0          0</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="手动关闭主节点，验证虚拟IP自动漂移"><a href="#手动关闭主节点，验证虚拟IP自动漂移" class="headerlink" title="手动关闭主节点，验证虚拟IP自动漂移"></a>手动关闭主节点，验证虚拟IP自动漂移</h3><blockquote>
+<p>node8上操作</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@node8 ~]# systemctl stop keepalived</span><br><span class="line"><span class="meta">#</span><span class="bash"> 发现主节点lvs配置没了</span></span><br><span class="line">[root@node8 ~]# ipvsadm -Ln</span><br><span class="line">IP Virtual Server version 1.2.1 (size=4096)</span><br><span class="line">Prot LocalAddress:Port Scheduler Flags</span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> RemoteAddress:Port           Forward Weight ActiveConn InActConn</span></span><br><span class="line">[root@node8 ~]#</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>node9上操作</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 通过日志，查看Keepalived主备切换过程</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 期间备节点发送ARP广播，让所有客户端更新本地的ARP表，以便客户端访问新接管VIP服务的节点。</span></span><br><span class="line"></span><br><span class="line">Sep 15 17:33:21 node9 Keepalived_vrrp[30272]: VRRP_Instance(VI_1) Entering BACKUP STATE</span><br><span class="line">Sep 15 17:33:21 node9 Keepalived_vrrp[30272]: VRRP sockpool: [ifindex(3), proto(112), unicast(0), fd(10,11)]</span><br><span class="line">Sep 15 17:33:21 node9 systemd[1]: Reloaded LVS and VRRP High Availability Monitor.</span><br><span class="line">Sep 15 17:34:48 node9 Keepalived_vrrp[30272]: VRRP_Instance(VI_1) Transition to MASTER STATE</span><br><span class="line">Sep 15 17:34:49 node9 Keepalived_vrrp[30272]: VRRP_Instance(VI_1) Entering MASTER STATE</span><br><span class="line">Sep 15 17:34:49 node9 Keepalived_vrrp[30272]: VRRP_Instance(VI_1) setting protocol iptable drop rule</span><br><span class="line">Sep 15 17:34:49 node9 Keepalived_vrrp[30272]: VRRP_Instance(VI_1) setting protocol VIPs.</span><br><span class="line">Sep 15 17:34:49 node9 Keepalived_vrrp[30272]: Sending gratuitous ARP on eth1 for 192.168.66.250</span><br><span class="line">Sep 15 17:34:49 node9 Keepalived_vrrp[30272]: VRRP_Instance(VI_1) Sending/queueing gratuitous ARPs on eth1 for 192.168.66.250</span><br><span class="line">Sep 15 17:34:49 node9 Keepalived_vrrp[30272]: Sending gratuitous ARP on eth1 for 192.168.66.250</span><br><span class="line">Sep 15 17:34:49 node9 Keepalived_vrrp[30272]: Sending gratuitous ARP on eth1 for 192.168.66.250</span><br><span class="line">Sep 15 17:34:49 node9 Keepalived_vrrp[30272]: Sending gratuitous ARP on eth1 for 192.168.66.250</span><br><span class="line">Sep 15 17:34:49 node9 Keepalived_vrrp[30272]: Sending gratuitous ARP on eth1 for 192.168.66.250</span><br><span class="line">Sep 15 17:34:54 node9 Keepalived_vrrp[30272]: Sending gratuitous ARP on eth1 for 192.168.66.250</span><br><span class="line">Sep 15 17:34:54 node9 Keepalived_vrrp[30272]: VRRP_Instance(VI_1) Sending/queueing gratuitous ARPs on eth1 for 192.168.66.250</span><br><span class="line">Sep 15 17:34:54 node9 Keepalived_vrrp[30272]: Sending gratuitous ARP on eth1 for 192.168.66.250</span><br><span class="line">Sep 15 17:34:54 node9 Keepalived_vrrp[30272]: Sending gratuitous ARP on eth1 for 192.168.66.250</span><br><span class="line">Sep 15 17:34:54 node9 Keepalived_vrrp[30272]: Sending gratuitous ARP on eth1 for 192.168.66.250</span><br><span class="line">Sep 15 17:34:54 node9 Keepalived_vrrp[30272]: Sending gratuitous ARP on eth1 for 192.168.66.250</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>为什么连续发送5个arp，因为vrrp_garp_master_repeat默认为5；</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@node9 ~]# ip addr list eth1</span><br><span class="line">3: eth1: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP group default qlen 1000</span><br><span class="line">    link/ether 08:00:27:e5:bd:89 brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 192.168.66.19/24 brd 192.168.66.255 scope global noprefixroute eth1</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet 192.168.66.250/32 scope global eth1</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 fe80::a00:27ff:fee5:bd89/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line"></span><br><span class="line">[root@node9 ~]# ipvsadm -Ln</span><br><span class="line">IP Virtual Server version 1.2.1 (size=4096)</span><br><span class="line">Prot LocalAddress:Port Scheduler Flags</span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> RemoteAddress:Port           Forward Weight ActiveConn InActConn</span></span><br><span class="line">TCP  192.168.66.250:80 wrr persistent 50</span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> 192.168.66.11:80             Route   1      0          0</span></span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> 192.168.66.12:80             Route   2      0          0</span></span><br></pre></td></tr></table></figure>
+
+<p>重启启动主节点，验证是否切回</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 由于主节点优先级高于备节点，因此主节点抢占为MASTER，同时备节点成为BACKUP，并且移除VIP。</span></span><br><span class="line"></span><br><span class="line">Sep 15 17:38:41 node8 Keepalived_vrrp[1214]: VRRP_Instance(VI_1) Entering BACKUP STATE</span><br><span class="line">Sep 15 17:38:41 node8 Keepalived_vrrp[1214]: VRRP sockpool: [ifindex(3), proto(112), unicast(0), fd(10,11)]</span><br><span class="line">Sep 15 17:38:41 node8 Keepalived_vrrp[1214]: VRRP_Instance(VI_1) forcing a new MASTER election</span><br><span class="line">Sep 15 17:38:42 node8 Keepalived_vrrp[1214]: VRRP_Instance(VI_1) Transition to MASTER STATE</span><br><span class="line">Sep 15 17:38:43 node8 Keepalived_vrrp[1214]: VRRP_Instance(VI_1) Entering MASTER STATE</span><br><span class="line">Sep 15 17:38:43 node8 Keepalived_vrrp[1214]: VRRP_Instance(VI_1) setting protocol iptable drop rule</span><br><span class="line">Sep 15 17:38:43 node8 Keepalived_vrrp[1214]: VRRP_Instance(VI_1) setting protocol VIPs.</span><br><span class="line">Sep 15 17:38:43 node8 Keepalived_vrrp[1214]: Sending gratuitous ARP on eth1 for 192.168.66.250</span><br><span class="line">Sep 15 17:38:43 node8 Keepalived_vrrp[1214]: VRRP_Instance(VI_1) Sending/queueing gratuitous ARPs on eth1 for 192.168.66.250</span><br><span class="line">Sep 15 17:38:43 node8 Keepalived_vrrp[1214]: Sending gratuitous ARP on eth1 for 192.168.66.250</span><br><span class="line">Sep 15 17:38:43 node8 Keepalived_vrrp[1214]: Sending gratuitous ARP on eth1 for 192.168.66.250</span><br><span class="line">Sep 15 17:38:43 node8 Keepalived_vrrp[1214]: Sending gratuitous ARP on eth1 for 192.168.66.250</span><br><span class="line">Sep 15 17:38:43 node8 Keepalived_vrrp[1214]: Sending gratuitous ARP on eth1 for 192.168.66.250</span><br><span class="line">Sep 15 17:38:48 node8 Keepalived_vrrp[1214]: Sending gratuitous ARP on eth1 for 192.168.66.250</span><br><span class="line">Sep 15 17:38:48 node8 Keepalived_vrrp[1214]: VRRP_Instance(VI_1) Sending/queueing gratuitous ARPs on eth1 for 192.168.66.250</span><br><span class="line">Sep 15 17:38:48 node8 Keepalived_vrrp[1214]: Sending gratuitous ARP on eth1 for 192.168.66.250</span><br><span class="line">Sep 15 17:38:48 node8 Keepalived_vrrp[1214]: Sending gratuitous ARP on eth1 for 192.168.66.250</span><br><span class="line">Sep 15 17:38:48 node8 Keepalived_vrrp[1214]: Sending gratuitous ARP on eth1 for 192.168.66.250</span><br><span class="line">Sep 15 17:38:48 node8 Keepalived_vrrp[1214]: Sending gratuitous ARP on eth1 for 192.168.66.250</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[root@node8 ~]# ipvsadm -Ln</span><br><span class="line">IP Virtual Server version 1.2.1 (size=4096)</span><br><span class="line">Prot LocalAddress:Port Scheduler Flags</span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> RemoteAddress:Port           Forward Weight ActiveConn InActConn</span></span><br><span class="line">TCP  192.168.66.250:80 wrr persistent 50</span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> 192.168.66.11:80             Route   1      0          0</span></span><br><span class="line"><span class="meta">  -&gt;</span><span class="bash"> 192.168.66.12:80             Route   2      0          0</span></span><br><span class="line">[root@node8 ~]# ip addr list eth1</span><br><span class="line">3: eth1: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP group default qlen 1000</span><br><span class="line">    link/ether 08:00:27:89:7e:4b brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 192.168.66.18/24 brd 192.168.66.255 scope global noprefixroute eth1</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet 192.168.66.250/32 scope global eth1</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 fe80::a00:27ff:fe89:7e4b/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br></pre></td></tr></table></figure>
+
+<h2 id="报错汇总"><a href="#报错汇总" class="headerlink" title="报错汇总"></a>报错汇总</h2><p>Unable to load ipset library - libipset.so.11: cannot open shared object file: No such file or directory</p>
+<p>yum 安装会报错，查看ipset的包，发现库文件是<code>libipset.so.11</code>, 怀疑是yum版本太旧导致。使用src安装最新版本，未发现此报错。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a target="_blank" rel="noopener" href="https://github.com/acassen/keepalived">git仓库</a><br><a target="_blank" rel="noopener" href="https://keepalived.readthedocs.io/en/latest/installing_keepalived.html">官方文档</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/keepalived/" rel="tag"># keepalived</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/09/11/vagrant+virtualbox%E6%9E%84%E5%BB%BAmac%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%8E%AF%E5%A2%83/" rel="prev" title="vagrant+virtualbox 构建mac虚拟机环境">
+                  <i class="fa fa-chevron-left"></i> vagrant+virtualbox 构建mac虚拟机环境
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+  
+  
+  
+
+
+
+      
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">biglittleant</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -22,17 +22,18 @@
     var CONFIG = {"hostname":"www.biglittleant.cn","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
   </script>
 
-  <meta name="description" content="需求：日常工作中需要同时操作多台服务器，如果不注意会导致将命令执行在错误的服务器上。 ##解决办法： 1234vim &#x2F;etc&#x2F;profile### echo IP in bash IP&#x3D;&#96;awk -F&quot;&#x3D;&quot; &amp;#x27;&#x2F;IPADDR&#x2F;&amp;#123;print $2&amp;#125;&amp;#x27; &#x2F;etc&#x2F;sysconfig&#x2F;network-scripts&#x2F;ifcfg-eth0&#96;PS">
+  <meta name="description" content="需求：日常工作中需要同时操作多台服务器，如果不注意会导致将命令执行在错误的服务器上。 解决办法1234vim &#x2F;etc&#x2F;profile### echo IP in bashIP&#x3D;&#96;awk -F&quot;&#x3D;&quot; &amp;#x27;&#x2F;IPADDR&#x2F;&amp;#123;print $2&amp;#125;&amp;#x27; &#x2F;etc&#x2F;sysconfig&#x2F;network-scripts&#x2F;ifcfg-eth0&#96;PS1&#x3D;&amp;#x">
 <meta property="og:type" content="article">
 <meta property="og:title" content="在bash终端前显示当前机器的IP地址">
 <meta property="og:url" content="http://www.biglittleant.cn/2016/12/19/bash-display-ip/index.html">
 <meta property="og:site_name" content="biglittleant">
-<meta property="og:description" content="需求：日常工作中需要同时操作多台服务器，如果不注意会导致将命令执行在错误的服务器上。 ##解决办法： 1234vim &#x2F;etc&#x2F;profile### echo IP in bash IP&#x3D;&#96;awk -F&quot;&#x3D;&quot; &amp;#x27;&#x2F;IPADDR&#x2F;&amp;#123;print $2&amp;#125;&amp;#x27; &#x2F;etc&#x2F;sysconfig&#x2F;network-scripts&#x2F;ifcfg-eth0&#96;PS">
+<meta property="og:description" content="需求：日常工作中需要同时操作多台服务器，如果不注意会导致将命令执行在错误的服务器上。 解决办法1234vim &#x2F;etc&#x2F;profile### echo IP in bashIP&#x3D;&#96;awk -F&quot;&#x3D;&quot; &amp;#x27;&#x2F;IPADDR&#x2F;&amp;#123;print $2&amp;#125;&amp;#x27; &#x2F;etc&#x2F;sysconfig&#x2F;network-scripts&#x2F;ifcfg-eth0&#96;PS1&#x3D;&amp;#x">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2016-12-19T02:49:38.000Z">
-<meta property="article:modified_time" content="2020-09-03T02:03:13.610Z">
+<meta property="article:modified_time" content="2020-09-16T09:27:48.953Z">
 <meta property="article:author" content="biglittleant">
 <meta property="article:tag" content="linux">
+<meta property="article:tag" content="bash">
 <meta name="twitter:card" content="summary">
 
 
@@ -170,7 +171,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           Table of Contents
@@ -182,6 +183,7 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">解决办法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%87%E6%B3%A8"><span class="nav-number">2.</span> <span class="nav-text">备注</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BC%94%E7%A4%BA%E5%A6%82%E4%B8%8B"><span class="nav-number">3.</span> <span class="nav-text">演示如下</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E5%BC%95%E5%8F%B7"><span class="nav-number">3.1.</span> <span class="nav-text">单引号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E5%BC%95%E5%8F%B7"><span class="nav-number">3.2.</span> <span class="nav-text">双引号</span></a></li></ol></li></ol></div>
       </section>
       <!--/noindex-->
 
@@ -194,18 +196,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-count">42</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">35</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -275,10 +277,26 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-03 10:03:13" itemprop="dateModified" datetime="2020-09-03T10:03:13+08:00">2020-09-03</time>
+        <time title="Modified: 2020-09-16 17:27:48" itemprop="dateModified" datetime="2020-09-16T17:27:48+08:00">2020-09-16</time>
       </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+    </span>
 
   
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
 </div>
 
         </div>
@@ -289,19 +307,15 @@
     
     <div class="post-body" itemprop="articleBody">
         <p>需求：日常工作中需要同时操作多台服务器，如果不注意会导致将命令执行在错误的服务器上。</p>
-<p>##解决办法：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/profile</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">## echo IP in bash </span></span></span><br><span class="line">IP=`awk -F&quot;=&quot; &#x27;/IPADDR/&#123;print $2&#125;&#x27; /etc/sysconfig/network-scripts/ifcfg-eth0`</span><br><span class="line">PS1=&#x27;[\u@$IP \W]\$ &#x27;</span><br></pre></td></tr></table></figure>
+<h2 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/profile</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">## echo IP in bash</span></span></span><br><span class="line">IP=`awk -F&quot;=&quot; &#x27;/IPADDR/&#123;print $2&#125;&#x27; /etc/sysconfig/network-scripts/ifcfg-eth0`</span><br><span class="line">PS1=&#x27;[\u@$IP \W]\$ &#x27;</span><br></pre></td></tr></table></figure>
+
+<h2 id="备注"><a href="#备注" class="headerlink" title="备注"></a>备注</h2><p>好多文章写PS1后面接的参数用双引号，但是实际测试中发现使用双引号登录到root环境下，会有问题。</p>
+<h2 id="演示如下"><a href="#演示如下" class="headerlink" title="演示如下"></a>演示如下</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node1 ~]# IP=`awk -F”=” ‘/IPADDR/&#123;print $2&#125;’ /etc/sysconfig/network-scripts/ifcfg-eth0`</span><br></pre></td></tr></table></figure>
+
+<h3 id="单引号"><a href="#单引号" class="headerlink" title="单引号"></a>单引号</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node1 ~]# PS1=&#x27;[\u@$IP \W]\$ ‘</span><br><span class="line">[root@10.0.0.7 ~]#</span><br></pre></td></tr></table></figure>
 
 
-
-<p>##备注：</p>
-<p>好多文章写PS1后面接的参数用双引号，但是实际测试中发现使用双引号登录到root环境下，会有问题。</p>
-<p>##演示如下</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node1 ~]# IP=`awk -F”=” ‘/IPADDR/&#123;print $2&#125;’ /etc/sysconfig/network-scripts/ifcfg-eth0`</span><br></pre></td></tr></table></figure>
-
-<p>###单引号：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node1 ~]# PS1=&#x27;[\u@$IP \W]\$ ‘</span><br><span class="line">[root@10.0.0.7 ~]#</span><br><span class="line">```	</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">##双引号：</span></span></span><br><span class="line"></span><br><span class="line">```shell</span><br><span class="line">[root@10.0.0.7 ~]# PS1=”[\u@$IP \W]\$ ”</span><br><span class="line">[root@10.0.0.7 ~]$</span><br></pre></td></tr></table></figure>
-
+<h3 id="双引号"><a href="#双引号" class="headerlink" title="双引号"></a>双引号</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@10.0.0.7 ~]# PS1=”[\u@$IP \W]\$ ”</span><br><span class="line">[root@10.0.0.7 ~]$</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -312,6 +326,7 @@
     <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/linux/" rel="tag"># linux</a>
+              <a href="/tags/bash/" rel="tag"># bash</a>
           </div>
 
         
@@ -378,6 +393,24 @@
   </span>
   <span class="author" itemprop="copyrightHolder">biglittleant</span>
 </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
   </div>
 
@@ -405,6 +438,7 @@
 
 
   
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
 

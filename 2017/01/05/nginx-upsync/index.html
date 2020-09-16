@@ -31,8 +31,9 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://oi3tsepsh.bkt.clouddn.com/14841282377231.jpg">
 <meta property="article:published_time" content="2017-01-05T00:17:36.000Z">
-<meta property="article:modified_time" content="2020-09-03T02:03:13.619Z">
+<meta property="article:modified_time" content="2020-09-16T09:36:53.414Z">
 <meta property="article:author" content="biglittleant">
+<meta property="article:tag" content="死磕nginx系列">
 <meta property="article:tag" content="nginx">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://oi3tsepsh.bkt.clouddn.com/14841282377231.jpg">
@@ -197,18 +198,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-count">42</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">35</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -278,10 +279,30 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-03 10:03:13" itemprop="dateModified" datetime="2020-09-03T10:03:13+08:00">2020-09-03</time>
+        <time title="Modified: 2020-09-16 17:36:53" itemprop="dateModified" datetime="2020-09-16T17:36:53+08:00">2020-09-16</time>
       </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/nginx/" itemprop="url" rel="index"><span itemprop="name">nginx</span></a>
+        </span>
+    </span>
 
   
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
 </div>
 
         </div>
@@ -295,7 +316,7 @@
 <p>处理流程<br>它的功能是拉取 consul 的后端 server 的列表，并更新 Nginx 的路由信息。此模块不依赖于任何第三方模块。consul 作为 Nginx 的 db，利用 consul 的 KV 服务，每个 Nginx work 进程独立的去拉取各个 upstream 的配置，并更新各自的路由。</p>
 <p><img src="http://oi3tsepsh.bkt.clouddn.com/14841282377231.jpg"></p>
 <h2 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h2><h3 id="给nginx打补丁包"><a href="#给nginx打补丁包" class="headerlink" title="给nginx打补丁包"></a>给nginx打补丁包</h3><p>这步可以不做，如果不做，编译的时候删除这个模块</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/xiaokai-wang/nginx_upstream_check_module</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 打补丁包</span></span></span><br><span class="line">patch -p0 &lt; /usr/local/src/nginx_upstream_check_module-master/check_1.9.2+.patch </span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/xiaokai-wang/nginx_upstream_check_module</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 打补丁包</span></span></span><br><span class="line">patch -p0 &lt; /usr/local/src/nginx_upstream_check_module-master/check_1.9.2+.patch</span><br></pre></td></tr></table></figure>
 
 <p>下载nginx-upsync-module源码</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/weibocom/nginx-upsync-module.git</span><br><span class="line"></span><br></pre></td></tr></table></figure>
@@ -308,11 +329,11 @@
 <p>创建nginx配置文件</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /usr/local/nginx/conf/servers</span><br><span class="line">/usr/local/nginx/conf/nginx.conf</span><br><span class="line">events &#123;</span><br><span class="line">  worker_connections  4096;  ## Default: 1024</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line">    upstream test &#123;</span><br><span class="line">        # fake server otherwise ngx_http_upstream will report error when startup</span><br><span class="line">        server 127.0.0.1:11111;</span><br><span class="line"></span><br><span class="line">        # all backend server will pull from consul when startup and will delete fake server</span><br><span class="line">        upsync 127.0.0.1:8500/v1/kv/upstreams/test upsync_timeout=6m upsync_interval=500ms upsync_type=consul strong_dependency=off;</span><br><span class="line">        upsync_dump_path /usr/local/nginx/conf/servers/servers_test.conf;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    upstream bar &#123;</span><br><span class="line">        server 127.0.0.1:8090 weight=1 fail_timeout=10 max_fails=3;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    server &#123;</span><br><span class="line">        listen 8080;</span><br><span class="line"></span><br><span class="line">        location = /proxy_test &#123;</span><br><span class="line">            proxy_pass http://test;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        location = /bar &#123;</span><br><span class="line">            proxy_pass http://bar;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        location = /upstream_show &#123;</span><br><span class="line">            upstream_show;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for i in `seq 3`;do mkdir html$i/test -p &amp;&amp; echo $i &gt;html$i/test/test.html; done;  </span><br><span class="line"></span><br><span class="line">docker run -d -p 8001:80 -v /root/html1/:/usr/share/nginx/html nginx </span><br><span class="line">docker run -d -p 8002:80 -v /root/html2/:/usr/share/nginx/html nginx </span><br><span class="line">docker run -d -p 8003:80 -v /root/html3/:/usr/share/nginx/html nginx </span><br></pre></td></tr></table></figure>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for i in `seq 3`;do mkdir html$i/test -p &amp;&amp; echo $i &gt;html$i/test/test.html; done;</span><br><span class="line"></span><br><span class="line">docker run -d -p 8001:80 -v /root/html1/:/usr/share/nginx/html nginx</span><br><span class="line">docker run -d -p 8002:80 -v /root/html2/:/usr/share/nginx/html nginx</span><br><span class="line">docker run -d -p 8003:80 -v /root/html3/:/usr/share/nginx/html nginx</span><br></pre></td></tr></table></figure>
 <h2 id="添加服务"><a href="#添加服务" class="headerlink" title="添加服务"></a>添加服务</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">curl -X PUT -d &#x27;&#123;&quot;weight&quot;:1, &quot;max_fails&quot;:2, &quot;fail_timeout&quot;:10&#125;&#x27; http://127.0.0.1:8500/v1/kv/upstreams/test/192.168.56.12:8001</span><br><span class="line">curl -X PUT -d &#x27;&#123;&quot;weight&quot;:1, &quot;max_fails&quot;:2, &quot;fail_timeout&quot;:10&#125;&#x27; http://127.0.0.1:8500/v1/kv/upstreams/test/192.168.56.12:8002</span><br><span class="line">curl -X PUT -d &#x27;&#123;&quot;weight&quot;:1, &quot;max_fails&quot;:2, &quot;fail_timeout&quot;:10&#125;&#x27; http://127.0.0.1:8500/v1/kv/upstreams/test/192.168.56.12:8003</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p>查看conf/servers/servers_test.conf 文件中是否有内容</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cat conf/servers/servers_test.conf </span><br><span class="line">server 192.168.56.12:8003 weight=1 max_fails=2 fail_timeout=10s;</span><br><span class="line">server 192.168.56.12:8002 weight=1 max_fails=2 fail_timeout=10s;</span><br><span class="line">server 192.168.56.12:8001 weight=1 max_fails=2 fail_timeout=10s;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cat conf/servers/servers_test.conf</span><br><span class="line">server 192.168.56.12:8003 weight=1 max_fails=2 fail_timeout=10s;</span><br><span class="line">server 192.168.56.12:8002 weight=1 max_fails=2 fail_timeout=10s;</span><br><span class="line">server 192.168.56.12:8001 weight=1 max_fails=2 fail_timeout=10s;</span><br></pre></td></tr></table></figure>
 
 <p>或者浏览器打开<code>http://192.168.56.11:8080/upstream_show?test</code><br>显示内容如下：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Upstream name: test; Backend server count: 3</span><br><span class="line">        server 192.168.56.12:8003 weight=1 max_fails=2 fail_timeout=10s;</span><br><span class="line">        server 192.168.56.12:8002 weight=1 max_fails=2 fail_timeout=10s;</span><br><span class="line">        server 192.168.56.12:8001 weight=1 max_fails=2 fail_timeout=10s;</span><br></pre></td></tr></table></figure>
@@ -336,6 +357,7 @@
 
     <footer class="post-footer">
           <div class="post-tags">
+              <a href="/tags/%E6%AD%BB%E7%A3%95nginx%E7%B3%BB%E5%88%97/" rel="tag"># 死磕nginx系列</a>
               <a href="/tags/nginx/" rel="tag"># nginx</a>
           </div>
 
@@ -403,6 +425,24 @@
   </span>
   <span class="author" itemprop="copyrightHolder">biglittleant</span>
 </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
   </div>
 
@@ -430,6 +470,7 @@
 
 
   
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
 

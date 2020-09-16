@@ -30,8 +30,9 @@
 <meta property="og:description" content="什么是FastCGI快速通用网关接口（Fast Common Gateway Interface／FastCGI）是一种让交互程序与Web服务器通信的协议。FastCGI是早期通用网关接口（CGI）的增强版本。FastCGI致力于减少网页服务器与CGI程序之间互动的开销，从而使服务器可以同时处理更多的网页请求。 ###FastCGI 的优点FastCGI 的优点是把动态语言和HTTP Server">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2017-01-07T12:13:19.000Z">
-<meta property="article:modified_time" content="2020-09-03T02:03:13.619Z">
+<meta property="article:modified_time" content="2020-09-16T09:37:24.637Z">
 <meta property="article:author" content="biglittleant">
+<meta property="article:tag" content="php">
 <meta name="twitter:card" content="summary">
 
 
@@ -194,18 +195,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-count">42</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">35</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -275,10 +276,30 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-03 10:03:13" itemprop="dateModified" datetime="2020-09-03T10:03:13+08:00">2020-09-03</time>
+        <time title="Modified: 2020-09-16 17:37:24" itemprop="dateModified" datetime="2020-09-16T17:37:24+08:00">2020-09-16</time>
       </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/php/" itemprop="url" rel="index"><span itemprop="name">php</span></a>
+        </span>
+    </span>
 
   
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
 </div>
 
         </div>
@@ -299,7 +320,7 @@
 <li>尽量使用PHP和PHP-FPM版本一致，如果版本之间相差太大，可能会出现兼容问题。</li>
 <li>早期的时候fpm是PHP的一个补丁包，PHP在 5.3.3 之后已经将php-fpm写入php源码核心了。所以已经不需要另外下载了。</li>
 </ul>
-<h3 id="安装相关依赖及软件"><a href="#安装相关依赖及软件" class="headerlink" title="安装相关依赖及软件"></a>安装相关依赖及软件</h3><p>centos 5  安装包组：<code>Xsoftware Development </code><br>centos 6 </p>
+<h3 id="安装相关依赖及软件"><a href="#安装相关依赖及软件" class="headerlink" title="安装相关依赖及软件"></a>安装相关依赖及软件</h3><p>centos 5  安装包组：<code>Xsoftware Development </code><br>centos 6</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install zlib libxml libjpeg freetype libpng gd  curl libiconv  zlib-devel libxml2-devel libjpeg-devel freetype-devel libpng-devel gd-devel curl-devel libxslt*  -y</span><br></pre></td></tr></table></figure>
 <p>iconv字符编码转换命令</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">tar zxf libiconv-1.14.tar.gz</span><br><span class="line">cd libiconv-1.14</span><br><span class="line">./configure --prefix=/usr/local/libiconv</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line">sleep 2</span><br><span class="line">cd ../</span><br></pre></td></tr></table></figure>
@@ -307,7 +328,7 @@
 <p>mcrypt 是php里面重要的加密支持扩展库，这里注意的是mcrypt软件依赖libmcrypt和mhash两个库。</p>
 <p>libmcrypt依赖库安装</p>
 <p>默认路径：/usr/local/lib/</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">wget http://downloads.sourceforge.net/mcrypt/libmcrypt-2.5.8.tar.gz</span><br><span class="line">tar zxf libmcrypt-2.5.8.tar.gz </span><br><span class="line">cd libmcrypt-2.5.8</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line">sleep 2</span><br><span class="line">/sbin/ldconfig</span><br><span class="line">cd libltdl/</span><br><span class="line">./configure --enable-ltdl-install</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line">sleep 2</span><br><span class="line">cd ../../</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">wget http://downloads.sourceforge.net/mcrypt/libmcrypt-2.5.8.tar.gz</span><br><span class="line">tar zxf libmcrypt-2.5.8.tar.gz</span><br><span class="line">cd libmcrypt-2.5.8</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line">sleep 2</span><br><span class="line">/sbin/ldconfig</span><br><span class="line">cd libltdl/</span><br><span class="line">./configure --enable-ltdl-install</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line">sleep 2</span><br><span class="line">cd ../../</span><br></pre></td></tr></table></figure>
 
 <p>Mhash是基于离散数学原理的不可逆向的php加密方式扩展库，其在默认情况下不开启。mhash的可以用于创建校验数值，消息摘要，消息认证码，以及无需原文的关键信息保存（如密码）等。</p>
 <p>默认路径：/usr/local/lib/</p>
@@ -329,7 +350,7 @@
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">+--------------------------------------------------------------------+</span><br><span class="line">| License:                                                           |</span><br><span class="line">| This software is subject to the PHP License, available <span class="keyword">in</span> this     |</span><br><span class="line">| distribution <span class="keyword">in</span> the file LICENSE.  By continuing this installation |</span><br><span class="line">| process, you are bound by the terms of this license agreement.     |</span><br><span class="line">| If you <span class="keyword">do</span> not agree with the terms of this license, you must abort |</span><br><span class="line">| the installation process at this point.                            |</span><br><span class="line">+--------------------------------------------------------------------+</span><br><span class="line"></span><br><span class="line">Thank you <span class="keyword">for</span> using PHP.</span><br></pre></td></tr></table></figure>
 
 <p>编译和安装</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make &amp;&amp; make install </span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
 
 <blockquote>
 <p>配置文件补充<br><code>--enable-fastcgi</code> ：启用对PHP的FastCGI支持。<br><code>--enable-fpm</code>：激活对 FastCGI模式的fpm支持。</p>
@@ -341,13 +362,13 @@
 <li>php.ini-development  ：测试环境使用配置文件，相关debug功能都开启了。</li>
 <li>php.ini-production   ：生产环境使用配置文件，相关debug功能都关闭了。</li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> cp php.ini-production /application/php/lib/php.ini </span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> cp php.ini-production /application/php/lib/php.ini</span></span><br></pre></td></tr></table></figure>
 
 <p>PHP配置完毕。</p>
 <h3 id="配置PHP及FCGI进程管理"><a href="#配置PHP及FCGI进程管理" class="headerlink" title="配置PHP及FCGI进程管理"></a>配置PHP及FCGI进程管理</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ln -s /application/php5.3.27/ /application/php</span><br><span class="line">cp php.ini-production /application/php/lib/php.ini</span><br><span class="line"><span class="built_in">cd</span> /application/php/etc/</span><br><span class="line">mv php-fpm.conf.5.3.27  php-fpm.conf</span><br></pre></td></tr></table></figure>
 
-<p>php-fpm.conf </p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123;pid = /app/logs/php-fpm.pid</span><br><span class="line">error_log = /app/logs/php-fpm.log</span><br><span class="line">log_level= error </span><br><span class="line">rlimit_files=32768</span><br><span class="line">listen.owner=nginx</span><br><span class="line">listen.group=nginx</span><br><span class="line">pm.max_children = 1024</span><br><span class="line">pm.start_servers = 16</span><br><span class="line">pm.min_spare_servers = 5</span><br><span class="line">pm.max_spare_servers = 20 </span><br><span class="line">pm.process_idle_timeout=15s;</span><br><span class="line">pm.max_requests=2048</span><br><span class="line">slowlog=/app/logs/$pool.log.slow&#125;</span><br></pre></td></tr></table></figure>
+<p>php-fpm.conf</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123;pid = /app/logs/php-fpm.pid</span><br><span class="line">error_log = /app/logs/php-fpm.log</span><br><span class="line">log_level= error</span><br><span class="line">rlimit_files=32768</span><br><span class="line">listen.owner=nginx</span><br><span class="line">listen.group=nginx</span><br><span class="line">pm.max_children = 1024</span><br><span class="line">pm.start_servers = 16</span><br><span class="line">pm.min_spare_servers = 5</span><br><span class="line">pm.max_spare_servers = 20</span><br><span class="line">pm.process_idle_timeout=15s;</span><br><span class="line">pm.max_requests=2048</span><br><span class="line">slowlog=/app/logs/$pool.log.slow&#125;</span><br></pre></td></tr></table></figure>
 
 
 
@@ -356,7 +377,7 @@
 <p>启动：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/application/php/sbin/php-fpm -t</span><br><span class="line">/application/php/sbin/php-fpm</span><br><span class="line">netstat -lntup|grep php-fpm</span><br><span class="line">ps -ef|grep php-fpm</span><br></pre></td></tr></table></figure>
 <p>添加开机自启动：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/rc.local</span><br><span class="line">/etc/init.d/nysqld start </span><br><span class="line">/application/php/sbin/php-fpm</span><br><span class="line">/application/nginx/sbin/nginx </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/rc.local</span><br><span class="line">/etc/init.d/nysqld start</span><br><span class="line">/application/php/sbin/php-fpm</span><br><span class="line">/application/nginx/sbin/nginx</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 
 
@@ -461,20 +482,20 @@
 <p>php-fpm 重启：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kill -USR2 `cat /data/app/php/var/run/php-fpm.pid`</span><br></pre></td></tr></table></figure>
 
-<h2 id="php与web中间件整合"><a href="#php与web中间件整合" class="headerlink" title="php与web中间件整合"></a>php与web中间件整合</h2><h3 id="php与nginx整合"><a href="#php与nginx整合" class="headerlink" title="php与nginx整合"></a>php与nginx整合</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        listen       80;</span><br><span class="line">        server_name  blog.biglittleant.cn;</span><br><span class="line">        root   www/blog;</span><br><span class="line">        location / &#123;</span><br><span class="line">            root   www/blog;</span><br><span class="line">            index  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line">    location ~ .*\.(php|php5)?$</span><br><span class="line">    &#123;      </span><br><span class="line">     fastcgi_pass  127.0.0.1:9000;</span><br><span class="line">     fastcgi_index index.php;</span><br><span class="line">     include fastcgi.conf;</span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="php与web中间件整合"><a href="#php与web中间件整合" class="headerlink" title="php与web中间件整合"></a>php与web中间件整合</h2><h3 id="php与nginx整合"><a href="#php与nginx整合" class="headerlink" title="php与nginx整合"></a>php与nginx整合</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        listen       80;</span><br><span class="line">        server_name  blog.biglittleant.cn;</span><br><span class="line">        root   www/blog;</span><br><span class="line">        location / &#123;</span><br><span class="line">            root   www/blog;</span><br><span class="line">            index  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line">    location ~ .*\.(php|php5)?$</span><br><span class="line">    &#123;</span><br><span class="line">     fastcgi_pass  127.0.0.1:9000;</span><br><span class="line">     fastcgi_index index.php;</span><br><span class="line">     include fastcgi.conf;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <blockquote>
 <p>fastcgi的优化主要集中在nginx的fastcgi.conf配置文件中。<br>相关内容参考<a href="">死磕nginx系列–配置文档解读</a></p>
 </blockquote>
-<h3 id="测试PHP程序是否正常"><a href="#测试PHP程序是否正常" class="headerlink" title="测试PHP程序是否正常"></a>测试PHP程序是否正常</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> cat test.php </span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">phpinfo();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="测试PHP程序是否正常"><a href="#测试PHP程序是否正常" class="headerlink" title="测试PHP程序是否正常"></a>测试PHP程序是否正常</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> cat test.php</span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">phpinfo();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="测试MYSQL是否正常"><a href="#测试MYSQL是否正常" class="headerlink" title="测试MYSQL是否正常"></a>测试MYSQL是否正常</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">        <span class="comment">//$link_id=mysql_connect(&#x27;主机名&#x27;,&#x27;用户&#x27;,&#x27;密码&#x27;);</span></span><br><span class="line">        $link_id=mysql_connect(<span class="string">&#x27;localhost&#x27;</span>,<span class="string">&#x27;root&#x27;</span>,<span class="string">&#x27;oldboy123&#x27;</span>) <span class="keyword">or</span> mysql_error();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>($link_id)&#123;</span><br><span class="line">                <span class="keyword">echo</span> <span class="string">&quot;mysql successful by oldboy !\n&quot;</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="keyword">echo</span> <span class="string">&quot;mysql_error()&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
 
 
-<h2 id="报错汇总："><a href="#报错汇总：" class="headerlink" title="报错汇总："></a>报错汇总：</h2><h3 id="报错一-编译报错"><a href="#报错一-编译报错" class="headerlink" title="报错一 编译报错"></a>报错一 编译报错</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">configure: error: Cannot find OpenSSL&#x27;s &lt;evp.h&gt; </span><br></pre></td></tr></table></figure>
+<h2 id="报错汇总："><a href="#报错汇总：" class="headerlink" title="报错汇总："></a>报错汇总：</h2><h3 id="报错一-编译报错"><a href="#报错一-编译报错" class="headerlink" title="报错一 编译报错"></a>报错一 编译报错</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">configure: error: Cannot find OpenSSL&#x27;s &lt;evp.h&gt;</span><br></pre></td></tr></table></figure>
 
 <p>解决办法</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum yum install openssl openssl-devel </span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum yum install openssl openssl-devel</span><br></pre></td></tr></table></figure>
 
 
 
@@ -486,17 +507,17 @@
 <h3 id="报错三-make-报错"><a href="#报错三-make-报错" class="headerlink" title="报错三 make 报错"></a>报错三 make 报错</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Generating phar.phar</span><br><span class="line">chmod: cannot access `ext/phar/phar.phar&#x27;: No such file or directory</span><br><span class="line">make: [ext/phar/phar.phar] Error 1 (ignored)</span><br><span class="line"></span><br><span class="line">Build complete.</span><br><span class="line">Don&#x27;t forget to run &#x27;make test’.</span><br></pre></td></tr></table></figure>
 
 <p>解决办法：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@test2 php-5.3.27]# mkdir  -p ext/phar/phar.phar     </span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@test2 php-5.3.27]# mkdir  -p ext/phar/phar.phar</span><br></pre></td></tr></table></figure>
 
 <h3 id="报错四-编译报错："><a href="#报错四-编译报错：" class="headerlink" title="报错四 编译报错："></a>报错四 编译报错：</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">configure: error: Cannot find OpenSSL&#x27;s &lt;evp.h&gt;</span><br></pre></td></tr></table></figure>
 
 <p>解决方法：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@nfs-client php-5.3.27]# yum install openssl-devel -y </span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@nfs-client php-5.3.27]# yum install openssl-devel -y</span><br></pre></td></tr></table></figure>
 
 <h3 id="报错五编译报错："><a href="#报错五编译报错：" class="headerlink" title="报错五编译报错："></a>报错五编译报错：</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">checking for XSL support... yes</span><br><span class="line">configure: error: xslt-config not found. Please reinstall the libxslt &gt;= 1.1.0 distribution</span><br></pre></td></tr></table></figure>
 
 <p>解决方法:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@nfs-client php-5.3.27]# yum install libxslt-devel -y </span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@nfs-client php-5.3.27]# yum install libxslt-devel -y</span><br></pre></td></tr></table></figure>
 
 <h3 id="报错六-configure-报错："><a href="#报错六-configure-报错：" class="headerlink" title="报错六 configure 报错："></a>报错六 configure 报错：</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">checking if we should use cURL for url streams... no</span><br><span class="line">checking for cURL in default path... not found</span><br><span class="line">configure: error: Please reinstall the libcurl distribution -</span><br><span class="line">    easy.h should be in &lt;curl-dir&gt;/include/curl/</span><br></pre></td></tr></table></figure>
 
@@ -537,6 +558,9 @@
     
 
     <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/php/" rel="tag"># php</a>
+          </div>
 
         
 
@@ -602,6 +626,24 @@
   </span>
   <span class="author" itemprop="copyrightHolder">biglittleant</span>
 </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
   </div>
 
@@ -629,6 +671,7 @@
 
 
   
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
 

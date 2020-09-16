@@ -31,8 +31,9 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://oi3tsepsh.bkt.clouddn.com/Nginx%E6%A8%A1%E5%9D%97%E7%9A%84HTTP%E8%AF%B7%E6%B1%82%E5%92%8C%E5%93%8D%E5%BA%94%E8%BF%87%E7%A8%8B.jpg">
 <meta property="article:published_time" content="2017-01-01T06:49:50.000Z">
-<meta property="article:modified_time" content="2020-09-03T02:03:13.617Z">
+<meta property="article:modified_time" content="2020-09-16T09:35:31.968Z">
 <meta property="article:author" content="biglittleant">
+<meta property="article:tag" content="死磕nginx系列">
 <meta property="article:tag" content="nginx">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://oi3tsepsh.bkt.clouddn.com/Nginx%E6%A8%A1%E5%9D%97%E7%9A%84HTTP%E8%AF%B7%E6%B1%82%E5%92%8C%E5%93%8D%E5%BA%94%E8%BF%87%E7%A8%8B.jpg">
@@ -197,18 +198,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-count">42</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">24</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">35</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -278,10 +279,30 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-03 10:03:13" itemprop="dateModified" datetime="2020-09-03T10:03:13+08:00">2020-09-03</time>
+        <time title="Modified: 2020-09-16 17:35:31" itemprop="dateModified" datetime="2020-09-16T17:35:31+08:00">2020-09-16</time>
       </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/nginx/" itemprop="url" rel="index"><span itemprop="name">nginx</span></a>
+        </span>
+    </span>
 
   
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
 </div>
 
         </div>
@@ -345,14 +366,14 @@
 </ol>
 <h3 id="如何选择WEB服务器："><a href="#如何选择WEB服务器：" class="headerlink" title="如何选择WEB服务器："></a>如何选择WEB服务器：</h3><p>静态业务：高并发、采用nginx，lighttpd，根据自己的掌握程度或公司的要求。<br>动态业务：采用nginx和Apache均可。<br>既有静态业务又有动态业务：nginx或Apache，不要多选要单选。<br>动态业务可以由前端代理（haproxy）,根据页面元素的类型，向后转发相应的服务器进行处理。<br>思想：我们工作都不要追求一步到位，满足需求的前提下，先用，然后逐步完善。<br>提示：nginx做web（Apache，lighttpd）、反向代理（haproxy,lvs,nat）及缓存服务器（squid）也是不错的。<br>最终建议：对外的业务nginx，对内的业务Apache（yum httpd mysql-server php）。</p>
 <h2 id="nginx实战过程"><a href="#nginx实战过程" class="headerlink" title="nginx实战过程"></a>nginx实战过程</h2><h3 id="安装依赖包"><a href="#安装依赖包" class="headerlink" title="安装依赖包"></a>安装依赖包</h3><p>nginx安装依赖GCC、openssl-devel、pcre-devel和zlib-devel软件库<br>Pcre全称（Perl Compatible Regular Expressions），中文perl兼容正则表达式，<a target="_blank" rel="noopener" href="http://www.pcre.org/">pcre官方站点</a></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum install  pcre pcre-devel -y </span><br><span class="line">yum install openssl openssl-devel -y </span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum install  pcre pcre-devel -y</span><br><span class="line">yum install openssl openssl-devel -y</span><br></pre></td></tr></table></figure>
 
 <h3 id="开始编译"><a href="#开始编译" class="headerlink" title="开始编译"></a>开始编译</h3><p>使用<code>./configure --help </code>查看各个模块的使用情况，使用<code>--without-http_ssi_module</code>的方式关闭不需要的模块。可以使用<code>--with-http_perl_modules</code>方式安装需要的模块。<br>查看编译参数中已经开启的选项</p>
 <p>编译命令</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">./configure --prefix=/application/nginx-1.6.2 --user=nginx --group=nginx  --with-http_ssl_module  --with-http_stub_status_module</span><br><span class="line"></span><br><span class="line">useradd nginx -M -s /sbin/nologin </span><br><span class="line">make &amp;&amp; make install </span><br><span class="line">ln -s /application/nginx1.6.2/ /application/nginx</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">./configure --prefix=/application/nginx-1.6.2 --user=nginx --group=nginx  --with-http_ssl_module  --with-http_stub_status_module</span><br><span class="line"></span><br><span class="line">useradd nginx -M -s /sbin/nologin</span><br><span class="line">make &amp;&amp; make install</span><br><span class="line">ln -s /application/nginx1.6.2/ /application/nginx</span><br></pre></td></tr></table></figure>
 
 <p>测试nginx配置文件是否正常</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/application/nginx/sbin/nginx -t </span><br><span class="line"><span class="meta">#</span><span class="bash">nginx: the configuration file /application/nginx-1.6.2/conf/nginx.conf syntax is ok</span></span><br><span class="line"><span class="meta">#</span><span class="bash">nginx: configuration file /application/nginx-1.6.2/conf/nginx.conf <span class="built_in">test</span> is successful</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/application/nginx/sbin/nginx -t</span><br><span class="line"><span class="meta">#</span><span class="bash">nginx: the configuration file /application/nginx-1.6.2/conf/nginx.conf syntax is ok</span></span><br><span class="line"><span class="meta">#</span><span class="bash">nginx: configuration file /application/nginx-1.6.2/conf/nginx.conf <span class="built_in">test</span> is successful</span></span><br></pre></td></tr></table></figure>
 
 <p>启动nginx服务器</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/application/nginx/sbin/nginx -t  ##检查配置文件</span><br><span class="line">/application/nginx/sbin/nginx     ##确定nginx服务</span><br><span class="line">netstat -lntup |grep nginx        ## 检查进程是否正常</span><br><span class="line">curl 192.168.56.12                ## 确认结果</span><br></pre></td></tr></table></figure>
@@ -399,7 +420,7 @@
 <p>常见的日志变量</p>
 <ul>
 <li><code>$remote_addr</code>, <code>$http_x_forwarded_for</code> 记录客户端IP地址</li>
-<li><code>$remote_user </code>记录客户端用户名称 </li>
+<li><code>$remote_user </code>记录客户端用户名称</li>
 <li><code>$request </code>记录请求的URL和HTTP协议(GET,POST,DEL,等)</li>
 <li><code>$status </code>记录请求状态</li>
 <li><code>$body_bytes_sent </code>发送给客户端的字节数，不包括响应头的大小； 该变量与Apache模块mod_log_config里的“%B”参数兼容。</li>
@@ -436,11 +457,11 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        error_log    /var/logs/nginx/example.com.error.log;</span><br><span class="line">        rewrite_log on;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p><code>rewrite_log on;</code> 开启后，它将发送所有的 rewrite 相关的日志信息到 error_log 文件中，使用 [notice] 级别。随后就可以在error_log 查看rewrite信息了。</p>
-<h5 id="使用location记录指定URL的日志"><a href="#使用location记录指定URL的日志" class="headerlink" title="使用location记录指定URL的日志"></a>使用location记录指定URL的日志</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        error_log    /var/logs/nginx/example.com.error.log;</span><br><span class="line">        location /static/ &#123; </span><br><span class="line">        error_log /var/logs/nginx/static-error.log debug; </span><br><span class="line">    &#125;         </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="使用location记录指定URL的日志"><a href="#使用location记录指定URL的日志" class="headerlink" title="使用location记录指定URL的日志"></a>使用location记录指定URL的日志</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        error_log    /var/logs/nginx/example.com.error.log;</span><br><span class="line">        location /static/ &#123;</span><br><span class="line">        error_log /var/logs/nginx/static-error.log debug;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>配置以上配置后，/static/ 相关的日志会被单独记录在static-error.log文件中。</p>
 <p>nx监控</p>
-<h3 id="常用的监控参数"><a href="#常用的监控参数" class="headerlink" title="常用的监控参数"></a>常用的监控参数</h3><h3 id="开启状态页"><a href="#开启状态页" class="headerlink" title="开启状态页"></a>开启状态页</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">设定查看Nginx状态的地址   </span></span><br><span class="line">location /NginxStatus &#123;  </span><br><span class="line"> stub_status on;   </span><br><span class="line"> access_log off;   </span><br><span class="line"><span class="meta"> #</span><span class="bash"> auth_basic <span class="string">&quot;NginxStatus&quot;</span>;   </span></span><br><span class="line"><span class="meta"> #</span><span class="bash"> auth_basic_user_file conf/htpasswd;   </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="常用的监控参数"><a href="#常用的监控参数" class="headerlink" title="常用的监控参数"></a>常用的监控参数</h3><h3 id="开启状态页"><a href="#开启状态页" class="headerlink" title="开启状态页"></a>开启状态页</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">设定查看Nginx状态的地址</span></span><br><span class="line">location /NginxStatus &#123;</span><br><span class="line"> stub_status on;</span><br><span class="line"> access_log off;</span><br><span class="line"><span class="meta"> #</span><span class="bash"> auth_basic <span class="string">&quot;NginxStatus&quot;</span>;</span></span><br><span class="line"><span class="meta"> #</span><span class="bash"> auth_basic_user_file conf/htpasswd;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>stub_status on;   表示开启stubStatus的工作状态统计功能。</li>
@@ -448,10 +469,10 @@
 <li>auth_basic “NginxStatus”;   auth_basic 是nginx的一种认证机制。</li>
 <li>auth_basic_user_file conf/htpasswd;   用来指定密码文件的位置。<h3 id="配置登录密码"><a href="#配置登录密码" class="headerlink" title="配置登录密码"></a>配置登录密码</h3></li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum install -y httpd-tools</span><br><span class="line">/usr/local/apache/bin/htpasswd -c /data/app/nginx/conf/htpasswd biglittleant </span><br><span class="line">New password:</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum install -y httpd-tools</span><br><span class="line">/usr/local/apache/bin/htpasswd -c /data/app/nginx/conf/htpasswd biglittleant</span><br><span class="line">New password:</span><br></pre></td></tr></table></figure>
 
 <p>完成后会在<code>/data/app/nginx/conf/</code>目录下生成<code>htpasswd</code>文件。</p>
-<h3 id="访问URL"><a href="#访问URL" class="headerlink" title="访问URL"></a>访问URL</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> curl http://127.0.0.1/NginxStatus</span></span><br><span class="line">Active connections: 11921 </span><br><span class="line">server accepts handled requests</span><br><span class="line"> 11989 11989 11991 </span><br><span class="line">Reading: 0 Writing: 7 Waiting: 42</span><br></pre></td></tr></table></figure>
+<h3 id="访问URL"><a href="#访问URL" class="headerlink" title="访问URL"></a>访问URL</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> curl http://127.0.0.1/NginxStatus</span></span><br><span class="line">Active connections: 11921</span><br><span class="line">server accepts handled requests</span><br><span class="line"> 11989 11989 11991</span><br><span class="line">Reading: 0 Writing: 7 Waiting: 42</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>active connections – 活跃的连接数量</li>
@@ -460,7 +481,7 @@
 <li>Writing — 响应数据到客户端的数量</li>
 <li>Waiting — 开启 keep-alive 的情况下,这个值等于 active – (reading+writing), 意思就是 Nginx 已经处理完正在等候下一次请求指令的驻留连接.<h3 id="编写zabbix监控脚本"><a href="#编写zabbix监控脚本" class="headerlink" title="编写zabbix监控脚本"></a>编写zabbix监控脚本</h3></li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">nginx_status_fun()&#123;</span><br><span class="line">	NGINX_PORT=$1</span><br><span class="line">	NGINX_COMMAND=$2</span><br><span class="line">	nginx_active()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| grep &#x27;Active&#x27; | awk &#x27;&#123;print $NF&#125;&#x27;</span><br><span class="line">        &#125;</span><br><span class="line">	nginx_reading()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| grep &#x27;Reading&#x27; | awk &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">       &#125;</span><br><span class="line">	nginx_writing()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| grep &#x27;Writing&#x27; | awk &#x27;&#123;print $4&#125;&#x27;</span><br><span class="line">       &#125;</span><br><span class="line">	nginx_waiting()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| grep &#x27;Waiting&#x27; | awk &#x27;&#123;print $6&#125;&#x27;</span><br><span class="line">       &#125;</span><br><span class="line">	nginx_accepts()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| awk NR==3 | awk &#x27;&#123;print $1&#125;&#x27;</span><br><span class="line">       &#125;</span><br><span class="line">	nginx_handled()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| awk NR==3 | awk &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">       &#125;</span><br><span class="line">	nginx_requests()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| awk NR==3 | awk &#x27;&#123;print $3&#125;&#x27;</span><br><span class="line">       &#125;</span><br><span class="line">  	case $NGINX_COMMAND in</span><br><span class="line">		active)</span><br><span class="line">			nginx_active;</span><br><span class="line">			;;</span><br><span class="line">		reading)</span><br><span class="line">			nginx_reading;</span><br><span class="line">			;;</span><br><span class="line">		writing)</span><br><span class="line">			nginx_writing;</span><br><span class="line">			;;</span><br><span class="line">		waiting)</span><br><span class="line">			nginx_waiting;</span><br><span class="line">			;;</span><br><span class="line">		accepts)</span><br><span class="line">			nginx_accepts;</span><br><span class="line">			;;</span><br><span class="line">		handled)</span><br><span class="line">			nginx_handled;</span><br><span class="line">			;;</span><br><span class="line">		requests)</span><br><span class="line">			nginx_requests;</span><br><span class="line">		esac </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">nginx_status_fun()&#123;</span><br><span class="line">	NGINX_PORT=$1</span><br><span class="line">	NGINX_COMMAND=$2</span><br><span class="line">	nginx_active()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| grep &#x27;Active&#x27; | awk &#x27;&#123;print $NF&#125;&#x27;</span><br><span class="line">        &#125;</span><br><span class="line">	nginx_reading()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| grep &#x27;Reading&#x27; | awk &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">       &#125;</span><br><span class="line">	nginx_writing()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| grep &#x27;Writing&#x27; | awk &#x27;&#123;print $4&#125;&#x27;</span><br><span class="line">       &#125;</span><br><span class="line">	nginx_waiting()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| grep &#x27;Waiting&#x27; | awk &#x27;&#123;print $6&#125;&#x27;</span><br><span class="line">       &#125;</span><br><span class="line">	nginx_accepts()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| awk NR==3 | awk &#x27;&#123;print $1&#125;&#x27;</span><br><span class="line">       &#125;</span><br><span class="line">	nginx_handled()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| awk NR==3 | awk &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">       &#125;</span><br><span class="line">	nginx_requests()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| awk NR==3 | awk &#x27;&#123;print $3&#125;&#x27;</span><br><span class="line">       &#125;</span><br><span class="line">  	case $NGINX_COMMAND in</span><br><span class="line">		active)</span><br><span class="line">			nginx_active;</span><br><span class="line">			;;</span><br><span class="line">		reading)</span><br><span class="line">			nginx_reading;</span><br><span class="line">			;;</span><br><span class="line">		writing)</span><br><span class="line">			nginx_writing;</span><br><span class="line">			;;</span><br><span class="line">		waiting)</span><br><span class="line">			nginx_waiting;</span><br><span class="line">			;;</span><br><span class="line">		accepts)</span><br><span class="line">			nginx_accepts;</span><br><span class="line">			;;</span><br><span class="line">		handled)</span><br><span class="line">			nginx_handled;</span><br><span class="line">			;;</span><br><span class="line">		requests)</span><br><span class="line">			nginx_requests;</span><br><span class="line">		esac</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>nx优化</p>
 <h3 id="nginx内核优化："><a href="#nginx内核优化：" class="headerlink" title="nginx内核优化："></a>nginx内核优化：</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">net.ipv4.tcp_fin_timeout = 2</span><br><span class="line">net.ipv4.tcp_tw_reuse = 1</span><br><span class="line">net.ipv4.tcp_tw_recycle = 1</span><br><span class="line">net.ipv4.tcp_syncookies = 1</span><br><span class="line">net.ipv4.tcp_keepalive_time = 600</span><br><span class="line">net.ipv4.ip_local_port_range = 4000    65000</span><br><span class="line">net.ipv4.tcp_max_syn_backlog = 16384</span><br><span class="line">net.ipv4.tcp_max_tw_buckets = 36000</span><br><span class="line">net.ipv4.route.gc_timeout = 100</span><br><span class="line">net.ipv4.tcp_syn_retries = 1</span><br><span class="line">net.ipv4.tcp_synack_retries = 1</span><br><span class="line">net.core.somaxconn = 16384</span><br><span class="line">net.core.netdev_max_backlog = 16384</span><br><span class="line">net.ipv4.tcp_max_orphans = 16384</span><br><span class="line"><span class="meta">#</span><span class="bash">以下参数是对iptables防火墙的优化，防火墙不开会提示，可以忽略不理。</span></span><br><span class="line">net.ipv4.ip_conntrack_max = 25000000</span><br><span class="line">net.ipv4.netfilter.ip_conntrack_max=25000000</span><br><span class="line">net.ipv4.netfilter.ip_conntrack_tcp_timeout_established=180</span><br><span class="line">net.ipv4.netfilter.ip_conntrack_tcp_timeout_time_wait=120</span><br><span class="line">net.ipv4.netfilter.ip_conntrack_tcp_timeout_close_wait=60</span><br><span class="line">net.ipv4.netfilter.ip_conntrack_tcp_timeout_fin_wait=120</span><br></pre></td></tr></table></figure>
@@ -472,17 +493,17 @@
 
 <h3 id="问题2-提示找不到libpcre-so-1"><a href="#问题2-提示找不到libpcre-so-1" class="headerlink" title="问题2: 提示找不到libpcre.so.1 "></a>问题2: 提示找不到<code>libpcre.so.1 </code></h3><p>解决：</p>
 <ol>
-<li>find / -name libpcre.so* </li>
-<li>将找到的路径 追加到 /etc/ld.so.conf </li>
+<li>find / -name libpcre.so*</li>
+<li>将找到的路径 追加到 /etc/ld.so.conf</li>
 <li>ldconfig 生效。</li>
 <li>或<code>ln -s /ser/local/lib/libpcre.so.l /lib64</code>。</li>
 <li>或编译时指定源码的安装路径：<code>--with-pcre=/data/tools/pcre-8.33 </code>。</li>
 <li>最终解决方案 <code>yum install pcre-devel -y</code> 不会出现上述报错。</li>
 </ol>
-<h3 id="问题3：启动nginx报错"><a href="#问题3：启动nginx报错" class="headerlink" title="问题3：启动nginx报错"></a>问题3：启动nginx报错</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@centos6 tools]# /application/nginx/sbin/nginx </span><br><span class="line">nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)</span><br><span class="line">nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)</span><br><span class="line">nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)</span><br><span class="line">nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)</span><br><span class="line">nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)</span><br><span class="line">nginx: [emerg] still could not bind()</span><br></pre></td></tr></table></figure>
+<h3 id="问题3：启动nginx报错"><a href="#问题3：启动nginx报错" class="headerlink" title="问题3：启动nginx报错"></a>问题3：启动nginx报错</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@centos6 tools]# /application/nginx/sbin/nginx</span><br><span class="line">nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)</span><br><span class="line">nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)</span><br><span class="line">nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)</span><br><span class="line">nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)</span><br><span class="line">nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)</span><br><span class="line">nginx: [emerg] still could not bind()</span><br></pre></td></tr></table></figure>
 
 <p>解决办法：（因为开启了Apache服务）</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@nfs-client application]# lsof -i :80 </span><br><span class="line">COMMAND   PID USER   FD   TYPE DEVICE SIZE/OFF NODE NAME</span><br><span class="line">httpd   35833  www    4u  IPv6 129886      0t0  TCP *:http (LISTEN)</span><br><span class="line">httpd   35834  www    4u  IPv6 129886      0t0  TCP *:http (LISTEN)</span><br><span class="line">httpd   98511 root    4u  IPv6 129886      0t0  TCP *:http (LISTEN)</span><br><span class="line">[root@nfs-client application]# /application/apache/bin/apachectl stop </span><br><span class="line">[root@nfs-client application]# /application/nginx/sbin/nginx ##重新启动nginx。</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@nfs-client application]# lsof -i :80</span><br><span class="line">COMMAND   PID USER   FD   TYPE DEVICE SIZE/OFF NODE NAME</span><br><span class="line">httpd   35833  www    4u  IPv6 129886      0t0  TCP *:http (LISTEN)</span><br><span class="line">httpd   35834  www    4u  IPv6 129886      0t0  TCP *:http (LISTEN)</span><br><span class="line">httpd   98511 root    4u  IPv6 129886      0t0  TCP *:http (LISTEN)</span><br><span class="line">[root@nfs-client application]# /application/apache/bin/apachectl stop</span><br><span class="line">[root@nfs-client application]# /application/nginx/sbin/nginx ##重新启动nginx。</span><br></pre></td></tr></table></figure>
 
 
 <h2 id="扩展阅读："><a href="#扩展阅读：" class="headerlink" title="扩展阅读："></a>扩展阅读：</h2><h3 id="nginx全局变量"><a href="#nginx全局变量" class="headerlink" title="nginx全局变量"></a>nginx全局变量</h3><ul>
@@ -509,7 +530,7 @@
 <li><code>$document_uri </code>： 与$uri相同。</li>
 </ul>
 <p>例子：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">访问链接是：http://localhost:88/test1/test2/test.php </span><br><span class="line">网站路径是：/var/www/html</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash">host：localhost</span></span><br><span class="line"><span class="meta">$</span><span class="bash">server_port：88</span></span><br><span class="line"><span class="meta">$</span><span class="bash">request_uri：http://localhost:88/test1/test2/test.php</span></span><br><span class="line"><span class="meta">$</span><span class="bash">document_uri：/test1/test2/test.php</span></span><br><span class="line"><span class="meta">$</span><span class="bash">document_root：/var/www/html</span></span><br><span class="line"><span class="meta">$</span><span class="bash">request_filename：/var/www/html/test1/test2/test.php</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">访问链接是：http://localhost:88/test1/test2/test.php</span><br><span class="line">网站路径是：/var/www/html</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash">host：localhost</span></span><br><span class="line"><span class="meta">$</span><span class="bash">server_port：88</span></span><br><span class="line"><span class="meta">$</span><span class="bash">request_uri：http://localhost:88/test1/test2/test.php</span></span><br><span class="line"><span class="meta">$</span><span class="bash">document_uri：/test1/test2/test.php</span></span><br><span class="line"><span class="meta">$</span><span class="bash">document_root：/var/www/html</span></span><br><span class="line"><span class="meta">$</span><span class="bash">request_filename：/var/www/html/test1/test2/test.php</span></span><br></pre></td></tr></table></figure>
 
 
 <h3 id="web服务器事件处理模型"><a href="#web服务器事件处理模型" class="headerlink" title="web服务器事件处理模型"></a>web服务器事件处理模型</h3><h4 id="select"><a href="#select" class="headerlink" title="select"></a>select</h4><p>select最早于1983年出现在4.2BSD中，它通过一个select()系统调用来监视多个文件描述符的数组，当select()返回后，该数组中就绪的文件描述符便会被内核修改标志位，使得进程可以获得这些文件描述符从而进行后续的读写操作。<br>select目前几乎在所有的平台上支持，其良好跨平台支持也是它的一个优点，事实上从现在看来，这也是它所剩不多的优点之一。<br>select的一个缺点在于单个进程能够监视的文件描述符的数量存在最大限制，在Linux上一般为1024，不过可以通过修改宏定义甚至重新编译内核的方式提升这一限制。<br>另外，select()所维护的存储大量文件描述符的数据结构，随着文件描述符数量的增大，其复制的开销也线性增长。同时，由于网络响应时间的延迟使得大量TCP连接处于非活跃状态，但调用select()会对所有socket进行一次线性扫描，所以这也浪费了一定的开销。</p>
@@ -537,6 +558,7 @@
 
     <footer class="post-footer">
           <div class="post-tags">
+              <a href="/tags/%E6%AD%BB%E7%A3%95nginx%E7%B3%BB%E5%88%97/" rel="tag"># 死磕nginx系列</a>
               <a href="/tags/nginx/" rel="tag"># nginx</a>
           </div>
 
@@ -604,6 +626,24 @@
   </span>
   <span class="author" itemprop="copyrightHolder">biglittleant</span>
 </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
   </div>
 
@@ -631,6 +671,7 @@
 
 
   
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
 
