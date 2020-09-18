@@ -22,15 +22,15 @@
     var CONFIG = {"hostname":"www.biglittleant.cn","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
   </script>
 
-  <meta name="description" content="uniq作用：只能对相邻的相同行去重。 格式1Usage: uniq [OPTION]... [INPUT [OUTPUT]]  参数12345678910-c, --count：在行首显示该行重复出现的次数。-d, --repeated：仅显示重复的列。-D, --all-repeated[&#x3D;METHOD]  仅显示重复行。-f, --skip-fields&#x3D;N   忽略比较指定的栏位-i, -">
+  <meta name="description" content="uniquniq作用：只能对相邻的相同行去重。 格式1Usage: uniq [OPTION]... [INPUT [OUTPUT]]  参数12345678910-c, --count：在行首显示该行重复出现的次数。-d, --repeated：仅显示重复的列。-D, --all-repeated[&#x3D;METHOD]  仅显示重复行。-f, --skip-fields&#x3D;N   忽略比较指定的栏位-">
 <meta property="og:type" content="article">
 <meta property="og:title" content="uniq-命令">
 <meta property="og:url" content="http://www.biglittleant.cn/2016/12/24/uniq/index.html">
 <meta property="og:site_name" content="biglittleant">
-<meta property="og:description" content="uniq作用：只能对相邻的相同行去重。 格式1Usage: uniq [OPTION]... [INPUT [OUTPUT]]  参数12345678910-c, --count：在行首显示该行重复出现的次数。-d, --repeated：仅显示重复的列。-D, --all-repeated[&#x3D;METHOD]  仅显示重复行。-f, --skip-fields&#x3D;N   忽略比较指定的栏位-i, -">
+<meta property="og:description" content="uniquniq作用：只能对相邻的相同行去重。 格式1Usage: uniq [OPTION]... [INPUT [OUTPUT]]  参数12345678910-c, --count：在行首显示该行重复出现的次数。-d, --repeated：仅显示重复的列。-D, --all-repeated[&#x3D;METHOD]  仅显示重复行。-f, --skip-fields&#x3D;N   忽略比较指定的栏位-">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2016-12-24T09:53:01.000Z">
-<meta property="article:modified_time" content="2020-09-16T09:42:15.309Z">
+<meta property="article:modified_time" content="2020-09-18T08:56:49.634Z">
 <meta property="article:author" content="biglittleant">
 <meta property="article:tag" content="linux-命令">
 <meta name="twitter:card" content="summary">
@@ -182,7 +182,7 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text">参数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%8F%82%E6%95%B0"><span class="nav-number">2.1.</span> <span class="nav-text">常用参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E4%BE%8B"><span class="nav-number">3.</span> <span class="nav-text">实例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#uniq-%E5%8E%BB%E9%87%8D"><span class="nav-number">3.1.</span> <span class="nav-text">uniq 去重</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#uniq-%E7%BB%9F%E8%AE%A1%E5%87%BA%E7%8E%B0%E7%9A%84%E6%AC%A1%E6%95%B0"><span class="nav-number">3.2.</span> <span class="nav-text">uniq 统计出现的次数</span></a></li></ol></li></ol></div>
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#uniq"><span class="nav-number">1.</span> <span class="nav-text">uniq</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">参数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%8F%82%E6%95%B0"><span class="nav-number">1.2.1.</span> <span class="nav-text">常用参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.3.</span> <span class="nav-text">示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#uniq-%E5%8E%BB%E9%87%8D"><span class="nav-number">1.3.1.</span> <span class="nav-text">uniq 去重</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#uniq-%E7%BB%9F%E8%AE%A1%E5%87%BA%E7%8E%B0%E7%9A%84%E6%AC%A1%E6%95%B0"><span class="nav-number">1.3.2.</span> <span class="nav-text">uniq 统计出现的次数</span></a></li></ol></li></ol></li></ol></div>
       </section>
       <!--/noindex-->
 
@@ -195,18 +195,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-count">43</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
-        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-count">34</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -276,7 +276,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-16 17:42:15" itemprop="dateModified" datetime="2020-09-16T17:42:15+08:00">2020-09-16</time>
+        <time title="Modified: 2020-09-18 16:56:49" itemprop="dateModified" datetime="2020-09-18T16:56:49+08:00">2020-09-18</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -305,20 +305,18 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>uniq作用：只能对相邻的相同行去重。</p>
+        <h1 id="uniq"><a href="#uniq" class="headerlink" title="uniq"></a>uniq</h1><p>uniq作用：只能对相邻的相同行去重。</p>
 <h2 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Usage: uniq [OPTION]... [INPUT [OUTPUT]]</span><br></pre></td></tr></table></figure>
 
 <h2 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">-c, --count：在行首显示该行重复出现的次数。</span><br><span class="line">-d, --repeated：仅显示重复的列。</span><br><span class="line">-D, --all-repeated[=METHOD]  仅显示重复行。</span><br><span class="line">-f, --skip-fields=N   忽略比较指定的栏位</span><br><span class="line">-i, --ignore-case    不区分大小写</span><br><span class="line">-s, --skip-chars=N：忽略比较指定的字符</span><br><span class="line">-u, --unique： 仅显示出一次的行列</span><br><span class="line">-w, --check-chars=N：指定要比较的字符</span><br><span class="line">--help：显示帮助文档并退出</span><br><span class="line">--version：输出版本信息并退出</span><br></pre></td></tr></table></figure>
 
 <h3 id="常用参数"><a href="#常用参数" class="headerlink" title="常用参数"></a>常用参数</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-c, —count 打印每一重复行出现的次数。</span><br></pre></td></tr></table></figure>
 
-<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><h3 id="uniq-去重"><a href="#uniq-去重" class="headerlink" title="uniq 去重"></a>uniq 去重</h3><p>第一步sort将相似的进行排序，uniq去掉重复行</p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><h3 id="uniq-去重"><a href="#uniq-去重" class="headerlink" title="uniq 去重"></a>uniq 去重</h3><p>第一步sort将相似的进行排序，uniq去掉重复行</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node2 tmp16:03:32]#sort a.txt</span><br><span class="line">10.10.0.1</span><br><span class="line">10.10.0.1</span><br><span class="line">10.10.0.2</span><br><span class="line">10.10.0.3</span><br><span class="line">10.10.0.3</span><br><span class="line">10.10.0.4</span><br><span class="line">10.10.0.4</span><br><span class="line">10.10.0.5</span><br><span class="line">10.10.0.8</span><br><span class="line">[root@linux-node2 tmp16:03:51]#sort a.txt |uniq</span><br><span class="line">10.10.0.1</span><br><span class="line">10.10.0.2</span><br><span class="line">10.10.0.3</span><br><span class="line">10.10.0.4</span><br><span class="line">10.10.0.5</span><br><span class="line">10.10.0.8</span><br></pre></td></tr></table></figure>
 
 <h3 id="uniq-统计出现的次数"><a href="#uniq-统计出现的次数" class="headerlink" title="uniq 统计出现的次数"></a>uniq 统计出现的次数</h3><p>uniq -c 去掉重复行，并统计出现次数</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node2 tmp16:04:12]#sort a.txt |uniq -c</span><br><span class="line">      2 10.10.0.1</span><br><span class="line">      1 10.10.0.2</span><br><span class="line">      2 10.10.0.3</span><br><span class="line">      2 10.10.0.4</span><br><span class="line">      1 10.10.0.5</span><br><span class="line">      1 10.10.0.8</span><br></pre></td></tr></table></figure>
-
-
 
     </div>
 

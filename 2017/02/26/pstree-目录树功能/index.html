@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.biglittleant.cn","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+  </script>
+
+  <meta name="description" content="pstree 命令更优雅的树状显示Linux pstree命令将所有行程以树状图显示，树状图将会以 pid (如果有指定) 或是以 init 这个基本行程为根 (root)，如果有指定使用者 id，则树状图会只显示该使用者所拥有的行程。 在Linux系统中，系统调用fork可以创建子进程，通过子shell也可以创建子进程，Linux系统中进程之间的关系天生就是一棵树，树的根就是进程PID为1的in">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pstree 命令更优雅的树状显示">
+<meta property="og:url" content="http://www.biglittleant.cn/2017/02/26/pstree-%E7%9B%AE%E5%BD%95%E6%A0%91%E5%8A%9F%E8%83%BD/index.html">
+<meta property="og:site_name" content="biglittleant">
+<meta property="og:description" content="pstree 命令更优雅的树状显示Linux pstree命令将所有行程以树状图显示，树状图将会以 pid (如果有指定) 或是以 init 这个基本行程为根 (root)，如果有指定使用者 id，则树状图会只显示该使用者所拥有的行程。 在Linux系统中，系统调用fork可以创建子进程，通过子shell也可以创建子进程，Linux系统中进程之间的关系天生就是一棵树，树的根就是进程PID为1的in">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-02-26T11:53:01.000Z">
+<meta property="article:modified_time" content="2020-09-18T10:18:43.765Z">
+<meta property="article:author" content="biglittleant">
+<meta property="article:tag" content="linux-命令">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.biglittleant.cn/2017/02/26/pstree-%E7%9B%AE%E5%BD%95%E6%A0%91%E5%8A%9F%E8%83%BD/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>pstree 命令更优雅的树状显示 | biglittleant</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">biglittleant</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">不被嘲笑的梦想，是不值得去实现的</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-文章分类">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a>
+
+  </li>
+        <li class="menu-item menu-item-归档">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#pstree-%E5%91%BD%E4%BB%A4%E6%9B%B4%E4%BC%98%E9%9B%85%E7%9A%84%E6%A0%91%E7%8A%B6%E6%98%BE%E7%A4%BA"><span class="nav-number">1.</span> <span class="nav-text">pstree 命令更优雅的树状显示</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E5%8F%82%E6%95%B0"><span class="nav-number">1.1.</span> <span class="nav-text">命令参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.2.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">1.3.</span> <span class="nav-text">参考文档</span></a></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">biglittleant</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2017/02/26/pstree-%E7%9B%AE%E5%BD%95%E6%A0%91%E5%8A%9F%E8%83%BD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="biglittleant">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="biglittleant">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          pstree 命令更优雅的树状显示
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-02-26 19:53:01" itemprop="dateCreated datePublished" datetime="2017-02-26T19:53:01+08:00">2017-02-26</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2020-09-18 18:18:43" itemprop="dateModified" datetime="2020-09-18T18:18:43+08:00">2020-09-18</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="pstree-命令更优雅的树状显示"><a href="#pstree-命令更优雅的树状显示" class="headerlink" title="pstree 命令更优雅的树状显示"></a>pstree 命令更优雅的树状显示</h1><p>Linux pstree命令将所有行程以树状图显示，树状图将会以 pid (如果有指定) 或是以 init 这个基本行程为根 (root)，如果有指定使用者 id，则树状图会只显示该使用者所拥有的行程。</p>
+<p>在Linux系统中，系统调用fork可以创建子进程，通过子shell也可以创建子进程，Linux系统中进程之间的关系天生就是一棵树，树的根就是进程PID为1的init进程。</p>
+<h2 id="命令参数"><a href="#命令参数" class="headerlink" title="命令参数"></a>命令参数</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">pstree: unrecognized option &#x27;--help&#x27;</span><br><span class="line">Usage: pstree [ -a ] [ -c ] [ -h | -H PID ] [ -l ] [ -n ] [ -p ] [ -g ] [ -u ]</span><br><span class="line">              [ -A | -G | -U ] [ PID | USER ]</span><br><span class="line">       pstree -V</span><br><span class="line">Display a tree of processes.</span><br><span class="line"></span><br><span class="line">  -a, --arguments     显示命令参数</span><br><span class="line">  -A, --ascii         使用 ASCII 画线</span><br><span class="line">  -c, --compact       不压缩相同的子进程</span><br><span class="line">  -h, --highlight-all 高亮现在执行的程序</span><br><span class="line">  -H PID, --highlight-pid=PID 高亮指定的程序</span><br><span class="line">  -g, --show-pgids    显示进程组ID; implies -c</span><br><span class="line">  -G, --vt100         使用 VT100 画线</span><br><span class="line">  -l, --long          不截断长的行</span><br><span class="line">  -n, --numeric-sort  按照pid进行排序</span><br><span class="line">  -N type,</span><br><span class="line">  --ns-sort=type      用程序识别码排序(ipc, mnt, net, pid, user, uts)。预设是以程序名称来排序；</span><br><span class="line">  -p, --show-pids     显示pid; implies -c</span><br><span class="line">  -s, --show-parents  显示进程的父ID</span><br><span class="line">  -S, --ns-changes    显示 namespace 信息</span><br><span class="line">  -u, --uid-changes   显示 用户 名称</span><br><span class="line">  -U, --unicode       使用 UTF-8 (Unicode) 画线</span><br><span class="line">  -V, --version       显示版本</span><br><span class="line">  -Z,</span><br><span class="line">  --security-context   显示 SELinux 内容</span><br><span class="line">  PID    start at this PID; default is 1 (init)</span><br><span class="line">  USER   show only trees rooted at processes of this user</span><br></pre></td></tr></table></figure>
+
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>以树状图只显示进程的名字，且相同进程合并显示： pstree</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# pstree</span><br><span class="line">systemd─┬─NetworkManager─┬─dhclient</span><br><span class="line">        │                └─2*[&#123;NetworkManager&#125;]</span><br><span class="line">        ├─VBoxService───8*[&#123;VBoxService&#125;]</span><br><span class="line">        ├─agetty</span><br><span class="line">        ├─auditd───&#123;auditd&#125;</span><br><span class="line">        ├─chronyd</span><br><span class="line">        ├─containerd───10*[&#123;containerd&#125;]</span><br><span class="line">        ├─crond</span><br><span class="line">        ├─dbus-daemon</span><br><span class="line">        ├─gssproxy───5*[&#123;gssproxy&#125;]</span><br><span class="line">        ├─irqbalance</span><br><span class="line">        ├─keepalived───2*[keepalived]</span><br><span class="line">        ├─kube-apiserver───8*[&#123;kube-apiserver&#125;]</span><br><span class="line">        ├─kube-controller───7*[&#123;kube-controller&#125;]</span><br><span class="line">        ├─kube-proxy───7*[&#123;kube-proxy&#125;]</span><br><span class="line">        ├─kube-scheduler───9*[&#123;kube-scheduler&#125;]</span><br><span class="line">        ├─kubelet───13*[&#123;kubelet&#125;]</span><br><span class="line">        ├─polkitd───6*[&#123;polkitd&#125;]</span><br><span class="line">        ├─rpc.statd</span><br><span class="line">        ├─rpcbind</span><br><span class="line">        ├─rsyslogd───2*[&#123;rsyslogd&#125;]</span><br><span class="line">        ├─sshd───sshd───sshd───bash───sudo───su───bash───pstree</span><br><span class="line">        ├─supervisord───etcd───7*[&#123;etcd&#125;]</span><br><span class="line">        ├─systemd-journal</span><br><span class="line">        ├─systemd-logind</span><br><span class="line">        ├─systemd-udevd</span><br><span class="line">        └─tuned───4*[&#123;tuned&#125;]</span><br></pre></td></tr></table></figure>
+
+<p>以树状图显示进程同时还显示PID：pstree -p</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# pstree -p</span><br><span class="line">systemd(1)─┬─NetworkManager(2494)─┬─dhclient(2530)</span><br><span class="line">           │                      ├─&#123;NetworkManager&#125;(2509)</span><br><span class="line">           │                      └─&#123;NetworkManager&#125;(2512)</span><br><span class="line">           ├─VBoxService(2316)─┬─&#123;VBoxService&#125;(2318)</span><br><span class="line">           │                   ├─&#123;VBoxService&#125;(2319)</span><br><span class="line">           │                   ├─&#123;VBoxService&#125;(2320)</span><br><span class="line">           │                   ├─&#123;VBoxService&#125;(2321)</span><br><span class="line">           │                   ├─&#123;VBoxService&#125;(2322)</span><br><span class="line">           │                   ├─&#123;VBoxService&#125;(2326)</span><br><span class="line">           │                   ├─&#123;VBoxService&#125;(2327)</span><br><span class="line">           │                   └─&#123;VBoxService&#125;(2328)</span><br><span class="line">           ├─agetty(506)</span><br><span class="line">           ├─auditd(414)───&#123;auditd&#125;(415)</span><br><span class="line">           ├─chronyd(455)</span><br><span class="line">           ├─containerd(910)─┬─&#123;containerd&#125;(943)</span><br><span class="line">           │                 ├─&#123;containerd&#125;(944)</span><br><span class="line">           │                 ├─&#123;containerd&#125;(945)</span><br><span class="line">           │                 ├─&#123;containerd&#125;(946)</span><br><span class="line">           │                 ├─&#123;containerd&#125;(987)</span><br><span class="line">           │                 ├─&#123;containerd&#125;(1017)</span><br><span class="line">           │                 ├─&#123;containerd&#125;(1034)</span><br><span class="line">           │                 ├─&#123;containerd&#125;(1150)</span><br><span class="line">           │                 ├─&#123;containerd&#125;(1151)</span><br><span class="line">           │                 └─&#123;containerd&#125;(1312)</span><br><span class="line">           ├─crond(505)</span><br><span class="line">           ├─dbus-daemon(452)</span><br><span class="line">... 省略部分结果</span><br></pre></td></tr></table></figure>
+
+<p>以树状图显示进程PID为的进程以及子孙进程，如果有-p参数则同时显示每个进程的PID：pstree [-p] <pid></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# pstree -p 918</span><br><span class="line">etcd(918)─┬─&#123;etcd&#125;(930)</span><br><span class="line">          ├─&#123;etcd&#125;(931)</span><br><span class="line">          ├─&#123;etcd&#125;(932)</span><br><span class="line">          ├─&#123;etcd&#125;(948)</span><br><span class="line">          ├─&#123;etcd&#125;(952)</span><br><span class="line">          ├─&#123;etcd&#125;(1057)</span><br><span class="line">          └─&#123;etcd&#125;(1072)</span><br></pre></td></tr></table></figure>
+
+<p>以树状图显示进程，相同名称的进程不合并显示，并且会显示命令行参数，如果有-p参数则同时显示每个进程的PID。pstree -a</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">pstree -a -p 910</span><br><span class="line">containerd,910 --config /data/apps/containerd/containerd-config.toml</span><br><span class="line">  ├─&#123;containerd&#125;,943</span><br><span class="line">  ├─&#123;containerd&#125;,944</span><br><span class="line">  ├─&#123;containerd&#125;,945</span><br><span class="line">  ├─&#123;containerd&#125;,946</span><br><span class="line">  ├─&#123;containerd&#125;,987</span><br><span class="line">  ├─&#123;containerd&#125;,1017</span><br><span class="line">  ├─&#123;containerd&#125;,1034</span><br><span class="line">  ├─&#123;containerd&#125;,1150</span><br><span class="line">  ├─&#123;containerd&#125;,1151</span><br><span class="line">  └─&#123;containerd&#125;,1312</span><br><span class="line">...省略部分结果</span><br></pre></td></tr></table></figure>
+
+<p>注：因为pstree输出的信息可能比较多，所以最好与more/less配合使用,使用上下箭头查看，按q退出。pstree -p | less</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a target="_blank" rel="noopener" href="https://man.linuxde.net/pstree">pstree命令</a><br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/huchong/p/10065246.html">linux每日命令(34)：ps命令和pstree命令</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux-%E5%91%BD%E4%BB%A4/" rel="tag"># linux-命令</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/01/13/linux-install-config/" rel="prev" title="linux系统初始化配置">
+                  <i class="fa fa-chevron-left"></i> linux系统初始化配置
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/09/03/lvsadm_user/" rel="next" title="ipvsadm 命令详解">
+                  ipvsadm 命令详解 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+  
+  
+  
+
+
+
+      
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">biglittleant</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

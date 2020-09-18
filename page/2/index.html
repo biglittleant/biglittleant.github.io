@@ -189,18 +189,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-count">43</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
-        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-count">34</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -231,6 +231,98 @@
       
 
       
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2017/01/06/nginx-proxy-pass-error/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="biglittleant">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="biglittleant">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/01/06/nginx-proxy-pass-error/" class="post-title-link" itemprop="url">死磕nginx系列--proxy_pass后端斜杠问题</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-01-06 08:19:07" itemprop="dateCreated datePublished" datetime="2017-01-06T08:19:07+08:00">2017-01-06</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2020-09-16 17:35:45" itemprop="dateModified" datetime="2020-09-16T17:35:45+08:00">2020-09-16</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/nginx/" itemprop="url" rel="index"><span itemprop="name">nginx</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>假设nginx服务器的IP地址：192.168.56.11<br>当我们访问：<a target="_blank" rel="noopener" href="http://192.168.56.11/test/test.html">http://192.168.56.11/test/test.html</a> 时</p>
+<p>如果proxy_pass 后端包含反斜线，后端服务器得到的URL为：192.168.56.12:8002/test.html<br>如果proxy_pass 后端不包含反斜线时，后端服务器得到的URL为：<br>192.168.56.12:8002/test/test.html</p>
+<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><h2 id="proxy-pass-包含反斜线"><a href="#proxy-pass-包含反斜线" class="headerlink" title="proxy_pass 包含反斜线"></a>proxy_pass 包含反斜线</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">worker_processes  1;</span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections  1024;</span><br><span class="line">&#125;</span><br><span class="line">http &#123;</span><br><span class="line">    include       mime.types;</span><br><span class="line">    default_type  application/octet-stream;</span><br><span class="line">    sendfile        on;</span><br><span class="line">    keepalive_timeout  65;</span><br><span class="line">    upstream test &#123;</span><br><span class="line">        server 192.168.56.12:8002  weight=1 max_fails=2 fail_timeout=10s;</span><br><span class="line">    &#125;</span><br><span class="line">    server &#123;</span><br><span class="line">        listen 80;</span><br><span class="line">        location /test &#123;</span><br><span class="line">            proxy_pass http://test/;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="后端的access访问日志"><a href="#后端的access访问日志" class="headerlink" title="后端的access访问日志"></a>后端的access访问日志</h3><figure class="highlight plain"><figcaption><span>- - [07/Nov/2016:10:33:38 +0000] "GET</span><a target="_blank" rel="noopener" href="//test.html">HTTP/1.0" 404 571 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36" "-"</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&#96;&#96;&#96;</span><br><span class="line"></span><br><span class="line">&gt; URI的&#96;&#x2F;test&#x2F;&#96;被切割了。</span><br><span class="line"></span><br><span class="line">## proxy_pass 后端不包含反斜杠</span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;shell</span><br><span class="line">worker_processes  1;</span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections  1024;</span><br><span class="line">&#125;</span><br><span class="line">http &#123;</span><br><span class="line">    include       mime.types;</span><br><span class="line">    default_type  application&#x2F;octet-stream;</span><br><span class="line">    sendfile        on;</span><br><span class="line">    keepalive_timeout  65;</span><br><span class="line">    upstream test &#123;</span><br><span class="line">        server 192.168.56.12:8002  weight&#x3D;1 max_fails&#x3D;2 fail_timeout&#x3D;10s;</span><br><span class="line">    &#125;</span><br><span class="line">    server &#123;</span><br><span class="line">        listen 80;</span><br><span class="line">        location &#x2F;test &#123;</span><br><span class="line">            proxy_pass http:&#x2F;&#x2F;test;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="后端的access访问日志-1"><a href="#后端的access访问日志-1" class="headerlink" title="后端的access访问日志"></a>后端的access访问日志</h3><figure class="highlight plain"><figcaption><span>- - [07/Nov/2016:10:37:49 +0000] "GET</span><a href="/test/test.html">HTTP/1.0" 304 0 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36" "-"</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>URL 是完整得URI。</p>
+</blockquote>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -1739,14 +1831,14 @@
       </span>
       <span class="post-meta-item-text">Posted on</span>
 
-      <time title="Created: 2016-12-25 17:59:19" itemprop="dateCreated datePublished" datetime="2016-12-25T17:59:19+08:00">2016-12-25</time>
+      <time title="Created: 2016-12-25 14:53:01" itemprop="dateCreated datePublished" datetime="2016-12-25T14:53:01+08:00">2016-12-25</time>
     </span>
       <span class="post-meta-item">
         <span class="post-meta-item-icon">
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-16 17:40:51" itemprop="dateModified" datetime="2020-09-16T17:40:51+08:00">2020-09-16</time>
+        <time title="Modified: 2020-09-18 17:06:03" itemprop="dateModified" datetime="2020-09-18T17:06:03+08:00">2020-09-18</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1768,7 +1860,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>sort将文件的每一行作为一个单位，相互比较，比较原则是从首字符向后，依次按ASCII码值进行比较，最后将他们按升序输出。<br>英文翻译：sort lines of text files .</p>
+          <h1 id="sort"><a href="#sort" class="headerlink" title="sort"></a>sort</h1><p>sort将文件的每一行作为一个单位，相互比较，比较原则是从首字符向后，依次按ASCII码值进行比较，最后将他们按升序输出。<br>英文翻译：sort lines of text files .</p>
 <p>格式：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Usage: sort [OPTION]... [FILE]...</span><br><span class="line">  or:  sort [OPTION]... --files0-from=F</span><br></pre></td></tr></table></figure>
 
@@ -1778,13 +1870,11 @@
 <p>常用参数:</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-n 按照数字排序。</span><br><span class="line">-r 倒叙。</span><br><span class="line">-t “.”表示按点号分隔域（awk -F ,cut -d 取段 -f）。</span><br><span class="line">-u 相同的行，只输出一行。</span><br><span class="line">-k 指定列进行排序。</span><br><span class="line">-b会忽略每一行前面的所有空白部分，从第一个可见字符开始比较。</span><br></pre></td></tr></table></figure>
 
-<p>实例：<br>按照数字正序排序</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@MySQL /]# sort -n file1.txt</span><br><span class="line">10.0.0.7 f</span><br><span class="line">10.0.0.7 n</span><br><span class="line">10.0.0.8 c</span><br><span class="line">10.0.0.8 k</span><br><span class="line">10.0.0.8 z</span><br><span class="line">10.0.0.9 a</span><br><span class="line">10.0.0.9 o</span><br></pre></td></tr></table></figure>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><h3 id="按照数字正序排序"><a href="#按照数字正序排序" class="headerlink" title="按照数字正序排序"></a>按照数字正序排序</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@MySQL /]# sort -n file1.txt</span><br><span class="line">10.0.0.7 f</span><br><span class="line">10.0.0.7 n</span><br><span class="line">10.0.0.8 c</span><br><span class="line">10.0.0.8 k</span><br><span class="line">10.0.0.8 z</span><br><span class="line">10.0.0.9 a</span><br><span class="line">10.0.0.9 o</span><br></pre></td></tr></table></figure>
 
-<p>按照数字排序并倒叙</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@MySQL /]# sort -nr file1.txt</span><br><span class="line">10.0.0.9 o</span><br><span class="line">10.0.0.9 a</span><br><span class="line">10.0.0.8 z</span><br><span class="line">10.0.0.8 k</span><br><span class="line">10.0.0.8 c</span><br><span class="line">10.0.0.7 n</span><br><span class="line">10.0.0.7 f</span><br></pre></td></tr></table></figure>
+<h3 id="按照数字排序并倒叙"><a href="#按照数字排序并倒叙" class="headerlink" title="按照数字排序并倒叙"></a>按照数字排序并倒叙</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@MySQL /]# sort -nr file1.txt</span><br><span class="line">10.0.0.9 o</span><br><span class="line">10.0.0.9 a</span><br><span class="line">10.0.0.8 z</span><br><span class="line">10.0.0.8 k</span><br><span class="line">10.0.0.8 c</span><br><span class="line">10.0.0.7 n</span><br><span class="line">10.0.0.7 f</span><br></pre></td></tr></table></figure>
 
-<p>-t 指定分隔符，-k2 表示按照第二列开始倒叙排序</p>
+<h3 id="按照第二列开始倒叙排序"><a href="#按照第二列开始倒叙排序" class="headerlink" title="按照第二列开始倒叙排序"></a>按照第二列开始倒叙排序</h3><p>-t 指定分隔符，-k2 表示按照第二列开始倒叙排序</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@MySQL /]# sort -t&quot; &quot; -k2  -r file1.txt</span><br><span class="line">10.0.0.8 z</span><br><span class="line">10.0.0.9 o</span><br><span class="line">10.0.0.7 n</span><br><span class="line">10.0.0.8 k</span><br><span class="line">10.0.0.7 f</span><br><span class="line">10.0.0.8 c</span><br><span class="line">10.0.0.9 a</span><br></pre></td></tr></table></figure>
 
 <p>-t 指定分隔符，-k2 表示按照第二列开始排序</p>
@@ -1793,98 +1883,21 @@
 <p>先按照第一行排序，在按第三列排序并忽略空格 。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">sort -k 1 -n -k 3 emp.data</span></span><br><span class="line">Beth    4.00    0</span><br><span class="line">Dan     3.75    0</span><br><span class="line">kathy   4.00    10</span><br><span class="line">Susie   4.25    18</span><br><span class="line">Mark    5.00    20</span><br><span class="line">Mary    5.50    22</span><br></pre></td></tr></table></figure>
 
+<h2 id="n-参数讲解"><a href="#n-参数讲解" class="headerlink" title="-n 参数讲解"></a>-n 参数讲解</h2><p>测试文件内容</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> cat info.txt</span></span><br><span class="line">aa,201</span><br><span class="line">zz,502</span><br><span class="line">bb,1</span><br><span class="line">ee,42</span><br></pre></td></tr></table></figure>
 
-      
-    </div>
+<p>第一步 按照第二列倒叙排序</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node2 111:33:23]#sort -t &#x27;,&#x27; -k2r info.txt</span><br><span class="line">zz,502</span><br><span class="line">ee,42</span><br><span class="line">aa,201</span><br><span class="line">bb,1</span><br></pre></td></tr></table></figure>
 
-    
-    
-    
+<p>通过结果查看: 是按照第二列的首字母进行排序。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node2 111:33:30]#sort -t &#x27;,&#x27; -k2nr info.txt</span><br><span class="line">zz,502</span><br><span class="line">aa,201</span><br><span class="line">ee,42</span><br><span class="line">bb,1</span><br></pre></td></tr></table></figure>
 
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2016/12/24/uniq/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="biglittleant">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="biglittleant">
-    </span>
-
-    
-    
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2016/12/24/uniq/" class="post-title-link" itemprop="url">uniq-命令</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2016-12-24 17:53:01" itemprop="dateCreated datePublished" datetime="2016-12-24T17:53:01+08:00">2016-12-24</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-16 17:42:15" itemprop="dateModified" datetime="2020-09-16T17:42:15+08:00">2020-09-16</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>uniq作用：只能对相邻的相同行去重。</p>
-<h2 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Usage: uniq [OPTION]... [INPUT [OUTPUT]]</span><br></pre></td></tr></table></figure>
-
-<h2 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">-c, --count：在行首显示该行重复出现的次数。</span><br><span class="line">-d, --repeated：仅显示重复的列。</span><br><span class="line">-D, --all-repeated[=METHOD]  仅显示重复行。</span><br><span class="line">-f, --skip-fields=N   忽略比较指定的栏位</span><br><span class="line">-i, --ignore-case    不区分大小写</span><br><span class="line">-s, --skip-chars=N：忽略比较指定的字符</span><br><span class="line">-u, --unique： 仅显示出一次的行列</span><br><span class="line">-w, --check-chars=N：指定要比较的字符</span><br><span class="line">--help：显示帮助文档并退出</span><br><span class="line">--version：输出版本信息并退出</span><br></pre></td></tr></table></figure>
-
-<h3 id="常用参数"><a href="#常用参数" class="headerlink" title="常用参数"></a>常用参数</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-c, —count 打印每一重复行出现的次数。</span><br></pre></td></tr></table></figure>
-
-<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><h3 id="uniq-去重"><a href="#uniq-去重" class="headerlink" title="uniq 去重"></a>uniq 去重</h3><p>第一步sort将相似的进行排序，uniq去掉重复行</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node2 tmp16:03:32]#sort a.txt</span><br><span class="line">10.10.0.1</span><br><span class="line">10.10.0.1</span><br><span class="line">10.10.0.2</span><br><span class="line">10.10.0.3</span><br><span class="line">10.10.0.3</span><br><span class="line">10.10.0.4</span><br><span class="line">10.10.0.4</span><br><span class="line">10.10.0.5</span><br><span class="line">10.10.0.8</span><br><span class="line">[root@linux-node2 tmp16:03:51]#sort a.txt |uniq</span><br><span class="line">10.10.0.1</span><br><span class="line">10.10.0.2</span><br><span class="line">10.10.0.3</span><br><span class="line">10.10.0.4</span><br><span class="line">10.10.0.5</span><br><span class="line">10.10.0.8</span><br></pre></td></tr></table></figure>
-
-<h3 id="uniq-统计出现的次数"><a href="#uniq-统计出现的次数" class="headerlink" title="uniq 统计出现的次数"></a>uniq 统计出现的次数</h3><p>uniq -c 去掉重复行，并统计出现次数</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node2 tmp16:04:12]#sort a.txt |uniq -c</span><br><span class="line">      2 10.10.0.1</span><br><span class="line">      1 10.10.0.2</span><br><span class="line">      2 10.10.0.3</span><br><span class="line">      2 10.10.0.4</span><br><span class="line">      1 10.10.0.5</span><br><span class="line">      1 10.10.0.8</span><br></pre></td></tr></table></figure>
-
-
+<p>加上 -n 后将第二列当成了一个整体进行排序。</p>
+<p>结论:</p>
+<ul>
+<li>如果不加-n 默认按照列的第一个首字母排序，如果首字母相同排序第二列。</li>
+<li>如果加了-n，sort 会将值当成一个整数，而不是按照首字母排序。</li>
+</ul>
 
       
     </div>
