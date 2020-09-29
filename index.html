@@ -189,7 +189,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-count">46</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -200,7 +200,7 @@
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-count">37</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -231,6 +231,389 @@
       
 
       
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2020/09/29/kubernetes-ingress/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="biglittleant">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="biglittleant">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/09/29/kubernetes-ingress/" class="post-title-link" itemprop="url">ingress nginx 服务部署</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2020-09-29 18:04:00 / Modified: 18:04:12" itemprop="dateCreated datePublished" datetime="2020-09-29T18:04:00+08:00">2020-09-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/kubernetes/" itemprop="url" rel="index"><span itemprop="name">kubernetes</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="ingress-简介"><a href="#ingress-简介" class="headerlink" title="ingress 简介"></a>ingress 简介</h2><p>Ingress 公开了从集群外部到集群内服务的 HTTP 和 HTTPS 路由。 流量路由由 Ingress 资源上定义的规则控制。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">internet</span><br><span class="line">    |</span><br><span class="line">[ Ingress ]</span><br><span class="line">--|-----|--</span><br><span class="line">[ Services ]</span><br></pre></td></tr></table></figure>
+
+<p>可以将 Ingress 配置为服务提供外部可访问的 URL、负载均衡流量、终止 SSL/TLS，以及提供基于名称的虚拟主机等能力。 Ingress 控制器 通常负责通过负载均衡器来实现 Ingress，尽管它也可以配置边缘路由器或其他前端来帮助处理流量。</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>使用 NodePort的方式部署 ingress-nginx-controller</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wget https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.35.0/deploy/static/provider/baremetal/deploy.yaml</span><br><span class="line">mv deploy.yaml ingress-deploy-hostnetwork.yaml</span><br><span class="line">kubectl apply -f ingress-deploy-hostnetwork.yaml</span><br></pre></td></tr></table></figure>
+
+<p>检查服务启动是否正常(拉镜像需要等待一段时间)</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pods -n ingress-nginx -l app.kubernetes.io/name=ingress-nginx</span><br></pre></td></tr></table></figure>
+
+<p>检查服务是否正常</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">POD_NAMESPACE=ingress-nginx</span><br><span class="line">POD_NAME=$(kubectl get pods -n $POD_NAMESPACE -l app.kubernetes.io/name=ingress-nginx --field-selector=status.phase=Running -o jsonpath=&#x27;&#123;.items[0].metadata.name&#125;&#x27;)</span><br><span class="line"></span><br><span class="line"> kubectl exec -it $POD_NAME -n $POD_NAMESPACE -- /nginx-ingress-controller --version</span><br><span class="line">-------------------------------------------------------------------------------</span><br><span class="line">NGINX Ingress controller</span><br><span class="line">  Release:       v0.35.0</span><br><span class="line">  Build:         54ad65e32bcab32791ab18531a838d1c0f0811ef</span><br><span class="line">  Repository:    https://github.com/kubernetes/ingress-nginx</span><br><span class="line">  nginx version: nginx/1.19.2</span><br><span class="line"></span><br><span class="line">-------------------------------------------------------------------------------</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置本地网络启动"><a href="#配置本地网络启动" class="headerlink" title="配置本地网络启动"></a>配置本地网络启动</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">DaemonSet</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="string">.....</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">ingress-nginx-controller</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">ingress-nginx</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="string">.....</span></span><br><span class="line">  <span class="attr">revisionHistoryLimit:</span> <span class="number">10</span></span><br><span class="line">  <span class="attr">minReadySeconds:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="string">.....</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">hostNetwork:</span> <span class="literal">true</span></span><br><span class="line">      <span class="attr">dnsPolicy:</span> <span class="string">ClusterFirstWithHostNet</span></span><br></pre></td></tr></table></figure>
+
+<p>修改内容:</p>
+<ol>
+<li><code>kind: DaemonSet</code> 配置服务启动方式为DaemonSet(原来是deployment)。</li>
+<li>配置 <code>spec.hostNetwork: true</code>,本地网络启动。</li>
+<li>配置 dns的策略为: <code>ClusterFirstWithHostNet</code>, 与hostNetwork 配合使用，参考<a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy">官方文档pod-s-dns-policy</a></li>
+</ol>
+<p>重新同步一下pod文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f ingress-deploy-hostnetwork.yaml</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置标签，让ingress-只调度到Master节点上"><a href="#配置标签，让ingress-只调度到Master节点上" class="headerlink" title="配置标签，让ingress 只调度到Master节点上"></a>配置标签，让ingress 只调度到Master节点上</h2><p>为了让网关的性能更好，我们需要给ingress打标签，让ingress调度到master机器上。同时给master 打上污点，禁止其他pod调度到master节点上。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pods -n ingress-nginx  -o wide</span><br><span class="line">NAME                                   READY   STATUS      RESTARTS   AGE     IP               NODE    NOMINATED NODE   READINESS GATES</span><br><span class="line">ingress-nginx-admission-create-z7sts   0/1     Completed   0          2d16h   172.30.199.211   node7   &lt;none&gt;           &lt;none&gt;</span><br><span class="line">ingress-nginx-admission-patch-4qgtz    0/1     Completed   0          2d16h   172.30.139.14    node6   &lt;none&gt;           &lt;none&gt;</span><br><span class="line">ingress-nginx-controller-h5fdd         1/1     Running     1          2d16h   192.168.66.16    node6   &lt;none&gt;           &lt;none&gt;</span><br><span class="line">ingress-nginx-controller-j6n9z         1/1     Running     0          2d16h   192.168.66.11    node1   &lt;none&gt;           &lt;none&gt;</span><br><span class="line">ingress-nginx-controller-kfnxt         1/1     Running     1          2d16h   192.168.66.17    node7   &lt;none&gt;           &lt;none&gt;</span><br><span class="line">ingress-nginx-controller-n5pl4         1/1     Running     0          2d16h   192.168.66.12    node2   &lt;none&gt;           &lt;none&gt;</span><br><span class="line">ingress-nginx-controller-qzbb5         1/1     Running     0          2d16h   192.168.66.13    node3   &lt;none&gt;           &lt;none&gt;</span><br></pre></td></tr></table></figure>
+
+<p>对 node1 node2 打标签</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl label nodes node1 api/ingress-controller=true</span><br><span class="line">kubectl label nodes node2 api/ingress-controller=true</span><br></pre></td></tr></table></figure>
+
+<p>查看标签</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 为了好看，去掉相同的标签</span></span><br><span class="line">kubectl get nodes --show-labels</span><br><span class="line">NAME    STATUS   ROLES    AGE     VERSION   LABELS</span><br><span class="line">node1   Ready    &lt;none&gt;   3h53m   v1.16.6   api/ingress-controller=true,kubernetes.io/hostname=node1</span><br><span class="line">node2   Ready    &lt;none&gt;   3h53m   v1.16.6   api/ingress-controller=true,kubernetes.io/hostname=node2</span><br><span class="line">node3   Ready    &lt;none&gt;   3h53m   v1.16.6   kubernetes.io/hostname=node3</span><br><span class="line">node6   Ready    &lt;none&gt;   3d4h    v1.16.6   kubernetes.io/hostname=node6</span><br><span class="line">node7   Ready    &lt;none&gt;   3d4h    v1.16.6   kubernetes.io/hostname=node7</span><br></pre></td></tr></table></figure>
+
+<p>增加标签选择，及容忍污点</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> vim ingress-deploy-hostnetwork.yaml</span></span><br><span class="line">    spec:</span><br><span class="line">      hostNetwork: true</span><br><span class="line">      dnsPolicy: ClusterFirstWithHostNet</span><br><span class="line">      nodeSelector:</span><br><span class="line">        api/ingress-controller: &quot;true&quot;</span><br><span class="line">      tolerations:</span><br><span class="line">      - key: &quot;node-role.kubernetes.io/master&quot;</span><br><span class="line">        operator: &quot;Equal&quot;</span><br><span class="line">        value: &quot;&quot;</span><br><span class="line">        effect: &quot;NoSchedule&quot;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>在刚才修改网络的后面继续增加以上命令</p>
+</blockquote>
+<p>从新同步一下配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f ingress-deploy-hostnetwork.yaml</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# kubectl get pods -n ingress-nginx  -o wide</span><br><span class="line">NAME                                   READY   STATUS      RESTARTS   AGE     IP               NODE    NOMINATED NODE   READINESS GATES</span><br><span class="line">ingress-nginx-admission-create-z7sts   0/1     Completed   0          2d16h   172.30.199.211   node7   &lt;none&gt;           &lt;none&gt;</span><br><span class="line">ingress-nginx-admission-patch-4qgtz    0/1     Completed   0          2d16h   172.30.139.14    node6   &lt;none&gt;           &lt;none&gt;</span><br><span class="line">ingress-nginx-controller-6s2lp         1/1     Running     0          57m     192.168.66.12    node2   &lt;none&gt;           &lt;none&gt;</span><br><span class="line">ingress-nginx-controller-j6n9z         1/1     Running     0          57m     192.168.66.11    node1   &lt;none&gt;           &lt;none&gt;</span><br></pre></td></tr></table></figure>
+
+<p>为了避免master节点会被调度新的pod，需要给master节点打上Taints。<br>如果一个节点标记为 Taints ，除非 pod 也被标识为可以容忍污点节点，否则该 Taints 节点不会被调度 pod。<br>影响策略是 NoSchedule，只会影响新的 pod 调度</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl taint nodes node1 node-role.kubernetes.io/master=:NoSchedule</span><br><span class="line">kubectl taint nodes node2 node-role.kubernetes.io/master=:NoSchedule</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# kubectl describe node node1 |grep Taints</span><br><span class="line">Taints:             node-role.kubernetes.io/master:NoSchedule</span><br><span class="line">[root@node1 ~]# kubectl describe node node2 |grep Taints</span><br><span class="line">Taints:             node-role.kubernetes.io/master:NoSchedule</span><br><span class="line">[root@node1 ~]#</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# kubectl get pods -n ingress-nginx  -o wide</span><br><span class="line">NAME                                   READY   STATUS      RESTARTS   AGE     IP               NODE    NOMINATED NODE   READINESS GATES</span><br><span class="line">ingress-nginx-admission-create-z7sts   0/1     Completed   0          2d19h   172.30.199.211   node7   &lt;none&gt;           &lt;none&gt;</span><br><span class="line">ingress-nginx-admission-patch-4qgtz    0/1     Completed   0          2d19h   172.30.139.14    node6   &lt;none&gt;           &lt;none&gt;</span><br><span class="line">ingress-nginx-controller-6s2lp         1/1     Running     0          3h6m    192.168.66.12    node2   &lt;none&gt;           &lt;none&gt;</span><br><span class="line">ingress-nginx-controller-kv4xs         1/1     Running     0          3h5m    192.168.66.11    node1   &lt;none&gt;           &lt;none&gt;</span><br><span class="line">[root@node1 ~]#</span><br></pre></td></tr></table></figure>
+
+<p>汇总一下配置文件的修改内容</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">DaemonSet</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="string">.....</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">ingress-nginx-controller</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">ingress-nginx</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="string">.....</span></span><br><span class="line">  <span class="attr">revisionHistoryLimit:</span> <span class="number">10</span></span><br><span class="line">  <span class="attr">minReadySeconds:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="string">.....</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">hostNetwork:</span> <span class="literal">true</span></span><br><span class="line">      <span class="attr">dnsPolicy:</span> <span class="string">ClusterFirstWithHostNet</span></span><br><span class="line">      <span class="attr">nodeSelector:</span></span><br><span class="line">        <span class="attr">api/ingress-controller:</span> <span class="string">&quot;true&quot;</span></span><br><span class="line">      <span class="attr">tolerations:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">key:</span> <span class="string">&quot;node-role.kubernetes.io/master&quot;</span></span><br><span class="line">        <span class="attr">operator:</span> <span class="string">&quot;Equal&quot;</span></span><br><span class="line">        <span class="attr">value:</span> <span class="string">&quot;&quot;</span></span><br><span class="line">        <span class="attr">effect:</span> <span class="string">&quot;NoSchedule&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>修改参数如下：</p>
+<ul>
+<li>kind: Deployment #修改为DaemonSet</li>
+<li>hostNetwork: true #添加该字段让docker使用物理机网络，在物理机暴露服务端口(80)，注意物理机80端口提前不能被占用</li>
+<li>dnsPolicy: ClusterFirstWithHostNet #使用hostNetwork后容器会使用物理机网络包括DNS，会无法解析内部service，使用此参数让容器使用K8S的DNS</li>
+<li>nodeSelector:api/ingress-controller: “true” #添加节点标签</li>
+<li>tolerations: 添加对指定节点容忍度</li>
+</ul>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a target="_blank" rel="noopener" href="https://github.com/kubernetes/ingress-nginx">官方仓库</a><br><a target="_blank" rel="noopener" href="https://kubernetes.github.io/ingress-nginx/">官方文档</a><br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/c726ed03562a">k8s配置ingress</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2020/09/28/kubernetes-helm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="biglittleant">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="biglittleant">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/09/28/kubernetes-helm/" class="post-title-link" itemprop="url">Helm 服务部署</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2020-09-28 15:58:26 / Modified: 15:58:38" itemprop="dateCreated datePublished" datetime="2020-09-28T15:58:26+08:00">2020-09-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/kubernetes/" itemprop="url" rel="index"><span itemprop="name">kubernetes</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="什么是-Helm"><a href="#什么是-Helm" class="headerlink" title="什么是 Helm"></a>什么是 Helm</h2><p>在没使用 helm 之前，向 kubernetes 部署应用，我们要依次部署 deployment、svc 等，步骤较繁琐。况且随 着很多项目微服务化，复杂的应用在容器中部署以及管理显得较为复杂，helm 通过打包的方式，支持发布的版本 管理和控制，很大程度上简化了 Kubernetes 应用的部署和管理</p>
+<p>Helm 本质就是让 K8s 的应用管理(Deployment,Service 等 ) 可配置，能动态生成。通过动态生成 K8s 资源清单文件(deployment.yaml，service.yaml)。然后调用 Kubectl 自动执行 K8s 资源部署</p>
+<p>Helm 是官方提供的类似于 YUM 的包管理器，是部署环境的流程封装。Helm 有两个重要的概念:chart 和 release</p>
+<ul>
+<li>chart 是创建一个应用的信息集合，包括各种 Kubernetes 对象的配置模板、参数定义、依赖关系、文档说 明等。chart 是应用部署的自包含逻辑单元。可以将 chart 想象成 apt、yum 中的软件安装包</li>
+<li>release 是 chart 的运行实例，代表了一个正在运行的应用。当 chart 被安装到 Kubernetes 集群，就生成 一个 release。chart 能够多次安装到同一个集群，每次安装都是一个 release</li>
+</ul>
+<p>Helm 包含两个组件:Helm 客户端和 Tiller 服务器，如下图所示<br>缺图</p>
+<p>Helm 客户端负责 chart 和 release 的创建和管理以及和 Tiller 的交互。Tiller 服务器运行在 Kubernetes 集群 中，它会处理 Helm 客户端的请求，与 Kubernetes API Server 交互</p>
+<h3 id="Helm-部署"><a href="#Helm-部署" class="headerlink" title="Helm 部署"></a>Helm 部署</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">ntpdate</span> <span class="string">ntp1.aliyun.com</span></span><br><span class="line"><span class="string">wget</span> <span class="string">https://get.helm.sh/helm-v2.16.5-linux-amd64.tar.gz</span></span><br><span class="line"><span class="string">tar</span> <span class="string">-zxvf</span> <span class="string">helm-v2.16.5-linux-amd64.tar.gz</span></span><br><span class="line"><span class="string">cd</span> <span class="string">linux-amd64/</span></span><br><span class="line"><span class="string">cp</span> <span class="string">helm</span> <span class="string">/usr/local/bin/</span></span><br></pre></td></tr></table></figure>
+
+<p>为了安装服务端 tiller，还需要在这台机器上配置好 kubectl 工具和 kubeconfig 文件，确保 kubectl 工具可以 在这台机器上访问 apiserver 且正常使用。 这里的 node1 节点以及配置好了 kubectl</p>
+<p>因为 Kubernetes APIServer 开启了 RBAC 访问控制，所以需要创建 tiller 使用的 service account: tiller 并分 配合适的角色给它。 详细内容可以查看helm文档中的 Role-based Access Control。 这里简单起见直接分配 cluster- admin 这个集群内置的 ClusterRole 给它。创建 rbac-config.yaml 文件:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">cat</span> <span class="string">&gt;</span> <span class="string">rbac-config.yaml</span> <span class="string">&lt;&lt;EOF</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">ServiceAccount</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">tiller</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">kube-system</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">rbac.authorization.k8s.io/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">ClusterRoleBinding</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">tiller</span></span><br><span class="line"><span class="attr">roleRef:</span></span><br><span class="line">  <span class="attr">apiGroup:</span> <span class="string">rbac.authorization.k8s.io</span></span><br><span class="line">  <span class="attr">kind:</span> <span class="string">ClusterRole</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">cluster-admin</span></span><br><span class="line"><span class="attr">subjects:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">kind:</span> <span class="string">ServiceAccount</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">tiller</span></span><br><span class="line">    <span class="attr">namespace:</span> <span class="string">kube-system</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f rbac-config.yaml</span><br><span class="line">serviceaccount/tiller created</span><br><span class="line">clusterrolebinding.rbac.authorization.k8s.io/tiller created</span><br></pre></td></tr></table></figure>
+
+<p>拉取镜像</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/tiller:v2.16.6</span><br><span class="line">docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/tiller:v2.16.6 k8s.gcr.io/tiller:v2.16.6</span><br><span class="line">docker rmi registry.cn-hangzhou.aliyuncs.com/google_containers/tiller:v2.16.6</span><br></pre></td></tr></table></figure>
+
+<p>安装tiller</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">helm</span> <span class="string">init</span> <span class="string">--service-account</span> <span class="string">tiller</span> <span class="string">--history-max</span> <span class="number">200</span> <span class="string">--upgrade</span> <span class="string">--tiller-image</span> <span class="string">k8s.gcr.io/tiller:v2.16.6</span> <span class="string">--stable-repo-url</span> <span class="string">https://cnych.github.io/kube-charts-mirror/</span></span><br></pre></td></tr></table></figure>
+
+<p>tiller 默认被部署在 k8s 集群中的 kube-system 这个 namespace 下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pod -n kube-system -l app=helm</span><br><span class="line">NAME                             READY   STATUS    RESTARTS   AGE</span><br><span class="line">tiller-deploy-55479b584d-4kc4b   1/1     Running   2          21h</span><br><span class="line">helm version</span><br><span class="line">Client: &amp;version.Version&#123;SemVer:&quot;v2.16.9&quot;, GitCommit:&quot;8ad7037828e5a0fca1009dabe290130da6368e39&quot;, GitTreeState:&quot;clean&quot;&#125;</span><br><span class="line">Server: &amp;version.Version&#123;SemVer:&quot;v2.16.6&quot;, GitCommit:&quot;dd2e5695da88625b190e6b22e9542550ab503a47&quot;, GitTreeState:&quot;clean&quot;&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Helm-自定义模板"><a href="#Helm-自定义模板" class="headerlink" title="Helm 自定义模板"></a>Helm 自定义模板</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 创建文件夹</span></span><br><span class="line">mkdir ./hello-world</span><br><span class="line">cd ./hello-world</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 创建自描述文件 Chart.yaml , 这个文件必须有 name 和 version 定义</span></span><br><span class="line">cat &lt;&lt;&#x27;EOF&#x27; &gt; ./Chart.yaml</span><br><span class="line">name: hello-world</span><br><span class="line">version: 1.0.0</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 创建模板文件， 用于生成 Kubernetes 资源清单(manifests)</span></span><br><span class="line">mkdir ./templates</span><br><span class="line">cat &lt;&lt;&#x27;EOF&#x27; &gt; ./templates/deployment.yaml</span><br><span class="line">apiVersion: apps/v1</span><br><span class="line">kind: Deployment</span><br><span class="line">metadata:</span><br><span class="line">  name: hello-world</span><br><span class="line">  labels:</span><br><span class="line">    app: hello-world</span><br><span class="line">spec:</span><br><span class="line">  replicas: 3</span><br><span class="line">  selector:</span><br><span class="line">    matchLabels:</span><br><span class="line">      app: hello-world</span><br><span class="line">  template:</span><br><span class="line">    metadata:</span><br><span class="line">      labels:</span><br><span class="line">        app: hello-world</span><br><span class="line">    spec:</span><br><span class="line">      containers:</span><br><span class="line">      - name: nginx</span><br><span class="line">        image: nginx:lasest</span><br><span class="line">        ports:</span><br><span class="line">        - containerPort: 80</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">cat &lt;&lt;&#x27;EOF&#x27; &gt; ./templates/service.yaml</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: Service</span><br><span class="line">metadata:</span><br><span class="line">  name: hello-world</span><br><span class="line">spec:</span><br><span class="line">  type: NodePort</span><br><span class="line">  ports:</span><br><span class="line">    - name: http</span><br><span class="line">      protocol: TCP</span><br><span class="line">      port: 80</span><br><span class="line">  selector:</span><br><span class="line">    app: hello-world</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 使用命令 helm install RELATIVE_PATH_TO_CHART 创建一次Release</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> helm install .</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看 hello-world的部署情况</span></span><br><span class="line">helm list</span><br><span class="line">NAME            REVISION        UPDATED                         STATUS          CHART                   APP VERSION     NAMESPACE</span><br><span class="line">wistful-ferret  1               Thu Jul  2 18:42:42 2020        DEPLOYED        hello-world-1.0.0                       default</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 这个文件中定义的值，在模板文件中可以通过 .VAlues对象访问到</span></span><br><span class="line">cat &lt;&lt;&#x27;EOF&#x27; &gt; ./templates/deployment.yaml</span><br><span class="line">apiVersion: apps/v1</span><br><span class="line">kind: Deployment</span><br><span class="line">metadata:</span><br><span class="line">  name: hello-world</span><br><span class="line">  labels:</span><br><span class="line">    app: hello-world</span><br><span class="line">spec:</span><br><span class="line">  replicas: 3</span><br><span class="line">  selector:</span><br><span class="line">    matchLabels:</span><br><span class="line">      app: hello-world</span><br><span class="line">  template:</span><br><span class="line">    metadata:</span><br><span class="line">      labels:</span><br><span class="line">        app: hello-world</span><br><span class="line">    spec:</span><br><span class="line">      containers:</span><br><span class="line">      - name: nginx</span><br><span class="line">        image: &#123;&#123; .Values.image.repository &#125;&#125;:&#123;&#123; .Values.image.tag &#125;&#125;</span><br><span class="line">        ports:</span><br><span class="line">        - containerPort: 80</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<p>创建一个 values.yaml 定义相关值</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 配置体现在配置文件 values.yaml</span></span><br><span class="line">cat &lt;&lt;&#x27;EOF&#x27; &gt; ./values.yaml</span><br><span class="line">image:</span><br><span class="line">  repository: nginx</span><br><span class="line">  tag: &#x27;1.18&#x27;</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看当前的版本信息</span></span><br><span class="line">helm list</span><br><span class="line">NAME            REVISION        UPDATED                         STATUS          CHART                   APP VERSION     NAMESPACE</span><br><span class="line">wistful-ferret  1               Thu Jul  2 18:42:42 2020        DEPLOYED        hello-world-1.0.0                       default</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 升级版本</span></span><br><span class="line">helm upgrade -f values.yaml wistful-ferret .</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># REVISION 版本号变成了2</span></span></span><br><span class="line">helm list</span><br><span class="line">NAME            REVISION        UPDATED                         STATUS          CHART                   APP VERSION     NAMESPACE</span><br><span class="line">wistful-ferret  2               Fri Jul  3 15:16:24 2020        DEPLOYED        hello-world-1.0.0                       default</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 查看镜像号已经变更成功</span></span></span><br><span class="line">kubectl get pods  hello-world-8689856fc-v9s2m -o yaml |grep &quot;\- image: &quot;</span><br><span class="line">  - image: nginx:1.18</span><br></pre></td></tr></table></figure>
+
+<p>也可以通过命令行显式指定版本号</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 在 values.yaml 中的值可以被部署 release 时用到的参数 --values YAML_FILE_PATH 或 --<span class="built_in">set</span> key1=value1, key2=value2 覆盖掉</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> helm install --<span class="built_in">set</span> image.tag=<span class="string">&#x27;latest&#x27;</span> .</span></span><br></pre></td></tr></table></figure>
+
+<p>helm 常用命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 列出已经部署的 Release</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> helm ls</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查询一个特定的 Release 的状态</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> helm status RELEASE_NAME</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 移除所有与这个 Release 相关的 Kubernetes 资源</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> helm delete cautious-shrimp</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> helm rollback RELEASE_NAME REVISION_NUMBER</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> helm rollback cautious-shrimp 1</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 使用 helm delete --purge RELEASE_NAME 移除所有与指定 Release 相关的 Kubernetes 资源和所有这个 Release 的记录</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> helm delete --purge cautious-shrimp</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> helm ls --deleted</span></span><br></pre></td></tr></table></figure>
+
+<p>Debug</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 使用模板动态生成K8s资源清单，非常需要能提前预览生成的结果。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 使用--dry-run --debug 选项来打印出生成的清单文件内容，而不执行部署</span></span><br><span class="line">helm install . --dry-run --debug --set image.tag=latest</span><br></pre></td></tr></table></figure>
+
+<h2 id="帮助文档"><a href="#帮助文档" class="headerlink" title="帮助文档"></a>帮助文档</h2><p><a target="_blank" rel="noopener" href="https://github.com/helm/helm/blob/master/docs/charts.md">官方文档</a><br><a target="_blank" rel="noopener" href="https://imroc.io/posts/kubernetes/deploy-kubernetes-dashboard-and-enable-free-https/">helm 安装 dashboard</a><br><a target="_blank" rel="noopener" href="https://kubernetes.github.io/ingress-nginx/deploy/">ingress-nginx deploy</a><br><a target="_blank" rel="noopener" href="https://github.com/kubernetes/ingress-nginx">ingress-nginx</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2020/09/28/kubernetes-coredns/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="biglittleant">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="biglittleant">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/09/28/kubernetes-coredns/" class="post-title-link" itemprop="url">coredns服务搭建</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2020-09-28 15:27:22 / Modified: 15:27:34" itemprop="dateCreated datePublished" datetime="2020-09-28T15:27:22+08:00">2020-09-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/kubernetes/" itemprop="url" rel="index"><span itemprop="name">kubernetes</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="下载和配置-coredns"><a href="#下载和配置-coredns" class="headerlink" title="下载和配置 coredns"></a>下载和配置 coredns</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd /data/apps/k8s/work/</span><br><span class="line">git clone https://github.com/coredns/deployment.git</span><br><span class="line">mv deployment coredns-deployment</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建-coredns"><a href="#创建-coredns" class="headerlink" title="创建 coredns"></a>创建 coredns</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd /data/apps/k8s/work/coredns-deployment/kubernetes</span><br><span class="line">export CLUSTER_DNS_SVC_IP=&quot;10.254.0.2&quot;</span><br><span class="line">export CLUSTER_DNS_DOMAIN=&quot;cluster.local&quot;</span><br><span class="line">./deploy.sh -i $&#123;CLUSTER_DNS_SVC_IP&#125; -d $&#123;CLUSTER_DNS_DOMAIN&#125; &gt; coredns.yaml</span><br><span class="line">kubectl apply -f coredns.yaml</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>Sep 27 15:35:22 node1 kube-scheduler[8420]: I0927 15:35:22.343021    8420 scheduler.go:667] pod kube-system/coredns-759df9d7b-td7rr is bound successfully on node “node7”, 2 nodes evaluated, 2 nodes were found feasible. Bound node resource: “Capacity: CPU&lt;2&gt;|Memory&lt;4046008Ki&gt;|Pods&lt;220&gt;|StorageEphemeral&lt;41921540Ki&gt;; Allocatable: CPU&lt;2&gt;|Memory&lt;3943608Ki&gt;|Pods&lt;220&gt;|StorageEphemeral&lt;38634891201&gt;.”.</p>
+</blockquote>
+<h2 id="检查-coredns-功能"><a href="#检查-coredns-功能" class="headerlink" title="检查 coredns 功能"></a>检查 coredns 功能</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl get all -n kube-system -l k8s-app=kube-dns</span></span><br><span class="line">NAME                          READY   STATUS    RESTARTS   AGE</span><br><span class="line">pod/coredns-759df9d7b-td7rr   1/1     Running   0          2m7s</span><br><span class="line"></span><br><span class="line">NAME               TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)                  AGE</span><br><span class="line">service/kube-dns   ClusterIP   10.254.0.2   &lt;none&gt;        53/UDP,53/TCP,9153/TCP   2m7s</span><br><span class="line"></span><br><span class="line">NAME                      READY   UP-TO-DATE   AVAILABLE   AGE</span><br><span class="line">deployment.apps/coredns   1/1     1            1           2m7s</span><br><span class="line"></span><br><span class="line">NAME                                DESIRED   CURRENT   READY   AGE</span><br><span class="line">replicaset.apps/coredns-759df9d7b   1         1         1       2m7s</span><br></pre></td></tr></table></figure>
+
+<p>新建一个 Deployment：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">cd /data/apps/k8s/work/</span><br><span class="line">cat &gt; my-nginx.yaml &lt;&lt;EOF</span><br><span class="line">apiVersion: apps/v1</span><br><span class="line">kind: Deployment</span><br><span class="line">metadata:</span><br><span class="line">  name: my-nginx</span><br><span class="line">spec:</span><br><span class="line">  replicas: 2</span><br><span class="line">  selector:</span><br><span class="line">    matchLabels:</span><br><span class="line">      run: my-nginx</span><br><span class="line">  template:</span><br><span class="line">    metadata:</span><br><span class="line">      labels:</span><br><span class="line">        run: my-nginx</span><br><span class="line">    spec:</span><br><span class="line">      containers:</span><br><span class="line">      - name: my-nginx</span><br><span class="line">        image: nginx:1.7.9</span><br><span class="line">        ports:</span><br><span class="line">        - containerPort: 80</span><br><span class="line">EOF</span><br><span class="line">kubectl create -f my-nginx.yaml</span><br></pre></td></tr></table></figure>
+
+<p>export 该 Deployment, 生成 <code>my-nginx</code> 服务：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl expose deploy my-nginx</span></span><br><span class="line">service &quot;my-nginx&quot; exposed</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> kubectl get services my-nginx -o wide</span></span><br><span class="line">NAME       TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE   SELECTOR</span><br><span class="line">my-nginx   ClusterIP   10.254.67.218   &lt;none&gt;        80/TCP    5s    run=my-nginx</span><br></pre></td></tr></table></figure>
+
+<p>创建另一个 Pod，查看 <code>/etc/resolv.conf</code> 是否包含 <code>kubelet</code> 配置的 <code>--cluster-dns</code> 和 <code>--cluster-domain</code>，是否能够将服务 <code>my-nginx</code> 解析到上面显示的 Cluster IP <code>10.254.67.218</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">cd /data/apps/k8s/work/</span><br><span class="line">cat &gt; dnsutils-ds.yml &lt;&lt;EOF</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: Service</span><br><span class="line">metadata:</span><br><span class="line">  name: dnsutils-ds</span><br><span class="line">  labels:</span><br><span class="line">    app: dnsutils-ds</span><br><span class="line">spec:</span><br><span class="line">  type: NodePort</span><br><span class="line">  selector:</span><br><span class="line">    app: dnsutils-ds</span><br><span class="line">  ports:</span><br><span class="line">  - name: http</span><br><span class="line">    port: 80</span><br><span class="line">    targetPort: 80</span><br><span class="line">---</span><br><span class="line">apiVersion: apps/v1</span><br><span class="line">kind: DaemonSet</span><br><span class="line">metadata:</span><br><span class="line">  name: dnsutils-ds</span><br><span class="line">  labels:</span><br><span class="line">    addonmanager.kubernetes.io/mode: Reconcile</span><br><span class="line">spec:</span><br><span class="line">  selector:</span><br><span class="line">    matchLabels:</span><br><span class="line">      app: dnsutils-ds</span><br><span class="line">  template:</span><br><span class="line">    metadata:</span><br><span class="line">      labels:</span><br><span class="line">        app: dnsutils-ds</span><br><span class="line">    spec:</span><br><span class="line">      containers:</span><br><span class="line">      - name: my-dnsutils</span><br><span class="line">        image: tutum/dnsutils:latest</span><br><span class="line">        command:</span><br><span class="line">          - sleep</span><br><span class="line">          - &quot;3600&quot;</span><br><span class="line">        ports:</span><br><span class="line">        - containerPort: 80</span><br><span class="line">EOF</span><br><span class="line">kubectl create -f dnsutils-ds.yml</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl get pods -l app=dnsutils-ds -o wide</span></span><br><span class="line">NAME                READY   STATUS    RESTARTS   AGE     IP               NODE    NOMINATED NODE   READINESS GATES</span><br><span class="line">dnsutils-ds-t5hqb   1/1     Running   0          4m25s   172.30.139.3     node6   &lt;none&gt;           &lt;none&gt;</span><br><span class="line">dnsutils-ds-zxzhf   1/1     Running   0          4m25s   172.30.199.195   node7   &lt;none&gt;           &lt;none&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl -it <span class="built_in">exec</span> dnsutils-ds-t5hqb  cat /etc/resolv.conf</span></span><br><span class="line">search default.svc.cluster.local svc.cluster.local cluster.local</span><br><span class="line">nameserver 10.254.0.2</span><br><span class="line">options ndots:5</span><br></pre></td></tr></table></figure>
+
+<p>查看一下现有的server</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl get services</span></span><br><span class="line">NAME          TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE</span><br><span class="line">dnsutils-ds   NodePort    10.254.242.169   &lt;none&gt;        80:31128/TCP   6m36s</span><br><span class="line">kubernetes    ClusterIP   10.254.0.1       &lt;none&gt;        443/TCP        146m</span><br><span class="line">my-nginx      ClusterIP   10.254.2.160     &lt;none&gt;        80/TCP         8m27s</span><br></pre></td></tr></table></figure>
+
+<p>nslookup 验证一下解析信息</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl -it <span class="built_in">exec</span> dnsutils-ds-t5hqb nslookup kubernetes</span></span><br><span class="line">Server:         10.254.0.2</span><br><span class="line">Address:        10.254.0.2#53</span><br><span class="line"></span><br><span class="line">Name:   kubernetes.default.svc.cluster.local</span><br><span class="line">Address: 10.254.0.1</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl -it <span class="built_in">exec</span> dnsutils-ds-t5hqb nslookup my-nginx</span></span><br><span class="line">Server:         10.254.0.2</span><br><span class="line">Address:        10.254.0.2#53</span><br><span class="line"></span><br><span class="line">Name:   my-nginx.default.svc.cluster.local</span><br><span class="line">Address: 10.254.2.160</span><br></pre></td></tr></table></figure>
+
+<p>nslookup 验证一下外网域名</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> kubectl -it <span class="built_in">exec</span> dnsutils-ds-t5hqb  nslookup www.baidu.com</span></span><br><span class="line">Server:         10.254.0.2</span><br><span class="line">Address:        10.254.0.2#53</span><br><span class="line"></span><br><span class="line">Non-authoritative answer:</span><br><span class="line">www.baidu.com   canonical name = www.a.shifen.com.</span><br><span class="line">Name:   www.a.shifen.com</span><br><span class="line">Address: 39.156.66.18</span><br><span class="line">Name:   www.a.shifen.com</span><br><span class="line">Address: 39.156.66.14</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://community.infoblox.com/t5/Community-Blog/CoreDNS-for-Kubernetes-Service-Discovery/ba-p/8187">https://community.infoblox.com/t5/Community-Blog/CoreDNS-for-Kubernetes-Service-Discovery/ba-p/8187</a></li>
+<li><a target="_blank" rel="noopener" href="https://coredns.io/2017/03/01/coredns-for-kubernetes-service-discovery-take-2/">https://coredns.io/2017/03/01/coredns-for-kubernetes-service-discovery-take-2/</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/boshen-hzb/p/7511432.html">https://www.cnblogs.com/boshen-hzb/p/7511432.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/dns">https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/dns</a></li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -666,7 +1049,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2020/09/11/install_k8s_by_kuberadm/">
+    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2020/09/11/kubernetes-kuberadm/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -683,7 +1066,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/09/11/install_k8s_by_kuberadm/" class="post-title-link" itemprop="url">使用 Kubeadm 安装 kubernetes 集群</a>
+            <a href="/2020/09/11/kubernetes-kuberadm/" class="post-title-link" itemprop="url">使用 Kubeadm 安装 kubernetes 集群</a>
         </h2>
 
         <div class="post-meta-container">
@@ -701,7 +1084,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-16 17:29:44" itemprop="dateModified" datetime="2020-09-16T17:29:44+08:00">2020-09-16</time>
+        <time title="Modified: 2020-09-28 15:27:59" itemprop="dateModified" datetime="2020-09-28T15:27:59+08:00">2020-09-28</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1438,852 +1821,6 @@
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RSAAuthentication yes</span><br><span class="line">PubkeyAuthentication yes</span><br></pre></td></tr></table></figure>
 
 <h3 id="将公钥下载到客户端，然后使用公钥登录"><a href="#将公钥下载到客户端，然后使用公钥登录" class="headerlink" title="将公钥下载到客户端，然后使用公钥登录"></a>将公钥下载到客户端，然后使用公钥登录</h3><p><img src="http://oi3tsepsh.bkt.clouddn.com/14858277547473.jpg"></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2017/01/11/haproxy-install/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="biglittleant">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="biglittleant">
-    </span>
-
-    
-    
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/01/11/haproxy-install/" class="post-title-link" itemprop="url">haproxy快速入门</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2017-01-11 18:45:14" itemprop="dateCreated datePublished" datetime="2017-01-11T18:45:14+08:00">2017-01-11</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-16 17:29:50" itemprop="dateModified" datetime="2020-09-16T17:29:50+08:00">2020-09-16</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/linux/haproxy/" itemprop="url" rel="index"><span itemprop="name">haproxy</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="haproxy简介"><a href="#haproxy简介" class="headerlink" title="haproxy简介"></a>haproxy简介</h2><p>HAProxy提供高可用性、负载均衡以及基于TCP和HTTP应用的代理，支持虚拟主机，它是免费、快速并且可靠的一种解决方案。HAProxy特别适用于那些负载特大的web站点，这些站点通常又需要会话保持或七层处理。HAProxy运行在当前的硬件上，完全可以支持数以万计的并发连接。并且它的运行模式使得它可以很简单安全的整合进您当前的架构中， 同时可以保护你的web服务器不被暴露到网络上。</p>
-<h2 id="haproxy的优势"><a href="#haproxy的优势" class="headerlink" title="haproxy的优势"></a>haproxy的优势</h2><ul>
-<li>专门做反向代理负载均衡</li>
-<li>有八种以上的负载均衡算法</li>
-<li>性能大于等于 nginx</li>
-<li>支持动态管理，通过haproxy的sock进行通信，可以进行管理。</li>
-<li>有比较丰富的dashboard页面。</li>
-<li>有比较强大的七层功能。</li>
-</ul>
-<h2 id="haproxy实战"><a href="#haproxy实战" class="headerlink" title="haproxy实战"></a>haproxy实战</h2><h3 id="haproxy基础环境准备"><a href="#haproxy基础环境准备" class="headerlink" title="haproxy基础环境准备"></a>haproxy基础环境准备</h3><p>实验环境</p>
-<table>
-<thead>
-<tr>
-<th>主机名</th>
-<th>ip address</th>
-<th>操作系统</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>linux-node1.example.com</td>
-<td>192.168.56.11</td>
-<td>centos7</td>
-</tr>
-<tr>
-<td>linux-node2.example.com</td>
-<td>192.168.56.12</td>
-<td>centos7</td>
-</tr>
-</tbody></table>
-<p>安装EPEL及基础软件包</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rpm -ivh http://mirrors.aliyun.com/epel/epel-release-latest-7.noarch.rpm</span><br><span class="line">yum install -y gcc glibc gcc-c++ make screen tree lrzsz</span><br></pre></td></tr></table></figure>
-
-<p>使用两个Apache的8080端口作为后端真实服务器</p>
-<p>linux-node1.example.com</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node1 ~]<span class="comment"># yum install -y httpd</span></span><br><span class="line">[root@linux-node1 ~]<span class="comment"># sed -i &#x27;s/Listen 80/Listen 8080/g&#x27; /etc/httpd/conf/httpd.conf</span></span><br><span class="line">[root@linux-node1 ~]<span class="comment"># systemctl start httpd</span></span><br><span class="line">[root@linux-node1 ~]<span class="comment"># echo &quot;linux-node1.example.com&quot; &gt; /var/www/html/index.html</span></span><br><span class="line">[root@linux-node1 ~]<span class="comment"># curl http://192.168.56.11:8080/</span></span><br><span class="line">linux-node1.example.com</span><br></pre></td></tr></table></figure>
-
-<p>linux-node2.example.com</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node2 ~]<span class="comment"># yum install -y httpd</span></span><br><span class="line">[root@linux-node2 ~]<span class="comment"># sed -i &#x27;s/Listen 80/Listen 8080/g&#x27; /etc/httpd/conf/httpd.conf</span></span><br><span class="line">[root@linux-node2 ~]<span class="comment"># systemctl start httpd</span></span><br><span class="line">[root@linux-node2 ~]<span class="comment"># echo &quot;linux-node2.example.com&quot; &gt; /var/www/html/index.html</span></span><br><span class="line">[root@linux-node2 ~]<span class="comment"># curl http://192.168.56.12:8080/</span></span><br><span class="line">linux-node2.example.com</span><br></pre></td></tr></table></figure>
-
-<p>让本机服务器监听非本机的IP</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vim &#x2F;etc&#x2F;sysctl.conf</span><br><span class="line">net.ipv4.ip_nonlocal_bind &#x3D; 1</span><br><span class="line">sysctl -p</span><br></pre></td></tr></table></figure>
-
-<h3 id="Haproxy源码编译安装"><a href="#Haproxy源码编译安装" class="headerlink" title="Haproxy源码编译安装"></a>Haproxy源码编译安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node1 ~]# cd &#x2F;usr&#x2F;local&#x2F;src</span><br><span class="line">[root@linux-node1 src]# wget http:&#x2F;&#x2F;www.haproxy.org&#x2F;download&#x2F;1.6&#x2F;src&#x2F;haproxy-1.6.3.tar.gz</span><br><span class="line">[root@linux-node1 src]# tar zxf haproxy-1.6.3.tar.gz</span><br><span class="line">[root@linux-node1 src]# cd haproxy-1.6.3</span><br><span class="line">[root@linux-node1 src]# make TARGET&#x3D;linux2628 PREFIX&#x3D;&#x2F;usr&#x2F;local&#x2F;haproxy-1.6.3</span><br><span class="line">[root@linux-node1 src]# make install</span><br><span class="line">[root@linux-node1 ~]# cp &#x2F;usr&#x2F;local&#x2F;sbin&#x2F;haproxy &#x2F;usr&#x2F;sbin&#x2F;</span><br><span class="line">[root@linux-node1 ~]# haproxy -v</span><br><span class="line">HA-Proxy version 1.6.3 2015&#x2F;12&#x2F;25</span><br><span class="line">Copyright 2000-2015 Willy Tarreau &lt;willy@haproxy.org&gt;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Haproxy启动脚本"><a href="#Haproxy启动脚本" class="headerlink" title="Haproxy启动脚本"></a>Haproxy启动脚本</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node1 ~]# cd /usr/local/src/haproxy-1.6.3</span><br><span class="line">[root@linux-node1 haproxy-1.6.3]# cp examples/haproxy.init /etc/init.d/haproxy</span><br><span class="line">[root@linux-node1 haproxy-1.6.3]# chmod 755 /etc/init.d/haproxy</span><br></pre></td></tr></table></figure>
-
-<h3 id="Haproxy配置文件"><a href="#Haproxy配置文件" class="headerlink" title="Haproxy配置文件"></a>Haproxy配置文件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node1 ~]# useradd -r haproxy</span><br><span class="line">[root@linux-node1 ~]# mkdir /etc/haproxy</span><br><span class="line">[root@linux-node1 ~]# mkdir /var/lib/haproxy</span><br><span class="line">[root@linux-node1 ~]# mkdir /var/run/haproxy</span><br></pre></td></tr></table></figure>
-
-<h3 id="haproxy日志文件配置"><a href="#haproxy日志文件配置" class="headerlink" title="haproxy日志文件配置"></a>haproxy日志文件配置</h3><p>haproxy默认使用系统的 <code>local3.* </code> 来存储日志</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">vim &#x2F;etc&#x2F;rsyslog.conf</span><br><span class="line"></span><br><span class="line">local3.*               &#x2F;var&#x2F;log&#x2F;haproxy.log</span><br><span class="line"></span><br><span class="line">systemctl restart rsyslog.service</span><br></pre></td></tr></table></figure>
-
-<h3 id="haproxy配置文件解读"><a href="#haproxy配置文件解读" class="headerlink" title="haproxy配置文件解读"></a>haproxy配置文件解读</h3><p>haproxy的配置文件分为五大块</p>
-<ul>
-<li>global (全局)</li>
-<li>defaults （默认）</li>
-<li>listen （监听的配置）</li>
-<li>frontend （前端）name vip</li>
-<li>backend（后端）name server 列表</li>
-</ul>
-<h4 id="下面来分别讲解各个配置文件的定义"><a href="#下面来分别讲解各个配置文件的定义" class="headerlink" title="下面来分别讲解各个配置文件的定义"></a>下面来分别讲解各个配置文件的定义</h4><h4 id="global-全局"><a href="#global-全局" class="headerlink" title="global (全局)"></a>global (全局)</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">global ##定义这是全局配置</span><br><span class="line">   log 127.0.0.1 local3 info</span><br><span class="line">   ###全局的日志配置，使用log关键字，指定使用127.0.0.1上的syslog服务中的local0日志设备，记录日志等级为info的日志。</span><br><span class="line">   chroot &#x2F;var&#x2F;lib&#x2F;haproxy</span><br><span class="line">   ##使用chroot的模式运行haproxy</span><br><span class="line">   user haproxy</span><br><span class="line">   group haproxy</span><br><span class="line">   ##设置运行haproxy的用户和组，可以使用uid gid 关键字代替。</span><br><span class="line">   daemon</span><br><span class="line">   ##以守护进程的方式运行</span><br></pre></td></tr></table></figure>
-
-<h4 id="defaults-（默认）"><a href="#defaults-（默认）" class="headerlink" title="defaults （默认）"></a>defaults （默认）</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">defaults</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#defaults模块标识</span></span></span><br><span class="line">   log global</span><br><span class="line"><span class="meta">   #</span><span class="bash"><span class="comment">#使用global中定义的日志</span></span></span><br><span class="line">   mode http</span><br><span class="line"><span class="meta">   #</span><span class="bash"><span class="comment">#mode 语法： mode&#123;http|tcp|health&#125; ， http是七层模式，tcp是四层模式，health是检查检测。返回OK。</span></span></span><br><span class="line">   option httplog</span><br><span class="line"><span class="meta">   #</span><span class="bash"><span class="comment">#启用日志记录HTTP请求，默认haproxy日志记录是不记录HTTP请求的，只记录“时间[jan 5 13：23：46] 日志服务器[127.0.0.1] 实例名以及PID [haproxy[25218]] 信息[proxy http 80 in stoped]” ,日志格式很简单。</span></span></span><br><span class="line">   option dontlognull</span><br><span class="line"><span class="meta">   #</span><span class="bash"><span class="comment">#启用该项，日志中将不会记录空连接，所谓空连接就是在上游的负载均衡器或者监听系统为l探测该服务是否存活可用时，需要定期的连接或者获取某一股东的组件或页面，或者探测扫描端口是否在监听或开放等动作被称为空连接。官方文档中标注，如果该服务上游没有其他的负载均衡器的话，建议不要使用该参数。因为互联网上的恶意扫描或其他动作就不会被记录。</span></span></span><br><span class="line"></span><br><span class="line">   timeout connect 5000</span><br><span class="line"><span class="meta">   #</span><span class="bash"><span class="comment">#设置成功连接到一台服务器的最长等待时间。默认单位是毫秒，新颁布的haproxy使用timeout connect 代替。该参数向换兼容。</span></span></span><br><span class="line">   timeout client 50000</span><br><span class="line"><span class="meta">   #</span><span class="bash"><span class="comment">#设置连接客户端发送数据时的成功连接最长等待时间，默认单位是毫秒。</span></span></span><br><span class="line">   timeout server 50000</span><br><span class="line"><span class="meta">   #</span><span class="bash"><span class="comment">#设置服务器端回应客户端数据发送的最长等待时间，默认单位是毫秒</span></span></span><br></pre></td></tr></table></figure>
-
-
-<h4 id="listen-（监听页面的配置）"><a href="#listen-（监听页面的配置）" class="headerlink" title="listen （监听页面的配置）"></a>listen （监听页面的配置）</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">listen stats</span><br><span class="line"><span class="comment">##定义页面监控的名称</span></span><br><span class="line">    mode http</span><br><span class="line">    <span class="comment">##http的7层模式</span></span><br><span class="line">    <span class="built_in">bind</span> 0.0.0.0:8888</span><br><span class="line">    <span class="comment">##服务器监听端口</span></span><br><span class="line">    stats <span class="built_in">enable</span></span><br><span class="line">    <span class="comment">##开启状态模块</span></span><br><span class="line">    stats uri     /haproxy-status</span><br><span class="line">    <span class="comment">##状态模块的URI</span></span><br><span class="line">    stats auth    haproxy:haproxy</span><br><span class="line">    <span class="comment">##状态模块登录的用户名和密码</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h4 id="frontend-（前端）name-vip"><a href="#frontend-（前端）name-vip" class="headerlink" title="frontend （前端）name vip"></a>frontend （前端）name vip</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">frontend http_front</span><br><span class="line"><span class="meta">#</span><span class="bash">定义前端的名称</span></span><br><span class="line">   bind *:80</span><br><span class="line"><span class="meta">   #</span><span class="bash">服务器对外监听的端口，类似于lvs的vip端口</span></span><br><span class="line">   stats uri /haproxy?stats</span><br><span class="line"><span class="meta">   #</span><span class="bash">状态页面定义</span></span><br><span class="line">   default_backend http_back</span><br><span class="line"><span class="meta">   #</span><span class="bash">对应的后端服务名称</span></span><br></pre></td></tr></table></figure>
-<h4 id="backend（后端）name-server-列表"><a href="#backend（后端）name-server-列表" class="headerlink" title="backend（后端）name server 列表"></a>backend（后端）name server 列表</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">backend http_back</span><br><span class="line"><span class="meta">#</span><span class="bash">后端服务的名称</span></span><br><span class="line">   balance roundrobin</span><br><span class="line"><span class="meta">   #</span><span class="bash">定义轮询算法，roundrobin 轮询，<span class="built_in">source</span>  源IPhash，leastconn 最小连接数，这里只列举了常用的三个。</span></span><br><span class="line"></span><br><span class="line">    option forwardfor header X-REAL-IP</span><br><span class="line">    option httpchk HEAD / HTTP/1.0</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#haproxy的健康检查，如果这两行被禁用，就是四次检测。</span></span></span><br><span class="line">    server web-node1  192.168.56.11:8080 check inter 2000 rise 30 fall 3</span><br><span class="line">    server web-node2  192.168.56.12:8080 check inter 2000 rise 30 fall 3</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#后端真实ip配置，check 表示开启健康检查，inter  2000ms 每隔多长时间检查一次，rise  30    服务可用的连续次数，连续30次可用，在把你加进来，fall 3  失败三次 就把你踢出去。</span></span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="完整的haproxy配置文件"><a href="#完整的haproxy配置文件" class="headerlink" title="完整的haproxy配置文件"></a>完整的haproxy配置文件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">global</span><br><span class="line">   log 127.0.0.1 local3 info</span><br><span class="line">   chroot /var/lib/haproxy</span><br><span class="line">   user haproxy</span><br><span class="line">   group haproxy</span><br><span class="line">   daemon</span><br><span class="line"></span><br><span class="line">defaults</span><br><span class="line">   log global</span><br><span class="line">   mode http</span><br><span class="line">   option httplog</span><br><span class="line">   option dontlognull</span><br><span class="line">   timeout connect 5000</span><br><span class="line">   timeout client 50000</span><br><span class="line">   timeout server 50000</span><br><span class="line"></span><br><span class="line">frontend http_front</span><br><span class="line">   bind *:80</span><br><span class="line">   stats uri /haproxy?stats</span><br><span class="line">   default_backend http_back</span><br><span class="line"></span><br><span class="line">backend http_back</span><br><span class="line">   balance roundrobin</span><br><span class="line">   option httpchk GET /index.html</span><br><span class="line">   option httpchk GET /</span><br><span class="line">   server linux-node1 192.168.56.11:8080 check</span><br><span class="line">   server linux-node2 192.168.56.12:8080 check</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="haproxy的ACL控制。"><a href="#haproxy的ACL控制。" class="headerlink" title="haproxy的ACL控制。"></a>haproxy的ACL控制。</h3><p>推荐生产上不要使用ACL访问控制。所有这里就没有研究。如果感兴趣的可以自行百度。</p>
-<h3 id="haproxy动态管理"><a href="#haproxy动态管理" class="headerlink" title="haproxy动态管理"></a>haproxy动态管理</h3><h4 id="方法一："><a href="#方法一：" class="headerlink" title="方法一："></a>方法一：</h4><p>可以listen模式中开启<code>stats admin if TRUE           #开启页面管理</code> 通过图形界面管理服务器上下线。</p>
-<h4 id="方法二："><a href="#方法二：" class="headerlink" title="方法二："></a>方法二：</h4><p>使用socat 管理haproxy服务器。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">在global开启socket</span></span><br><span class="line">global</span><br><span class="line">    stats  socket /var/run/haproxy.sock mode 600 level admin</span><br><span class="line">    stats timeout 2m</span><br><span class="line"><span class="meta">#</span><span class="bash">安装socat管理软件</span></span><br><span class="line">yum install socat</span><br><span class="line">使用socat管理haproxy</span><br><span class="line">socat /var/run/haproxy.sock stdio</span><br><span class="line">基本用法：</span><br><span class="line">echo &quot;help&quot;| socat stdio /var/run/haproxy.sock #socat常用命令</span><br><span class="line">echo &quot;show info &quot;| socat stdio /var/run/haproxy.sock # 显示dashboad 的信息。</span><br><span class="line">echo &quot;show pools &quot;| socat stdio /var/run/haproxy.sock #显示内部资源池的状态</span><br><span class="line">echo &quot;show stat &quot;| socat stdio /var/run/haproxy.sock # 显示前后端服务器的状态</span><br><span class="line"></span><br><span class="line">echo &quot;set maxconn&quot;| socat stdio /var/run/haproxy.sock #修改最大连接数</span><br><span class="line">echo &quot;disable server  backend_www_example_com/web-node2  &quot;| socat stdio /var/run/haproxy.sock # 关闭 web-node2 的服务器</span><br><span class="line">echo &quot;disable server  backend_www_docker_nginx/docker-web2  &quot;| socat stdio /var/run/haproxy.sock # 关闭 web-node2 的服务器</span><br><span class="line">echo &quot;enable server  backend_www_docker_nginx/docker-web2  &quot;| socat stdio /var/run/haproxy.sock # 开启 web-node2 的服务器</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2017/01/10/apache-install/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="biglittleant">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="biglittleant">
-    </span>
-
-    
-    
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/01/10/apache-install/" class="post-title-link" itemprop="url">Apache学习-Apache入门</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2017-01-10 20:18:33" itemprop="dateCreated datePublished" datetime="2017-01-10T20:18:33+08:00">2017-01-10</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-18 18:19:28" itemprop="dateModified" datetime="2020-09-18T18:19:28+08:00">2020-09-18</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="Apache介绍"><a href="#Apache介绍" class="headerlink" title="Apache介绍"></a>Apache介绍</h2><p>Apache是世界使用排名第一的Web服务器软件。它可以运行在几乎所有广泛使用的计算机平台上，由于其跨平台和安全性被广泛使用，是最流行的Web服务器端软件之一。它快速、可靠并且可通过简单的API扩充，将Perl/Python等解释器编译到服务器中。</p>
-<h3 id="特点："><a href="#特点：" class="headerlink" title="特点："></a>特点：</h3><ul>
-<li>Apache模块分为静态模块与动态模块，静态模块是Apache最基本的模块，是无法随时添加与卸载的模块，静态模块在编译软件时设定的。动态模块是可以随时添加和删除的模块。</li>
-<li>Apache模块将被编译为动态共享对象(DSO),这些动态共享对象独立于httpd程序，DSO模块可以在编译Apache时添加，也可以在后期随时通过Apache extension Tool（apxs）工具编译添加模块。</li>
-<li>使用HTTP -M 命令查看模块加载清单。</li>
-</ul>
-<h3 id="应用场合："><a href="#应用场合：" class="headerlink" title="应用场合："></a>应用场合：</h3><ul>
-<li>使用Apache运行静态html网页、图片、处理静态小文件能力不及nginx。</li>
-<li>使用Apache结合php引擎运行PHP、Perl、Python等程序，LAMP被称为经典组合。</li>
-<li>使用Apache结合tomcat、resin运行jsp、java等程序，成为中小企业的首选。</li>
-<li>使用Apache做代理、负载均衡、rewrite规则过滤等等。</li>
-</ul>
-<h2 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h2><h3 id="安装依赖包"><a href="#安装依赖包" class="headerlink" title="安装依赖包"></a>安装依赖包</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install zlib-devel zlib apr-devel  apr-util -y</span><br></pre></td></tr></table></figure>
-
-<h3 id="安装Apache软件"><a href="#安装Apache软件" class="headerlink" title="安装Apache软件"></a>安装Apache软件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/src</span><br><span class="line">wget http://apache.mirror.iweb.ca//httpd/httpd-2.4.25.tar.gz</span><br><span class="line">tar -zxf httpd-2.4.25.tar.gz</span><br><span class="line">cd httpd-2.4.25</span><br><span class="line">./configure --prefix=/data/app/apache-2.4.25 --enable-deflate --enable-expires --enable-headers --enable-modules=most --enable-so --with-mpm=worker --enable-rewrite</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line">ln -s /data/app/apache-2.4.25/ /data/app/apache</span><br></pre></td></tr></table></figure>
-
-<p>编译参数解释</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">./configure --prefix=/application/apache-2.4.25 \</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> --<span class="built_in">enable</span>-deflate \  <span class="comment">#启用压缩模式 对文件压缩</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> --<span class="built_in">enable</span>-expires \  <span class="comment">#过期时间</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> --<span class="built_in">enable</span>-headers \  <span class="comment">#激活HTTP头</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> --<span class="built_in">enable</span>-modules=most \ 激活大多数模块</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> --<span class="built_in">enable</span>-so \  <span class="comment"># 开启模块化功能，支持DSO（动态共享对象）</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> --with-mpm=worker \ <span class="comment">#两种模式：worker，prefork。</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> --<span class="built_in">enable</span>-rewrite    <span class="comment">#开启地址重写</span></span></span><br></pre></td></tr></table></figure>
-
-<p>启动Apache服务：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/data/app/apache/bin/apachectl -t</span><br><span class="line"><span class="meta">#</span><span class="bash">httpd: Could not reliably determine the server<span class="string">&#x27;s fully qualified domain name, using 61.50.248.117 for #ServerName</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">Syntax OK</span></span><br><span class="line">/data/app/apache/bin/apachectl start</span><br></pre></td></tr></table></figure>
-
-
-<p>常见的启动命令</p>
-<ul>
-<li>start 启动httpd程序</li>
-<li>stop 停止httpd程序</li>
-<li>restart 重启httpd程序</li>
-<li>graceful 优雅重启，不中断现有的HTTP连接请求。</li>
-<li>graceful-stop 优雅停止，不中断现有的http连接请求。</li>
-<li>status 查看httpd当前的状态。</li>
-<li>configtest 检查httpd主配置文件语法。</li>
-</ul>
-<p>查看结果：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@nfs-client apache]<span class="comment"># lsof -i :80</span></span><br><span class="line">COMMAND   PID   USER   FD   TYPE DEVICE SIZE/OFF NODE NAME</span><br><span class="line">httpd   98511   root    4u  IPv6 129886      0t0  TCP *:http (LISTEN)</span><br><span class="line">httpd   98513 daemon    4u  IPv6 129886      0t0  TCP *:http (LISTEN)</span><br><span class="line">httpd   98514 daemon    4u  IPv6 129886      0t0  TCP *:http (LISTEN)</span><br><span class="line">httpd   98515 daemon    4u  IPv6 129886      0t0  TCP *:http (LISTEN)</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@nfs-client apache]<span class="comment"># ps -ef |grep httpd</span></span><br><span class="line">root      98511      1  0 19:12 ?        00:00:00 /application/apache2.2.27/bin/httpd -k start</span><br><span class="line">daemon    98512  98511  0 19:12 ?        00:00:00 /application/apache2.2.27/bin/httpd -k start</span><br><span class="line">daemon    98513  98511  0 19:12 ?        00:00:00 /application/apache2.2.27/bin/httpd -k start</span><br><span class="line">daemon    98514  98511  0 19:12 ?        00:00:00 /application/apache2.2.27/bin/httpd -k start</span><br><span class="line">daemon    98515  98511  0 19:12 ?        00:00:00 /application/apache2.2.27/bin/httpd -k start</span><br><span class="line">root      98599  16930  0 19:13 pts/0    00:00:00 grep httpd</span><br></pre></td></tr></table></figure>
-
-<p>在客户端使用浏览器访问该web站点，出现IT works 。表示成功。</p>
-<h3 id="bin目录下命令介绍"><a href="#bin目录下命令介绍" class="headerlink" title="bin目录下命令介绍"></a>bin目录下命令介绍</h3><ul>
-<li><code>ab</code> : Apache 服务器性能测试工具，同类软件还有<code>jmeter</code>、<code>loadrunner</code>、<code>webbench</code>等。</li>
-<li><code>apachectl</code>: 这是Apache的启动脚本。</li>
-<li><code>apxs</code>: apxs是一个为Apache服务器编译和安装扩展模块的工具，在进行dso方式编译模块时会用到。</li>
-<li><code>htcacheclean</code>: 这是清理磁盘缓存去的命令，需要在编译时指定相关参数才可使用。</li>
-<li><code>htpasswd</code>: 建立和更新基本认证文件。</li>
-<li><code>httpd</code>:  httpd 为Apache的控制命令程序，apachectl 执行时会调用httpd。</li>
-<li><code>rotatelogs</code>: Apache 自带的日志轮询明白，工作中习惯用由cronolog 代替。</li>
-</ul>
-<h2 id="配置文件解析"><a href="#配置文件解析" class="headerlink" title="配置文件解析"></a>配置文件解析</h2><p>Apache主要配置文件主要有指令及容器组成，容器使用&lt;容器名称&gt;开始，以&lt;/容器名称&gt;结尾，容器的指令一般仅在容器内有效。</p>
-<p><code>/data/app/apache/conf/extra</code> #这是额外的Apache配置文件目录，这个目录里的文件我们会经常访问修改。</p>
-<p><code>/data/app/apache/conf/httpd.conf </code>#Apache的主配置文件，这个文件我们会经常访问修改，其中的每一行的参数做用都应该弄清楚明白。</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line">ServerRoot <span class="string">&quot;/data/app/apache-2.4.25&quot;</span></span><br><span class="line">Listen 80</span><br><span class="line">LoadModule authn_file_module modules/mod_authn_file.so</span><br><span class="line">LoadModule authn_core_module modules/mod_authn_core.so</span><br><span class="line">LoadModule authz_host_module modules/mod_authz_host.so</span><br><span class="line">LoadModule authz_groupfile_module modules/mod_authz_groupfile.so</span><br><span class="line">LoadModule authz_user_module modules/mod_authz_user.so</span><br><span class="line">LoadModule authz_core_module modules/mod_authz_core.so</span><br><span class="line">LoadModule access_compat_module modules/mod_access_compat.so</span><br><span class="line">LoadModule auth_basic_module modules/mod_auth_basic.so</span><br><span class="line">LoadModule reqtimeout_module modules/mod_reqtimeout.so</span><br><span class="line">LoadModule filter_module modules/mod_filter.so</span><br><span class="line">LoadModule mime_module modules/mod_mime.so</span><br><span class="line">LoadModule log_config_module modules/mod_log_config.so</span><br><span class="line">LoadModule env_module modules/mod_env.so</span><br><span class="line">LoadModule headers_module modules/mod_headers.so</span><br><span class="line">LoadModule setenvif_module modules/mod_setenvif.so</span><br><span class="line">LoadModule version_module modules/mod_version.so</span><br><span class="line">LoadModule unixd_module modules/mod_unixd.so</span><br><span class="line">LoadModule status_module modules/mod_status.so</span><br><span class="line">LoadModule autoindex_module modules/mod_autoindex.so</span><br><span class="line">LoadModule dir_module modules/mod_dir.so</span><br><span class="line">LoadModule alias_module modules/mod_alias.so</span><br><span class="line">&lt;IfModule unixd_module&gt;</span><br><span class="line">User daemon</span><br><span class="line">Group daemon</span><br><span class="line">&lt;/IfModule&gt;</span><br><span class="line">ServerAdmin you@example.com</span><br><span class="line">&lt;Directory /&gt;</span><br><span class="line">    AllowOverride none</span><br><span class="line">    Require all denied</span><br><span class="line">&lt;/Directory&gt;</span><br><span class="line">DocumentRoot <span class="string">&quot;/data/app/apache-2.4.25/htdocs&quot;</span></span><br><span class="line">&lt;Directory <span class="string">&quot;/data/app/apache-2.4.25/htdocs&quot;</span>&gt;</span><br><span class="line">    Options Indexes FollowSymLinks</span><br><span class="line">    AllowOverride None</span><br><span class="line">    Require all granted</span><br><span class="line">&lt;/Directory&gt;</span><br><span class="line">&lt;IfModule dir_module&gt;</span><br><span class="line">    DirectoryIndex index.html</span><br><span class="line">&lt;/IfModule&gt;</span><br><span class="line">&lt;Files <span class="string">&quot;.ht*&quot;</span>&gt;</span><br><span class="line">    Require all denied</span><br><span class="line">&lt;/Files&gt;</span><br><span class="line">ErrorLog <span class="string">&quot;logs/error_log&quot;</span></span><br><span class="line">LogLevel warn</span><br><span class="line">&lt;IfModule log_config_module&gt;</span><br><span class="line">    LogFormat <span class="string">&quot;%h %l %u %t \&quot;%r\&quot; %&gt;s %b \&quot;%&#123;Referer&#125;i\&quot; \&quot;%&#123;User-Agent&#125;i\&quot;&quot;</span> combined</span><br><span class="line">    LogFormat <span class="string">&quot;%h %l %u %t \&quot;%r\&quot; %&gt;s %b&quot;</span> common</span><br><span class="line">    &lt;IfModule logio_module&gt;</span><br><span class="line">      LogFormat <span class="string">&quot;%h %l %u %t \&quot;%r\&quot; %&gt;s %b \&quot;%&#123;Referer&#125;i\&quot; \&quot;%&#123;User-Agent&#125;i\&quot; %I %O&quot;</span> combinedio</span><br><span class="line">    &lt;/IfModule&gt;</span><br><span class="line">    CustomLog <span class="string">&quot;logs/access_log&quot;</span> common</span><br><span class="line">&lt;/IfModule&gt;</span><br><span class="line">&lt;IfModule alias_module&gt;</span><br><span class="line">    ScriptAlias /cgi-bin/ <span class="string">&quot;/data/app/apache-2.4.25/cgi-bin/&quot;</span></span><br><span class="line">&lt;/IfModule&gt;</span><br><span class="line">&lt;IfModule cgid_module&gt;</span><br><span class="line">&lt;/IfModule&gt;</span><br><span class="line">&lt;Directory <span class="string">&quot;/data/app/apache-2.4.25/cgi-bin&quot;</span>&gt;</span><br><span class="line">    AllowOverride None</span><br><span class="line">    Options None</span><br><span class="line">    Require all granted</span><br><span class="line">&lt;/Directory&gt;</span><br><span class="line">&lt;IfModule headers_module&gt;</span><br><span class="line">    RequestHeader <span class="built_in">unset</span> Proxy early</span><br><span class="line">&lt;/IfModule&gt;</span><br><span class="line">&lt;IfModule mime_module&gt;</span><br><span class="line">    TypesConfig conf/mime.types</span><br><span class="line">    AddType application/x-compress .Z</span><br><span class="line">    AddType application/x-gzip .gz .tgz</span><br><span class="line">&lt;/IfModule&gt;</span><br><span class="line">&lt;IfModule proxy_html_module&gt;</span><br><span class="line">Include conf/extra/proxy-html.conf</span><br><span class="line">&lt;/IfModule&gt;</span><br><span class="line">&lt;IfModule ssl_module&gt;</span><br><span class="line">SSLRandomSeed startup <span class="built_in">builtin</span></span><br><span class="line">SSLRandomSeed connect <span class="built_in">builtin</span></span><br><span class="line">&lt;/IfModule&gt;</span><br></pre></td></tr></table></figure>
-
-
-<ul>
-<li><p><code>ServerRoot &quot;/data/app/apache-2.4.25&quot;</code>:指定Apache软件的安装主目录</p>
-</li>
-<li><p><code>Listen 80</code>：指定服务器监听的ip和端口号，格式：Listien [ip地址:]端口 [协议]。一个配置文件中多次使用Listen指令开启多个端口。</p>
-</li>
-<li><p><code>LoadModule alias_module modules/mod_alias.so</code>：加载动态模块，模块文件一般都位于modules目录中。</p>
-</li>
-<li><p>ifModule容器可以封装仅在条件满足时才会出来的指令，语法格式:&lt;IfModule [!] 模块&gt;指令</IfModule></p>
-</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;IfModule unixd_module&gt;</span><br><span class="line">User daemon</span><br><span class="line">Group daemon</span><br><span class="line">&lt;/IfModule&gt;</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>上面的配置文件解释：仅在Apache加载了unixd_module模块后，User daemon和Group daemon才会被处理。</p>
-</blockquote>
-<ul>
-<li><p><code>ServerAdmin you@example.com</code>：提供一个管理员邮箱。</p>
-</li>
-<li><p><code>DocumentRoot &quot;/data/app/apache-2.4.25/htdocs&quot;</code>:该指令设置web服务器对客户端开发可见的文档根目录，即客户端访问的根目录。</p>
-</li>
-<li><p><code>Directory</code> 容器内的指令仅应用于特定的文件系统目录、子目录已经目录下的内容。路径可以使用~匹配正则表达式。</p>
-</li>
-</ul>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;Directory <span class="string">&quot;/data/app/apache-2.4.25/htdocs&quot;</span>&gt;</span><br><span class="line">    Options Indexes FollowSymLinks</span><br><span class="line">    AllowOverride None</span><br><span class="line">    Require all granted</span><br><span class="line">&lt;/Directory&gt;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><code>DirectoryIndex index.html</code>：指定当前目录下默认访问的HTML是什么。</li>
-<li><code>Files </code>：该容器类似于Directory容器，但Files容器内的指令仅应用于特定的文件。</li>
-</ul>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;Files <span class="string">&quot;.ht*&quot;</span>&gt;</span><br><span class="line">    Require all denied</span><br><span class="line">&lt;/Files&gt;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p><code>ErrorLog &quot;logs/error_log&quot;</code> : 指定服务器错误日志的位置。</p>
-</li>
-<li><p><code>LogLevel warn</code>： 指定日志级别。</p>
-</li>
-<li><p><code>LogFormat &quot;%h %l %u %t \&quot;%r\&quot; %&gt;s %b \&quot;%&#123;Referer&#125;i\&quot; \&quot;%&#123;User-Agent&#125;i\&quot;&quot; combined</code> ： 用户日志文件格式。使用LogFormat 指令设置日志格式创建别名，通过CustomLog 指令调用该日志格式别名。</p>
-</li>
-<li><p><code>CustomLog &quot;logs/access_log&quot; common</code>：该指令设置客户端访问日志文件名及日志格式。</p>
-</li>
-<li><p><code>ScriptAlias /cgi-bin/ &quot;/data/app/apache-2.4.25/cgi-bin/&quot;</code>: 设置脚本的别名。</p>
-</li>
-<li><p><code>AllowOverride None</code>：在 AllowOverride 设置为 None 时， .htaccess 文件将被完全忽略。当此指令设置为 All 时，所有具有 “.htaccess” 作用域的指令都允许出现在 .htaccess 文件中。</p>
-</li>
-</ul>
-<blockquote>
-<p>通常利用Apache的rewrite模块对 URL 进行重写的时候， rewrite规则会写在 .htaccess 文件里。但要使 apache 能够正常的读取.htaccess 文件的内容，就必须对.htaccess 所在目录进行配置。从安全性考虑，根目录的AllowOverride属性一般都配置成不允许任何Override 。</p>
-</blockquote>
-<ul>
-<li><code>Options None</code>：为特定目录设置选项。None表示不启用额外选项。<ul>
-<li>All：开启除MultiViews之外的所有选项。</li>
-<li>ExecCGI：允许执行Options指定目录下的所有CGI脚本。</li>
-<li>FollowSymlinks：允许Options指定目录下的文件链接到目录外的文件或目录。</li>
-<li>Indexes：如果与URL对应的Options 目录下找不到DirectoryIndex指定的首页文档，则Apache会将当前目录下的所有文件索引出来。</li>
-</ul>
-</li>
-</ul>
-<ul>
-<li><code>RequestHeader unset Proxy early</code>：</li>
-<li><code>Include conf/extra/proxy-html.conf</code>：</li>
-</ul>
-<h4 id="Order-指令"><a href="#Order-指令" class="headerlink" title="Order 指令"></a>Order 指令</h4><p>控制默认访问状态已经Allow与Deny的次序。<br>如果使用 Order Deny，Allow ,则先检查拒绝，在检查允许，当拒绝与允许有冲突是，允许优先，默认规则为允许。<br>如果使用 Order Allow，Deny ,则先检查允许，在检查拒绝，当允许与拒绝有冲突是，拒绝优先，默认规则为拒绝。</p>
-<p>实例</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">order deny,allow</span><br><span class="line">Deny from all</span><br></pre></td></tr></table></figure>
-
-<p>先检查拒绝规则，在检查允许规则，默认为允许，deny拒绝所有，所有最终结果为拒绝所有。</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">order allow,deny</span><br><span class="line">allow from all</span><br></pre></td></tr></table></figure>
-
-<p>先检查允许规则，在检查拒绝规则，默认为拒绝，allow允许所有，所有最终结果为允许所有。</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">order allow,deny</span><br><span class="line">allow from 192.168.56.1</span><br></pre></td></tr></table></figure>
-<p>先检查allow 规则，允许192.168.56.1，其余为默认，默认为拒绝所有，最终除192.168.56.1外拒绝所有。</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">order allow,deny</span><br><span class="line">allow from 192.168.56.1</span><br><span class="line">deny from All</span><br></pre></td></tr></table></figure>
-
-<p>先检查允许规则允许192.168.56.1访问，在检查拒绝规则为拒绝所有，而192.168.56.1也包含在all中。当allow 与 deny 有冲突时，以order最后的规则覆盖其他规则，本例将使用deny规则覆盖allow规则，最终效果为拒绝所有人访问。</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">order deny,allow</span><br><span class="line">deny from All</span><br><span class="line">allow from 192.168.56.1</span><br></pre></td></tr></table></figure>
-
-<p>先检查拒绝规则，在检查允许规则，拒绝规则为拒绝所有，允许规则为允许192.168.56.1，拒绝与允许规则有冲突的部分，以order最后的规则覆盖其他规则，最终实现仅允许192.168.56.1访问，其他任何主机均无法访问Apache服务。</p>
-<h4 id="Require指令"><a href="#Require指令" class="headerlink" title="Require指令"></a>Require指令</h4><p>Apache 2.2 使用order命令限制访问，Apache 2.4 使用require命令限制访问。</p>
-<p>Some of the allowed syntaxes provided by mod_authz_user, mod_authz_host, and mod_authz_groupfile are:</p>
-<p>Require valid-user<br>All valid users can access the resource.<br>Require ip 10 172.20 192.168.2<br>Clients in the specified IP address ranges can access the resource.<br>Other authorization modules that implement require options include mod_authnz_ldap, mod_authz_dbm, mod_authz_dbd, mod_authz_owner and mod_ssl.</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">Require all denied <span class="comment"># 拒绝所有请求</span></span><br><span class="line"></span><br><span class="line">Require all granted <span class="comment"># 允许所有请求</span></span><br><span class="line"></span><br><span class="line">Require host example.org <span class="comment"># 允许局域网访问指定域名，外网拒绝</span></span><br><span class="line"></span><br><span class="line">Require env env-var [env-var] <span class="comment"># 只有在设置了给定的环境变量之一才能通过。</span></span><br><span class="line"></span><br><span class="line">Require method http-method [http-method] <span class="comment">#只允许指定的请求头，才允许通过。</span></span><br><span class="line"></span><br><span class="line">Require expr expression <span class="comment">#只允许满足正则表达式的通过。</span></span><br><span class="line"></span><br><span class="line">Require user userid [userid] <span class="comment">##只有指定的用户ID能访问</span></span><br><span class="line"></span><br><span class="line">Require group group-name [group-name] <span class="comment">##只有指定的组ID能访问。</span></span><br><span class="line"></span><br><span class="line">Require valid-user <span class="comment">##所有的有效用户都可以访问资源。</span></span><br><span class="line"></span><br><span class="line">Require <span class="built_in">local</span> <span class="comment"># 仅允许本地访问</span></span><br><span class="line"></span><br><span class="line">Require ip 192.168.0.1 <span class="comment"># 仅允许IP：192.168.0.1 访问</span></span><br><span class="line"></span><br><span class="line">Require ip 192.168.0.1 192.168.0.2 <span class="comment"># 仅允许IP：192.168.0.1 和 192.168.0.2 访问</span></span><br><span class="line"></span><br><span class="line">Require all granted</span><br><span class="line">Require not ip 192.168.0.1  <span class="comment"># 仅禁止IP：192.168.0.1 访问</span></span><br></pre></td></tr></table></figure>
-
-<p>TypesConfig 指定mime type的配置文件。<br>AddType 添加服务器支持的的mime type 类型。</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;IfModule mime_module&gt;</span><br><span class="line">    TypesConfig conf/mime.types</span><br><span class="line">    AddType application/x-compress .Z</span><br><span class="line">    AddType application/x-gzip .gz .tgz</span><br><span class="line">&lt;/IfModule&gt;</span><br></pre></td></tr></table></figure>
-
-
-
-<p>SSLRandomSeed startup builtin<br>SSLRandomSeed connect builtin</p>
-<p>apache2.4开始SSLCertificateChainFile指令以不存在，把服务器证明书和中继证明书的内容保存到一个文件，并在SSLCertificateFile指令里指定该文件。</p>
-<h3 id="补充说明"><a href="#补充说明" class="headerlink" title="补充说明"></a>补充说明</h3><p> 支持CGI的配置，现在基本已经淘汰了。</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;IfModule alias_module&gt;</span><br><span class="line">    ScriptAlias /cgi-bin/ <span class="string">&quot;/application/apache2.2.27/cgi-bin/&quot;</span></span><br><span class="line">&lt;/IfModule&gt;</span><br><span class="line">&lt;IfModule cgid_module&gt;</span><br><span class="line">&lt;/IfModule&gt;</span><br><span class="line">&lt;Directory <span class="string">&quot;/application/apache2.2.27/cgi-bin&quot;</span>&gt;</span><br><span class="line">    AllowOverride None</span><br><span class="line">    Options None</span><br><span class="line">    Order allow,deny</span><br><span class="line">    Allow from all</span><br><span class="line">&lt;/Directory&gt;</span><br></pre></td></tr></table></figure>
-
-<h3 id="httpd-vhosts-conf-虚拟机主机配置"><a href="#httpd-vhosts-conf-虚拟机主机配置" class="headerlink" title="httpd-vhosts.conf 虚拟机主机配置"></a>httpd-vhosts.conf 虚拟机主机配置</h3><p>虚拟主机：部署多个站点，每个站点，希望用不同的域名和站点目录，或者是不同的端口，不同的IP。需要虚拟主机功能。</p>
-<p>虚拟主机分类：</p>
-<ul>
-<li>基于域名。</li>
-<li>基于端口。</li>
-<li>基于IP。</li>
-</ul>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">NameVirtualHost *:80  <span class="comment">#虚拟主机 * 表示所有的IP地址。</span></span><br><span class="line"></span><br><span class="line">&lt;VirtualHost *:80&gt;</span><br><span class="line">    ServerAdmin webmaster@dummy-host.example.com</span><br><span class="line">    DocumentRoot <span class="string">&quot;/application/apache2.2.27/docs/dummy-host.example.com&quot;</span></span><br><span class="line">    ServerName dummy-host.example.com</span><br><span class="line">    ServerAlias www.dummy-host.example.com</span><br><span class="line">    ErrorLog <span class="string">&quot;logs/dummy-host.example.com-error_log&quot;</span></span><br><span class="line">    CustomLog <span class="string">&quot;logs/dummy-host.example.com-access_log&quot;</span> common</span><br><span class="line">&lt;/VirtualHost&gt;</span><br></pre></td></tr></table></figure>
-
-
-<h2 id="MPM-多路处理模块"><a href="#MPM-多路处理模块" class="headerlink" title="MPM 多路处理模块"></a>MPM 多路处理模块</h2><h3 id="查看当前使用的是那种MPM模块"><a href="#查看当前使用的是那种MPM模块" class="headerlink" title="查看当前使用的是那种MPM模块"></a>查看当前使用的是那种MPM模块</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">./bin/httpd -l</span><br><span class="line">Compiled <span class="keyword">in</span> modules:</span><br><span class="line">  core.c</span><br><span class="line">  mod_so.c</span><br><span class="line">  http_core.c</span><br><span class="line">  worker.c</span><br></pre></td></tr></table></figure>
-
-<p>如果你看到perfork.c 则表示当前为perfork MPM模式。worker.c 则表示为 worker MPM模式。</p>
-<h3 id="如何指定MPM"><a href="#如何指定MPM" class="headerlink" title="如何指定MPM"></a>如何指定MPM</h3><p>指定<code>./configure –with-mpm=worker/prefork</code> 选项指定MPM，NAME就是你想使用的MPM的名称。<code>--with-mpm=worker</code> 指定worker模式。</p>
-<blockquote>
-<p>使用event模块时，编译安装的时候加上以下参数： <code>--enable-nonportable-atomics=yes </code><br>需要注意的是Event MPM对于老的CPU可能是不支持的。</p>
-</blockquote>
-<h3 id="MPM配置解释"><a href="#MPM配置解释" class="headerlink" title="MPM配置解释"></a>MPM配置解释</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;IfModule !mpm_netware_module&gt;</span><br><span class="line">    PidFile <span class="string">&quot;logs/httpd.pid&quot;</span></span><br><span class="line">&lt;/IfModule&gt;</span><br></pre></td></tr></table></figure>
-
-<p>指定pidfile的位置。</p>
-<h3 id="prefork模块"><a href="#prefork模块" class="headerlink" title="prefork模块"></a>prefork模块</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;IfModule mpm_prefork_module&gt;</span><br><span class="line">    StartServers             5</span><br><span class="line">    MinSpareServers          5</span><br><span class="line">    MaxSpareServers         10</span><br><span class="line">    MaxRequestWorkers      250</span><br><span class="line">    MaxConnectionsPerChild   0</span><br><span class="line">&lt;/IfModule&gt;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><code>StartServers:</code> ：设置程序启动时，会创建多少个进程。</li>
-<li><code>MinSpareServers:</code>：设置最小空闲数，Apache会一直保持这个空闲的数量，不会销毁。* <code>MaxSpareServers:</code>：设置最大空闲数，另外当max&lt;min时，Apache会自动将maxMinSpareServers+1。</li>
-<li><code>MaxRequestWorkers:</code>：一个进程可以同时处理多少个请求。</li>
-<li><code>MaxConnectionsPerChild:</code>：进程处理多少个请求后将自动销毁，0意味着无限，即永不销毁。负载较高时，为使每个进程处理更多的请求，避免销毁、创建线程的开销，一般建议设定这个值为0或较大的数字。但是要注意即使负载降低后，MaxRequestsPerChild也会造成进程占用的内存无法释放，造成”负载降低，但是系统开销居高不下的局面”。</li>
-</ul>
-<blockquote>
-<p>perfork创建进程的过程：perfork先创建一个进程，并在等待一秒后再创建两个进程，下一秒4个、再下一秒16个、最后32个(指数级)。并以后一直保持每秒创建32个进程的速度，直到满足MinSpareServers为止。</p>
-</blockquote>
-<blockquote>
-<p>apache2.3.13以前的版本MaxRequestWorkers被称为MaxClients 。</p>
-</blockquote>
-<blockquote>
-<p>MaxRequestWorkers是这些指令中最为重要的一个，是对Apache性能影响最大的参数。其缺省值150是远远不够的，如果请求总数已达到这个值（可通过ps -ef|grep http|wc -l来确认），那么后面的请求就要排队，直到前面的请求处理完毕。这就是系统资源还剩下很多而HTTP访问却很慢的主要原因。虽然理论上这个值越大，可以处理的请求就越多，但Apache默认的限制不能大于256。幸好Apche也意识到这个问题，提供了一个ServerLimit指令来加大MaxClients。</p>
-</blockquote>
-<h4 id="prefork-线程优化设置"><a href="#prefork-线程优化设置" class="headerlink" title="prefork 线程优化设置"></a>prefork 线程优化设置</h4><p>Prefork优化的关键在于MaxClients与MaxRequestsPerChild。</p>
-<h4 id="MaxRequestWorkers-优化"><a href="#MaxRequestWorkers-优化" class="headerlink" title="MaxRequestWorkers 优化"></a>MaxRequestWorkers 优化</h4><p>最佳的值：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">apache_max_process_with_good_perfermance &lt; (total_hardware_memory /</span><br><span class="line">apache_memory_per_process )  * 2 ；</span><br><span class="line"></span><br><span class="line">apache_max_process = apache_max_process_with_good_perfermance * 1.5</span><br></pre></td></tr></table></figure>
-
-<p>第一步：计算httpd平均占用内存</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ps aux|grep -v grep|awk <span class="string">&#x27;/httpd/&#123;sum+=$6;n++&#125;;END&#123;print sum/n&#125;&#x27;</span></span><br><span class="line">108468(KB)</span><br></pre></td></tr></table></figure>
-
-<p>显示每个进程占用了大约100M的内存，假设机器内存为32G，可拿出16G用于Apache。代入公式，得出</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">apache_max_process_with_good_perfermance = 16 * 1024 * 1024 /</span><br><span class="line">108468*2=309</span><br><span class="line"></span><br><span class="line">apache_max_process  = 309 * 1.5=464</span><br></pre></td></tr></table></figure>
-
-<p>所以MaxClients可以设置为464</p>
-<h4 id="MaxRequestsPerChild-优化"><a href="#MaxRequestsPerChild-优化" class="headerlink" title="MaxRequestsPerChild 优化"></a>MaxRequestsPerChild 优化</h4><p>这个值大了影响资源的释放，小了apache不断的fork新的进程，增加CPU资源的开销。有时其影响不限于apache本身的资源，还有相关外部资源的释放。比如网站大多采用apache pool管理数据库连接，MaxRequestsPerChild过大就会造成数据库连接的资源迟迟不释放，给数据库带来不寻常的压力。<br>关于这一点，最典型的就是数据库出现tomieout等超时连接错误，重启Apache以后，即使访问量恢复到峰值，数据库仍然表现毫无压力，但是持续较长时间后，又出现同样的超时异常。</p>
-<p>我采取一分钟pv/MaxRequestWorkers得到这个值。</p>
-<h3 id="worker模块"><a href="#worker模块" class="headerlink" title="worker模块"></a>worker模块</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;IfModule mpm_worker_module&gt;</span><br><span class="line">    StartServers             3</span><br><span class="line">    MinSpareThreads         75</span><br><span class="line">    MaxSpareThreads        250</span><br><span class="line">    ThreadsPerChild         25</span><br><span class="line">    MaxRequestWorkers      400</span><br><span class="line">    MaxConnectionsPerChild   0</span><br><span class="line">&lt;/IfModule&gt;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><code>StartServers             3</code>: 控制启动的时候生成的进程数。</li>
-<li><code>MinSpareThreads         75</code>:  最小空闲线程数。</li>
-<li><code>MaxSpareThreads        250</code>:  最大空闲线程数。</li>
-<li><code>ThreadsPerChild         25</code>:  每个子进程包含多少个线程数。</li>
-<li><code>MaxRequestWorkers      400</code>:  一个进程可以同时处理多少个请求。</li>
-<li><code>MaxConnectionsPerChild   0</code>:  进程处理多少个请求后将自动销毁，0意味着无限，即永不销毁。</li>
-</ul>
-<blockquote>
-<p>MinSpareThreads和MaxSpareThreads的最大缺省值分别是75和250。这两个参数对Apache的性能影响并不大，可以按照实际情况相应调节。</p>
-</blockquote>
-<blockquote>
-<p>ThreadsPerChild是worker MPM中与性能相关最密切的指令。<br>ThreadsPerChild的最大缺省值是64，如果负载较大，64也是不够的。这时要显式使用 ThreadLimit指令，它的最大缺省值是20000。</p>
-</blockquote>
-<p>上述两个值位于源码树server/mpm/worker/worker.c中的以下两行：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#define DEFAULT_THREAD_LIMIT 64</span></span><br><span class="line">define MAX_THREAD_LIMIT 20000</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>这两行对应着ThreadsPerChild和ThreadLimit的限制数。最好在configure之前就把64改成所希望的值。注意，不要把这两个值设得太高，超过系统的处理能力，从而因Apache不起动使系统很不稳定。</p>
-</blockquote>
-<p>Worker模式下所能同时处理的请求总数是由子进程总数乘以ThreadsPerChild值决定的，应该大于等于MaxClients。如果负载很大，现有的子进程数不能满足时，控制进程会派生新的子进程。默认最大的子进程总数是16，加大时也需要显式声明ServerLimit（最大值是20000）。这两个值位于源码树server/mpm/worker/worker.c中的以下两行：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#define DEFAULT_SERVER_LIMIT 16</span></span><br><span class="line">define MAX_SERVER_LIMIT 20000</span><br></pre></td></tr></table></figure>
-
-
-<p>需要注意的是，如果显式声明了ServerLimit，那么它乘以ThreadsPerChild的值必须大于等于MaxClients，而且MaxClients必须是ThreadsPerChild的整数倍，否则Apache将会自动调节到一个相应值（可能是个非期望值）。</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;IfModule worker.c&gt;;</span><br><span class="line">StartServers 3</span><br><span class="line">MaxClients 2000</span><br><span class="line">ServerLimit 25</span><br><span class="line">MinSpareThreads 50</span><br><span class="line">MaxSpareThreads 200</span><br><span class="line">ThreadLimit 200</span><br><span class="line">ThreadsPerChild 100</span><br><span class="line">MaxRequestsPerChild 0</span><br><span class="line">&lt;/IfModule&gt;;</span><br></pre></td></tr></table></figure>
-
-<p>通过上面的叙述，可以了解到Apache 2.0中prefork和worker这两个重要MPM的工作原理，并可根据实际情况来配置Apache相关的核心参数，以获得最大的性能和稳定性。</p>
-<h3 id="补充知识"><a href="#补充知识" class="headerlink" title="补充知识"></a>补充知识</h3><p>httpd并发连接情况查看</p>
-<p>查看当前的连接数</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#ps aux|grep httpd|wc -l</span></span><br></pre></td></tr></table></figure>
-
-<p>实时检测httpd连接数</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#watch -n 1 -d &quot;pgrep httpd|wc -l&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>计算httpd进程占用内在的平均数</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#ps aux|grep -v grep|awk &#x27;/httpd/&#123;sum+=$6&#125;; END&#123;print sum/n&#125;&#x27;</span></span><br></pre></td></tr></table></figure>
-
-<p>查看Apache的并发请求数及期TCP连接状态</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#netstat -n | awk &#x27;/^tcp/&#123;++S[$NF]&#125;END&#123;for(a in S) print a, S[a]&#125;&#x27;</span></span><br><span class="line"></span><br><span class="line">返回结果示例：</span><br><span class="line"></span><br><span class="line">LAST_ACK 5</span><br><span class="line"></span><br><span class="line">SYN_RECV 30</span><br><span class="line"></span><br><span class="line">ESTABLISHED 1597</span><br><span class="line"></span><br><span class="line">FIN_WAIT1 51</span><br><span class="line"></span><br><span class="line">FIN_WAIT2 504</span><br><span class="line"></span><br><span class="line">TIME_WAIT 1057</span><br></pre></td></tr></table></figure>
-
-<h4 id="apache-网络状态描述"><a href="#apache-网络状态描述" class="headerlink" title="apache 网络状态描述"></a>apache 网络状态描述</h4><ul>
-<li><code>CLOSED</code>：无连接是活动的或正在进行</li>
-<li><code>LISTEN</code>：服务器在等待进入呼叫</li>
-<li><code>SYN_RECV</code>：一个连接请求已经到达，等待确认</li>
-<li><code>SYN_SENT</code>：应用已经开始，打开一个连接</li>
-<li><code>ESTABLISHED</code>：正常数据传输状态</li>
-<li><code>FIN_WAIT1</code>：应用说它已经完成</li>
-<li><code>FIN_WAIT2</code>：另一边已同意释放</li>
-<li><code>ITMED_WAIT</code>：等待所有分组死掉</li>
-<li><code>CLOSING</code>：两边同时尝试关闭</li>
-<li><code>TIME_WAIT</code>：另一边已初始化一个释放</li>
-<li><code>LAST_ACK</code>：等待所有分组死掉</li>
-</ul>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&lt;IfModule mpm_event_module&gt;</span><br><span class="line">    StartServers             3</span><br><span class="line">    MinSpareThreads         75</span><br><span class="line">    MaxSpareThreads        250</span><br><span class="line">    ThreadsPerChild         25</span><br><span class="line">    MaxRequestWorkers      400</span><br><span class="line">    MaxConnectionsPerChild   0</span><br><span class="line">&lt;/IfModule&gt;</span><br><span class="line">&lt;IfModule mpm_netware_module&gt;</span><br><span class="line">    ThreadStackSize      65536</span><br><span class="line">    StartThreads           250</span><br><span class="line">    MinSpareThreads         25</span><br><span class="line">    MaxSpareThreads        250</span><br><span class="line">    MaxThreads            1000</span><br><span class="line">    MaxConnectionsPerChild   0</span><br><span class="line">&lt;/IfModule&gt;</span><br><span class="line">&lt;IfModule mpm_mpmt_os2_module&gt;</span><br><span class="line">    StartServers             2</span><br><span class="line">    MinSpareThreads          5</span><br><span class="line">    MaxSpareThreads         10</span><br><span class="line">    MaxConnectionsPerChild   0</span><br><span class="line">&lt;/IfModule&gt;</span><br><span class="line">&lt;IfModule mpm_winnt_module&gt;</span><br><span class="line">    ThreadsPerChild        150</span><br><span class="line">    MaxConnectionsPerChild   0</span><br><span class="line">&lt;/IfModule&gt;</span><br><span class="line">&lt;IfModule !mpm_netware_module&gt;</span><br><span class="line">    MaxMemFree            2048</span><br><span class="line">&lt;/IfModule&gt;</span><br><span class="line">&lt;IfModule mpm_netware_module&gt;</span><br><span class="line">    MaxMemFree             100</span><br><span class="line">&lt;/IfModule&gt;</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-
-
-
-
-
-
-<p>2：curl 查看<br>[root@nfs-client apache]# curl 192.168.1.106<br>    <html><body><h1>It works!</h1></body></html></p>
-<p>[root@nfs-client apache]# bin/apachectl -l |egrep “_so|_rewrite|header|expire|deflate”<br>  mod_deflate.c<br>  mod_expires.c<br>  mod_headers.c<br>  mod_rewrite.c<br>  mod_so.c</p>
-<p>定时任务-日志轮询：<br>cd /application/apache/logs<br>mv www-access_log www-access_$(date +%F).log<br>/application/apache/bin/apachectl graceful</p>
-<p>Apache 优化：<br>1：不对外展示目录结构<br>&lt;Directory “/application/apache2.2.27/htdocs”&gt;  #自己的站点目录<br>    Options -Indexes FollowSymLinks #indexes 不对外展示目录结构<br>或<br>&lt;Directory “/application/apache2.2.27/htdocs”&gt;  #自己的站点目录<br>    Options FollowSymLinks #indexes 不对外展示目录结构</p>
-<h2 id="扩展阅读"><a href="#扩展阅读" class="headerlink" title="扩展阅读"></a>扩展阅读</h2><h3 id="Apache并行处理模块介绍"><a href="#Apache并行处理模块介绍" class="headerlink" title="Apache并行处理模块介绍"></a>Apache并行处理模块介绍</h3><p>Apache 2.X  支持插入式并行处理模块，称为多路处理模块（MPM）。在编译apache时必须选择也只能选择一个MPM，对类UNIX系统，有几个不同的MPM可供选择，它们会影响到apache的速度和可伸缩性。</p>
-<h4 id="prefork模块-1"><a href="#prefork模块-1" class="headerlink" title="prefork模块"></a>prefork模块</h4><p>　　Prefork MPM : 这个多路处理模块(MPM)实现了一个非线程型的、预派生的web服务器，它的工作方式类似于Apache 1.3。它适合于没有线程安全库，需要避免线程兼容性问题的系统。它是要求将每个请求相互独立的情况下最好的MPM，这样若一个请求出现问题就不会影响到其他请求。</p>
-<p>　　这个MPM具有很强的自我调节能力，只需要很少的配置指令调整。最重要的是将MaxClients设置为一个足够大的数值以处理潜在的请求高峰，同时又不能太大，以致需要使用的内存超出物理内存的大小。</p>
-<h4 id="worker-模块"><a href="#worker-模块" class="headerlink" title="worker 模块"></a>worker 模块</h4><p>　　Worker MPM : 此多路处理模块(MPM)使网络服务器支持混合的多线程多进程。由于使用线程来处理请求，所以可以处理海量请求，而系统资源的开销小于基于进程的MPM。但是，它也使用了多进程，每个进程又有多个线程，以获得基于进程的MPM的稳定性。</p>
-<p>　　每个进程可以拥有的线程数量是固定的。服务器会根据负载情况增加或减少进程数量。一个单独的控制进程(父进程)负责子进程的建立。每个子进程可以建立ThreadsPerChild数量的服务线程和一个监听线程，该监听线程监听接入请求并将其传递给服务线程处理和应答。</p>
-<p>　　不管是Worker模式或是Prefork 模式，Apache总是试图保持一些备用的(spare)或者是空闲的子进程（空闲的服务线程池）用于迎接即将到来的请求。这样客户端就不需要在得到服务前等候子进程的产生。</p>
-<h4 id="Event-模块"><a href="#Event-模块" class="headerlink" title="Event 模块"></a>Event 模块</h4><p>　　Event MPM：以上两种稳定的MPM方式在非常繁忙的服务器应用下都有些不足。尽管HTTP的Keepalive方式能减少TCP连接数量和网络负载，但是 Keepalive需要和服务进程或者线程绑定，这就导致一个繁忙的服务器会耗光所有的线程。 Event MPM是解决这个问题的一种新模型，它把服务进程从连接中分离出来。在服务器处理速度很快，同时具有非常高的点击率时，可用的线程数量就是关键的资源限 制，此时Event MPM方式是最有效的。一个以Worker MPM方式工作的繁忙服务器能够承受每秒好几万次的访问量（例如在大型新闻服务站点的高峰时），而Event MPM可以用来处理更高负载。值得注意的是，Event MPM不能在安全HTTP（HTTPS）访问下工作。</p>
-<p>对于Event 模式，apache给出了以下警告：</p>
-<p>This MPM is experimental, so it may or may not work as expected .</p>
-<p>这种MPM目前处于试验状态，他可能不能按照预期的那样工作。</p>
-<h3 id="mime-type-类型"><a href="#mime-type-类型" class="headerlink" title="mime type 类型"></a>mime type 类型</h3><p>MIME (Multipurpose Internet Mail Extensions) 是描述消息内容类型的因特网标准。<br>MIME 消息能包含文本、图像、音频、视频以及其他应用程序专用的数据。<br><a target="_blank" rel="noopener" href="http://www.w3school.com.cn/media/media_mimeref.asp">MIME参考</a></p>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a target="_blank" rel="noopener" href="http://www.cnblogs.com/fnng/archive/2012/11/20/2779977.html">Apache Prefork、Worker和Event三种MPM分析</a><br><a target="_blank" rel="noopener" href="http://51write.github.io/2014/04/10/apache-optimal/">一次Apache性能优化</a><br><a target="_blank" rel="noopener" href="https://www.51daiwei.net/blog/linux/2981/">apache2.4废除SSLCertificateChainFile指令</a></p>
-<h2 id="报错汇总"><a href="#报错汇总" class="headerlink" title="报错汇总"></a>报错汇总</h2><h3 id="报错一：编译报错"><a href="#报错一：编译报错" class="headerlink" title="报错一：编译报错"></a>报错一：编译报错</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Centos 6.5 ./configure 报错：</span><br><span class="line">checking <span class="keyword">for</span> zlib location... not found （一般都是devel没有）</span><br><span class="line">checking whether to <span class="built_in">enable</span> mod_deflate... configure: error: mod_deflate has been requested but can not be built due to prerequisite failures</span><br></pre></td></tr></table></figure>
-
-<p>解决办法：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@nfs-client httpd-2.2.27]<span class="comment"># yum install zlib-devel zlib -y</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="报错二：编译报错"><a href="#报错二：编译报错" class="headerlink" title="报错二：编译报错"></a>报错二：编译报错</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">编译报错</span><br><span class="line">checking <span class="keyword">for</span> APR... no</span><br><span class="line">configure: error: APR not found.  Please <span class="built_in">read</span> the documentation.</span><br></pre></td></tr></table></figure>
-
-<p>解决办法：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install apr-devel  apr-util -y</span><br></pre></td></tr></table></figure>
-
-
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2017/01/07/php-install/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="biglittleant">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="biglittleant">
-    </span>
-
-    
-    
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/01/07/php-install/" class="post-title-link" itemprop="url">linux-PHP环境安装</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2017-01-07 20:13:19" itemprop="dateCreated datePublished" datetime="2017-01-07T20:13:19+08:00">2017-01-07</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-18 18:23:01" itemprop="dateModified" datetime="2020-09-18T18:23:01+08:00">2020-09-18</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="什么是FastCGI"><a href="#什么是FastCGI" class="headerlink" title="什么是FastCGI"></a>什么是FastCGI</h2><p>快速通用网关接口（Fast Common Gateway Interface／FastCGI）是一种让交互程序与Web服务器通信的协议。FastCGI是早期通用网关接口（CGI）的增强版本。<br>FastCGI致力于减少网页服务器与CGI程序之间互动的开销，从而使服务器可以同时处理更多的网页请求。</p>
-<p>###FastCGI 的优点<br>FastCGI 的优点是把动态语言和HTTP Server分离开来，所以Nginx与PHP/PHP-FPM经常被部署在不同的服务器上，以分担前端Nginx服务器的压力，使Nginx专一处理静态请求和转发动态请求，而PHP/PHP-FPM服务器专一解析PHP动态请求。</p>
-<h3 id="nginx-FastCGI运行原理"><a href="#nginx-FastCGI运行原理" class="headerlink" title="nginx+FastCGI运行原理"></a>nginx+FastCGI运行原理</h3><p>Nginx不支持对外部程序的直接调用或者解析，所有的外部程序（包括PHP）必须通过FastCGI接口来调用。FastCGI接口在Linux下是socket（这个socket可以是文件socket，也可以是ip socket）。为了调用CGI程序，还需要一个FastCGI的wrapper（wrapper可以理解为用于启动另一个程序的程序），这个wrapper绑定在某个固定socket上，如端口或者文件socket。当Nginx将CGI请求发送给这个socket的时候，通过FastCGI接口，wrapper接收到请求，然后派生出一个新的线程，这个线程调用解释器或者外部程序处理脚本并读取返回数据；接着，wrapper再将返回的数据通过FastCGI接口，沿着固定的socket传递给Nginx；最后，Nginx将返回的数据发送给客户端。这就是Nginx+FastCGI的整个运作过程。</p>
-<h3 id="spawn-fcgi和PHP-FPM对比"><a href="#spawn-fcgi和PHP-FPM对比" class="headerlink" title="spawn-fcgi和PHP-FPM对比"></a>spawn-fcgi和PHP-FPM对比</h3><ul>
-<li>ligttpd的spwan-fcgi在高并发访问的时候，会出现内存泄漏甚至自动重启FastCGI的问题。</li>
-<li>PHP-FPM作为PHP的一个补丁，在安装的时候需要和PHP源码一起编译，也就是说PHP-FPM被编译到PHP内核中，因此在处理性能方面更加优秀。同时PHP-FPM在处理高并发方面也比spawn-fcgi引擎好很多，因此，推荐使用Nginx+PHP/PHP-FPM这个组合对PHP进行解析。</li>
-</ul>
-<h2 id="php安装"><a href="#php安装" class="headerlink" title="php安装"></a>php安装</h2><ul>
-<li>尽量使用PHP和PHP-FPM版本一致，如果版本之间相差太大，可能会出现兼容问题。</li>
-<li>早期的时候fpm是PHP的一个补丁包，PHP在 5.3.3 之后已经将php-fpm写入php源码核心了。所以已经不需要另外下载了。</li>
-</ul>
-<h3 id="安装相关依赖及软件"><a href="#安装相关依赖及软件" class="headerlink" title="安装相关依赖及软件"></a>安装相关依赖及软件</h3><p>centos 5  安装包组：<code>Xsoftware Development </code><br>centos 6</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install zlib libxml libjpeg freetype libpng gd  curl libiconv  zlib-devel libxml2-devel libjpeg-devel freetype-devel libpng-devel gd-devel curl-devel libxslt*  -y</span><br></pre></td></tr></table></figure>
-<p>iconv字符编码转换命令</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">tar zxf libiconv-1.14.tar.gz</span><br><span class="line">cd libiconv-1.14</span><br><span class="line">./configure --prefix=/usr/local/libiconv</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line">sleep 2</span><br><span class="line">cd ../</span><br></pre></td></tr></table></figure>
-
-<p>mcrypt 是php里面重要的加密支持扩展库，这里注意的是mcrypt软件依赖libmcrypt和mhash两个库。</p>
-<p>libmcrypt依赖库安装</p>
-<p>默认路径：/usr/local/lib/</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">wget http://downloads.sourceforge.net/mcrypt/libmcrypt-2.5.8.tar.gz</span><br><span class="line">tar zxf libmcrypt-2.5.8.tar.gz</span><br><span class="line">cd libmcrypt-2.5.8</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line">sleep 2</span><br><span class="line">/sbin/ldconfig</span><br><span class="line">cd libltdl/</span><br><span class="line">./configure --enable-ltdl-install</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line">sleep 2</span><br><span class="line">cd ../../</span><br></pre></td></tr></table></figure>
-
-<p>Mhash是基于离散数学原理的不可逆向的php加密方式扩展库，其在默认情况下不开启。mhash的可以用于创建校验数值，消息摘要，消息认证码，以及无需原文的关键信息保存（如密码）等。</p>
-<p>默认路径：/usr/local/lib/</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">wget http://downloads.sourceforge.net/mhash/mhash-0.9.9.9.tar.gz</span><br><span class="line">tar zxf mhash-0.9.9.9.tar.gz</span><br><span class="line">cd mhash-0.9.9.9/</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line">sleep 2</span><br><span class="line">cd ../</span><br></pre></td></tr></table></figure>
-
-<p>默认路径：/usr/local/bin/</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">wget http://downloads.sourceforge.net/mcrypt/mcrypt-2.6.8.tar.gz</span><br><span class="line">tar zxf mcrypt-2.6.8.tar.gz</span><br><span class="line">cd mcrypt-2.6.8/</span><br><span class="line">/sbin/ldconfig</span><br><span class="line">./configure LD_LIBRARY_PATH=/usr/local/lib</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line">sleep 2</span><br><span class="line">cd ../</span><br></pre></td></tr></table></figure>
-
-<p>配置相关连接</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">rm -f /usr/lib64/libmcrypt.*</span><br><span class="line">rm -f /usr/lib64/libmhash*</span><br><span class="line">ln -s /usr/local/lib64/libmcrypt.la /usr/lib64/libmcrypt.la</span><br><span class="line">ln -s /usr/local/lib64/libmcrypt.so /usr/lib64/libmcrypt.so</span><br><span class="line">ln -s /usr/local/lib64/libmcrypt.so.4 /usr/lib64/libmcrypt.so.4</span><br><span class="line">ln -s /usr/local/lib64/libmcrypt.so.4.4.8 /usr/lib64/libmcrypt.so.4.4.8</span><br><span class="line">ln -s /usr/local/lib64/libmhash.a /usr/lib64/libmhash.a</span><br><span class="line">ln -s /usr/local/lib64/libmhash.la /usr/lib64/libmhash.la</span><br><span class="line">ln -s /usr/local/lib64/libmhash.so /usr/lib64/libmhash.so</span><br><span class="line">ln -s /usr/local/lib64/libmhash.so.2 /usr/lib64/libmhash.so.2</span><br><span class="line">ln -s /usr/local/lib64/libmhash.so.2.0.1 /usr/lib64/libmhash.so.2.0.1</span><br><span class="line">ln -s /usr/local/bin/libmcrypt-config /usr/bin/libmcrypt-config</span><br></pre></td></tr></table></figure>
-
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ln -s /application/mysql/lib/libmysqlclient.so.18  /usr/lib64/</span><br><span class="line">mkdir  -p ext/phar/phar.phar</span><br></pre></td></tr></table></figure>
-
-
-<h3 id="PHP安装"><a href="#PHP安装" class="headerlink" title="PHP安装"></a>PHP安装</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">./configure \</span><br><span class="line">--prefix=/application/php5.3.27 \</span><br><span class="line">--with-mysql=/application/mysql \</span><br><span class="line">--with-iconv-dir=/usr/local/libiconv \</span><br><span class="line">--with-freetype-dir \</span><br><span class="line">--with-jpeg-dir \</span><br><span class="line">--with-png-dir \</span><br><span class="line">--with-zlib \</span><br><span class="line">--with-libxml-dir=/usr \</span><br><span class="line">--enable-xml \</span><br><span class="line">--disable-rpath \</span><br><span class="line">--enable-safe-mode \</span><br><span class="line">--enable-bcmath \</span><br><span class="line">--enable-shmop \</span><br><span class="line">--enable-sysvsem \</span><br><span class="line">--enable-inline-optimization \</span><br><span class="line">--with-curl \</span><br><span class="line">--with-curlwrappers \</span><br><span class="line">--enable-mbregex \</span><br><span class="line">--enable-fpm \</span><br><span class="line">--enable-mbstring \</span><br><span class="line">--with-mcrypt \</span><br><span class="line">--with-gd \</span><br><span class="line">--enable-gd-native-ttf \</span><br><span class="line">--with-openssl \</span><br><span class="line">--with-mhash \</span><br><span class="line">--enable-pcntl \</span><br><span class="line">--enable-sockets \</span><br><span class="line">--with-xmlrpc \</span><br><span class="line">--enable-zip \</span><br><span class="line">--enable-soap \</span><br><span class="line">--enable-short-tags \</span><br><span class="line">--enable-zend-multibyte \</span><br><span class="line">--enable-static \</span><br><span class="line">--with-xsl \</span><br><span class="line">--with-fpm-user=nginx \</span><br><span class="line">--with-fpm-group=nginx \</span><br><span class="line">--enable-ftp</span><br></pre></td></tr></table></figure>
-
-<p>结果：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">+--------------------------------------------------------------------+</span><br><span class="line">| License:                                                           |</span><br><span class="line">| This software is subject to the PHP License, available <span class="keyword">in</span> this     |</span><br><span class="line">| distribution <span class="keyword">in</span> the file LICENSE.  By continuing this installation |</span><br><span class="line">| process, you are bound by the terms of this license agreement.     |</span><br><span class="line">| If you <span class="keyword">do</span> not agree with the terms of this license, you must abort |</span><br><span class="line">| the installation process at this point.                            |</span><br><span class="line">+--------------------------------------------------------------------+</span><br><span class="line"></span><br><span class="line">Thank you <span class="keyword">for</span> using PHP.</span><br></pre></td></tr></table></figure>
-
-<p>编译和安装</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>配置文件补充<br><code>--enable-fastcgi</code> ：启用对PHP的FastCGI支持。<br><code>--enable-fpm</code>：激活对 FastCGI模式的fpm支持。</p>
-</blockquote>
-<h5 id="Linux-可以不装MySQL，如果连软件包都没有，这样情况可以使用："><a href="#Linux-可以不装MySQL，如果连软件包都没有，这样情况可以使用：" class="headerlink" title="Linux 可以不装MySQL，如果连软件包都没有，这样情况可以使用："></a>Linux 可以不装MySQL，如果连软件包都没有，这样情况可以使用：</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">—with-mysql=mysqlnd</span><br><span class="line">其他需要MySQL相关包场景的PHP编译参数：</span><br><span class="line">--enable-mysqlnd \</span><br><span class="line">--with-pdo-mysql=mysqlnd \</span><br><span class="line">--with-mysqli=mysqlnd \</span><br></pre></td></tr></table></figure>
-
-<h2 id="配置PHP："><a href="#配置PHP：" class="headerlink" title="配置PHP："></a>配置PHP：</h2><p>解压包中包含两个配置文件：</p>
-<ul>
-<li>php.ini-development  ：测试环境使用配置文件，相关debug功能都开启了。</li>
-<li>php.ini-production   ：生产环境使用配置文件，相关debug功能都关闭了。</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> cp php.ini-production /application/php/lib/php.ini</span></span><br></pre></td></tr></table></figure>
-
-<p>PHP配置完毕。</p>
-<h3 id="配置PHP及FCGI进程管理"><a href="#配置PHP及FCGI进程管理" class="headerlink" title="配置PHP及FCGI进程管理"></a>配置PHP及FCGI进程管理</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ln -s /application/php5.3.27/ /application/php</span><br><span class="line">cp php.ini-production /application/php/lib/php.ini</span><br><span class="line"><span class="built_in">cd</span> /application/php/etc/</span><br><span class="line">mv php-fpm.conf.5.3.27  php-fpm.conf</span><br></pre></td></tr></table></figure>
-
-<p>php-fpm.conf</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123;pid = /app/logs/php-fpm.pid</span><br><span class="line">error_log = /app/logs/php-fpm.log</span><br><span class="line">log_level= error</span><br><span class="line">rlimit_files=32768</span><br><span class="line">listen.owner=nginx</span><br><span class="line">listen.group=nginx</span><br><span class="line">pm.max_children = 1024</span><br><span class="line">pm.start_servers = 16</span><br><span class="line">pm.min_spare_servers = 5</span><br><span class="line">pm.max_spare_servers = 20</span><br><span class="line">pm.process_idle_timeout=15s;</span><br><span class="line">pm.max_requests=2048</span><br><span class="line">slowlog=/app/logs/$pool.log.slow&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-
-<p>mkdir -p /app/logs</p>
-<p>启动：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/application/php/sbin/php-fpm -t</span><br><span class="line">/application/php/sbin/php-fpm</span><br><span class="line">netstat -lntup|grep php-fpm</span><br><span class="line">ps -ef|grep php-fpm</span><br></pre></td></tr></table></figure>
-<p>添加开机自启动：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/rc.local</span><br><span class="line">/etc/init.d/nysqld start</span><br><span class="line">/application/php/sbin/php-fpm</span><br><span class="line">/application/nginx/sbin/nginx</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="PHP-FPM-配置文件详解"><a href="#PHP-FPM-配置文件详解" class="headerlink" title="PHP-FPM 配置文件详解"></a>PHP-FPM 配置文件详解</h2><h3 id="global-配置"><a href="#global-配置" class="headerlink" title="[global]配置"></a>[global]配置</h3><ul>
-<li><code>pid string</code>:  PID文件的位置。默认为空。</li>
-<li><code>error_log string</code>:  错误日志的位置。默认：安装路径 #INSTALL_PREFIX#/log/php-fpm.log。</li>
-<li><code>log_level string</code>:  错误级别。可用级别为：alert（必须立即处理），error（错误情况），warning（警告情况），notice（一般重要信息），debug（调试信息）。默认：notice。</li>
-<li><code>emergency_restart_threshold int </code>: 如果子进程在 emergency_restart_interval 设定的时间内收到该参数设定次数的 SIGSEGV 或者 SIGBUS退出信息号，则FPM会重新启动。0 表示“关闭该功能”。默认值：0（关闭）。</li>
-<li><code>emergency_restart_interval mixed </code>: emergency_restart_interval 用于设定平滑重启的间隔时间。这么做有助于解决加速器中共享内存的使用问题。可用单位：s（秒），m（分），h（小时）或者 d（天）。默认单位：s（秒）。默认值：0（关闭）。</li>
-<li><code>process_control_timeout mixed</code>:  设置子进程接受主进程复用信号的超时时间。可用单位：s（秒），m（分），h（小时）或者 d（天）。默认单位：s（秒）。默认值：0（关闭）。</li>
-<li><code>daemonize boolean</code>:  设置 FPM 在后台运行。设置“no”将 FPM 保持在前台运行用于调试。默认值：yes。</li>
-</ul>
-<h3 id="Pool-Definitions-进程池设置"><a href="#Pool-Definitions-进程池设置" class="headerlink" title="Pool Definitions 进程池设置"></a>Pool Definitions 进程池设置</h3><p>在FPM中，可以使用不同的设置来运行多个进程池。 这些设置可以针对每个进程池单独设置。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[www]</span><br><span class="line">user = nginx</span><br><span class="line">group = nginx</span><br><span class="line">listen = 127.0.0.1:9000</span><br><span class="line">listen.owner = nginx</span><br><span class="line">listen.group = nginx</span><br><span class="line">pm = dynamic</span><br><span class="line">pm.max_children = 1024</span><br><span class="line">pm.start_servers = 16</span><br><span class="line">pm.min_spare_servers = 5</span><br><span class="line">pm.max_spare_servers = 20</span><br><span class="line">pm.max_requests = 2048</span><br><span class="line">slowlog = /app/logs/$pool.log.slow</span><br><span class="line">request_slowlog_timeout = 10</span><br><span class="line">php_admin_value[sendmail_path] = /usr/sbin/sendmail -t -i -f 49000448@qq.com</span><br></pre></td></tr></table></figure>
-
-<h4 id="重要的配置参数"><a href="#重要的配置参数" class="headerlink" title="重要的配置参数"></a>重要的配置参数</h4><ul>
-<li><code> listen string</code>： 设置接受 FastCGI 请求的地址。</li>
-<li><code> user string</code>： FPM 进程运行的Unix用户。必须设置。</li>
-<li><code> group string</code>： FPM 进程运行的 Unix 用户组。如果没有设置，则默认用户的组被使用。</li>
-<li><code> pm string</code>： 设置进程管理器如何管理子进程。可用值：static，ondemand，dynamic。必须设置。</li>
-<li><code> request_terminate_timeout mixed</code>： 设置单个请求的超时中止时间。该选项可能会对 php.ini 设置中的 ‘max_execution_time’ 因为某些特殊原因没有中止运行的脚本有用。设置为 ‘0’ 表示 ‘Off’。可用单位：s（秒），m（分），h（小时）或者 d（天）。默认单位：s（秒）。默认值：0（关闭）。</li>
-<li><code> rlimit_files int</code>： 设置文件打开描述符的 rlimit 限制。默认值：系统定义值。</li>
-<li><code> pm.max_requests int</code>： 设置每个子进程重生之前服务的请求数。对于可能存在内存泄漏的第三方模块来说是非常有用的。如果设置为 ‘0’ 则一直接受请求，等同于 PHP_FCGI_MAX_REQUESTS 环境变量。默认值：0。</li>
-<li><code> listen.allowed_clients string</code>： 设置允许连接到 FastCGI 的服务器 IPV4 地址。等同于 PHP FastCGI (5.2.2+) 中的 FCGI_WEB_SERVER_ADDRS 环境变量。仅对 TCP 监听起作用。每个地址是用逗号分隔，如果没有设置或者为空，则允许任何服务器请求连接。默认值：any。</li>
-</ul>
-<h4 id="详细配置参数"><a href="#详细配置参数" class="headerlink" title="详细配置参数"></a>详细配置参数</h4><ul>
-<li><p><code> listen string</code>： 设置接受 FastCGI 请求的地址。可用格式为：’ip:port’，’port’，’/path/to/unix/socket’。每个进程池都需要设置。</p>
-</li>
-<li><p><code> listen.backlog int</code>： 设置 listen(2) 的半连接队列长度。“-1”表示无限制。默认值：-1。</p>
-</li>
-<li><p><code> listen.allowed_clients string</code>： 设置允许连接到 FastCGI 的服务器 IPV4 地址。等同于 PHP FastCGI (5.2.2+) 中的 FCGI_WEB_SERVER_ADDRS 环境变量。仅对 TCP 监听起作用。每个地址是用逗号分隔，如果没有设置或者为空，则允许任何服务器请求连接。默认值：any。</p>
-</li>
-<li><p><code> listen.owner string</code>： 如果使用，表示设置 Unix 套接字的权限。在Linux中，读写权限必须设置，以便用于 WEB 服务器连接。在很多 BSD 派生的系统中可以忽略权限允许自由连接。默认值：运行所使用的用户和组，权限为 0666。</p>
-</li>
-<li><p><code> listen.group string</code>： 参见 listen.owner。</p>
-</li>
-<li><p><code> listen.mode string</code>： 参见 listen.owner。</p>
-</li>
-<li><p><code> user string</code>： FPM 进程运行的Unix用户。必须设置。</p>
-</li>
-<li><p><code> group string</code>： FPM 进程运行的 Unix 用户组。如果没有设置，则默认用户的组被使用。</p>
-</li>
-<li><p><code> pm string</code>： 设置进程管理器如何管理子进程。可用值：static，ondemand，dynamic。必须设置。</p>
-<ul>
-<li><code> static</code>: 子进程的数量是固定的（pm.max_children）。</li>
-<li><code> ondemand</code>: 进程在有需求时才产生（当请求时，与 dynamic 相反，pm.start_servers 在服务启动时即启动。</li>
-<li><code> dynamic</code>: 子进程的数量在下面配置的基础上动态设置：pm.max_children，pm.start_servers，pm.min_spare_servers，pm.max_spare_servers。</li>
-</ul>
-</li>
-<li><p><code>pm.max_children int</code>： pm 设置为 static 时表示创建的子进程的数量，pm 设置为 dynamic 时表示最大可创建的子进程的数量。必须设置。该选项设置可以同时提供服务的请求数限制。类似 Apache 的 mpm_prefork 中 MaxClients 的设置和 普通PHP FastCGI中的 PHP_FCGI_CHILDREN 环境变量。</p>
-</li>
-<li><p><code> pm.start_servers in</code>： 设置启动时创建的子进程数目。仅在 pm 设置为 dynamic 时使用。默认值：min_spare_servers + (max_spare_servers - min_spare_servers) / 2。</p>
-</li>
-<li><p><code> pm.min_spare_servers int</code>： 设置空闲服务进程的最低数目。仅在 pm 设置为 dynamic 时使用。必须设置。</p>
-</li>
-<li><p><code> pm.max_spare_servers int</code>： 设置空闲服务进程的最大数目。仅在 pm 设置为 dynamic 时使用。必须设置。</p>
-</li>
-<li><p><code> pm.max_requests int</code>： 设置每个子进程重生之前服务的请求数。对于可能存在内存泄漏的第三方模块来说是非常有用的。如果设置为 ‘0’ 则一直接受请求，等同于 PHP_FCGI_MAX_REQUESTS 环境变量。默认值：0。</p>
-</li>
-<li><p><code> pm.status_path string</code>： FPM 状态页面的网址。如果没有设置，则无法访问状态页面，默认值：无。</p>
-</li>
-<li><p><code> ping.path string</code>： FPM 监控页面的 ping 网址。如果没有设置，则无法访问 ping 页面。该页面用于外部检测 FPM 是否存活并且可以响应请求。请注意必须以斜线开头（/）。</p>
-</li>
-<li><p><code> ping.response string</code>： 用于定义 ping 请求的返回响应。返回为 HTTP 200 的 text/plain 格式文本。默认值：pong。</p>
-</li>
-<li><p><code> request_terminate_timeout mixed</code>： 设置单个请求的超时中止时间。该选项可能会对 php.ini 设置中的 ‘max_execution_time’ 因为某些特殊原因没有中止运行的脚本有用。设置为 ‘0’ 表示 ‘Off’。可用单位：s（秒），m（分），h（小时）或者 d（天）。默认单位：s（秒）。默认值：0（关闭）。</p>
-</li>
-<li><p><code> request_slowlog_timeout mixed</code>： 当一个请求该设置的超时时间后，就会将对应的 PHP 调用堆栈信息完整写入到慢日志中。设置为 ‘0’ 表示 ‘Off’。可用单位：s（秒），m（分），h（小时）或者 d（天）。默认单位：s（秒）。默认值：0（关闭）。</p>
-</li>
-<li><p><code> slowlog string</code>： 慢请求的记录日志。默认值：#INSTALL_PREFIX#/log/php-fpm.log.slow。</p>
-</li>
-<li><p><code> rlimit_files int</code>： 设置文件打开描述符的 rlimit 限制。默认值：系统定义值。</p>
-</li>
-<li><p><code> rlimit_core int</code>： 设置核心 rlimit 最大限制值。可用值：’unlimited’，0 或者正整数。默认值：系统定义值。</p>
-</li>
-<li><p><code> chroot string</code>： 启动时的 Chroot 目录。所定义的目录需要是绝对路径。如果没有设置，则 chroot 不被使用。</p>
-</li>
-<li><p><code> chdir string</code>： 设置启动目录，启动时会自动 Chdir 到该目录。所定义的目录需要是绝对路径。默认值：当前目录，或者根目录（chroot时）。</p>
-</li>
-<li><p><code> catch_workers_output boolean</code>： 重定向运行过程中的 stdout 和 stderr 到主要的错误日志文件中。如果没有设置，stdout 和 stderr 将会根据 FastCGI 的规则被重定向到 /dev/null。默认值：无。</p>
-</li>
-</ul>
-<h2 id="管理FastCGI-进程"><a href="#管理FastCGI-进程" class="headerlink" title="管理FastCGI 进程"></a>管理FastCGI 进程</h2><h3 id="启动FastCGI进程"><a href="#启动FastCGI进程" class="headerlink" title="启动FastCGI进程"></a>启动FastCGI进程</h3><p>方法一：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/data/app/php/bin/php-cgi --fpm</span><br></pre></td></tr></table></figure>
-
-<p>方法二：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/data/app/php/sbin/php-fpm start</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>推荐采用第二种方法启动FastCGI。<br><code>php-fpm logrotate</code> 重新启用log文件。</p>
-</blockquote>
-<h3 id="使用信号重启php-fpm"><a href="#使用信号重启php-fpm" class="headerlink" title="使用信号重启php-fpm"></a>使用信号重启php-fpm</h3><ul>
-<li>INT, TERM 立刻终止</li>
-<li>QUIT 平滑终止</li>
-<li>USR1 重新打开日志文件</li>
-<li>USR2 平滑重载所有worker进程并重新载入配置和二进制模块</li>
-</ul>
-<p>示例：</p>
-<p>php-fpm 关闭：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kill -INT `cat /data/app/php/var/run/php-fpm.pid`</span><br></pre></td></tr></table></figure>
-
-<p>php-fpm 重启：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kill -USR2 `cat /data/app/php/var/run/php-fpm.pid`</span><br></pre></td></tr></table></figure>
-
-<h2 id="php与web中间件整合"><a href="#php与web中间件整合" class="headerlink" title="php与web中间件整合"></a>php与web中间件整合</h2><h3 id="php与nginx整合"><a href="#php与nginx整合" class="headerlink" title="php与nginx整合"></a>php与nginx整合</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        listen       80;</span><br><span class="line">        server_name  blog.biglittleant.cn;</span><br><span class="line">        root   www/blog;</span><br><span class="line">        location / &#123;</span><br><span class="line">            root   www/blog;</span><br><span class="line">            index  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line">    location ~ .*\.(php|php5)?$</span><br><span class="line">    &#123;</span><br><span class="line">     fastcgi_pass  127.0.0.1:9000;</span><br><span class="line">     fastcgi_index index.php;</span><br><span class="line">     include fastcgi.conf;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>fastcgi的优化主要集中在nginx的fastcgi.conf配置文件中。<br>相关内容参考<a href="">死磕nginx系列–配置文档解读</a></p>
-</blockquote>
-<h3 id="测试PHP程序是否正常"><a href="#测试PHP程序是否正常" class="headerlink" title="测试PHP程序是否正常"></a>测试PHP程序是否正常</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> cat test.php</span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">phpinfo();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="测试MYSQL是否正常"><a href="#测试MYSQL是否正常" class="headerlink" title="测试MYSQL是否正常"></a>测试MYSQL是否正常</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">        <span class="comment">//$link_id=mysql_connect(&#x27;主机名&#x27;,&#x27;用户&#x27;,&#x27;密码&#x27;);</span></span><br><span class="line">        $link_id=mysql_connect(<span class="string">&#x27;localhost&#x27;</span>,<span class="string">&#x27;root&#x27;</span>,<span class="string">&#x27;oldboy123&#x27;</span>) <span class="keyword">or</span> mysql_error();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>($link_id)&#123;</span><br><span class="line">                <span class="keyword">echo</span> <span class="string">&quot;mysql successful by oldboy !\n&quot;</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="keyword">echo</span> <span class="string">&quot;mysql_error()&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-<h2 id="报错汇总："><a href="#报错汇总：" class="headerlink" title="报错汇总："></a>报错汇总：</h2><h3 id="报错一-编译报错"><a href="#报错一-编译报错" class="headerlink" title="报错一 编译报错"></a>报错一 编译报错</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">configure: error: Cannot find OpenSSL&#x27;s &lt;evp.h&gt;</span><br></pre></td></tr></table></figure>
-
-<p>解决办法</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum yum install openssl openssl-devel</span><br></pre></td></tr></table></figure>
-
-
-
-
-<h3 id="报错二-make-报错"><a href="#报错二-make-报错" class="headerlink" title="报错二 make 报错"></a>报错二 make 报错</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Generating phar.php</span><br><span class="line">/root/tools/php-5.3.27/sapi/cli/php: error while loading shared libraries: libmysqlclient.so.18: cannot open shared object file: No such file or directory</span><br><span class="line">make: *** [ext/phar/phar.php] Error 127</span><br></pre></td></tr></table></figure>
-<p>解决方法：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ln -s /application/php5.3.27 /application/php</span><br></pre></td></tr></table></figure>
-
-<h3 id="报错三-make-报错"><a href="#报错三-make-报错" class="headerlink" title="报错三 make 报错"></a>报错三 make 报错</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Generating phar.phar</span><br><span class="line">chmod: cannot access `ext/phar/phar.phar&#x27;: No such file or directory</span><br><span class="line">make: [ext/phar/phar.phar] Error 1 (ignored)</span><br><span class="line"></span><br><span class="line">Build complete.</span><br><span class="line">Don&#x27;t forget to run &#x27;make test’.</span><br></pre></td></tr></table></figure>
-
-<p>解决办法：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@test2 php-5.3.27]# mkdir  -p ext/phar/phar.phar</span><br></pre></td></tr></table></figure>
-
-<h3 id="报错四-编译报错："><a href="#报错四-编译报错：" class="headerlink" title="报错四 编译报错："></a>报错四 编译报错：</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">configure: error: Cannot find OpenSSL&#x27;s &lt;evp.h&gt;</span><br></pre></td></tr></table></figure>
-
-<p>解决方法：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@nfs-client php-5.3.27]# yum install openssl-devel -y</span><br></pre></td></tr></table></figure>
-
-<h3 id="报错五编译报错："><a href="#报错五编译报错：" class="headerlink" title="报错五编译报错："></a>报错五编译报错：</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">checking for XSL support... yes</span><br><span class="line">configure: error: xslt-config not found. Please reinstall the libxslt &gt;= 1.1.0 distribution</span><br></pre></td></tr></table></figure>
-
-<p>解决方法:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@nfs-client php-5.3.27]# yum install libxslt-devel -y</span><br></pre></td></tr></table></figure>
-
-<h3 id="报错六-configure-报错："><a href="#报错六-configure-报错：" class="headerlink" title="报错六 configure 报错："></a>报错六 configure 报错：</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">checking if we should use cURL for url streams... no</span><br><span class="line">checking for cURL in default path... not found</span><br><span class="line">configure: error: Please reinstall the libcurl distribution -</span><br><span class="line">    easy.h should be in &lt;curl-dir&gt;/include/curl/</span><br></pre></td></tr></table></figure>
-
-<p>解决办法</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ln -s /application/mysql/lib/libmysqlclient.so.18  /usr/lib64/</span><br><span class="line">mkdir  -p ext/phar/phar.phar</span><br></pre></td></tr></table></figure>
-
-
-<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a target="_blank" rel="noopener" href="http://php.net/manual/zh/install.fpm.configuration.php">官方FPM配置文件解读</a></p>
-<h3 id="搞不清FastCgi与PHP-fpm之间是个什么样的关系"><a href="#搞不清FastCgi与PHP-fpm之间是个什么样的关系" class="headerlink" title="搞不清FastCgi与PHP-fpm之间是个什么样的关系"></a>搞不清FastCgi与PHP-fpm之间是个什么样的关系</h3><p><a target="_blank" rel="noopener" href="https://segmentfault.com/q/1010000000256516">搞不清FastCgi与PHP-fpm之间是个什么样的关系</a></p>
-<p>刚开始对这个问题我也挺纠结的，看了《HTTP权威指南》后，感觉清晰了不少。</p>
-<p>首先，CGI是干嘛的？CGI是为了保证web server传递过来的数据是标准格式的，方便CGI程序的编写者。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">web server（比如说nginx）只是内容的分发者。比如，如果请求/index.html，那么web server会去文件系统中找到这个文件，发送给浏览器，这里分发的是静态数据。好了，如果现在请求的是/index.php，根据配置文件，nginx知道这个不是静态文件，需要去找PHP解析器来处理，那么他会把这个请求简单处理后交给PHP解析器。Nginx会传哪些数据给PHP解析器呢？url要有吧，查询字符串也得有吧，POST数据也要有，HTTP header不能少吧，好的，CGI就是规定要传哪些数据、以什么样的格式传递给后方处理这个请求的协议。仔细想想，你在PHP代码中使用的用户从哪里来的。</span><br><span class="line"></span><br><span class="line">当web server收到/index.php这个请求后，会启动对应的CGI程序，这里就是PHP的解析器。接下来PHP解析器会解析php.ini文件，初始化执行环境，然后处理请求，再以规定CGI规定的格式返回处理后的结果，退出进程。web server再把结果返回给浏览器。</span><br></pre></td></tr></table></figure>
-
-<p>好了，CGI是个协议，跟进程什么的没关系。那fastcgi又是什么呢？Fastcgi是用来提高CGI程序性能的。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">提高性能，那么CGI程序的性能问题在哪呢？&quot;PHP解析器会解析php.ini文件，初始化执行环境&quot;，就是这里了。标准的CGI对每个请求都会执行这些步骤（不闲累啊！启动进程很累的说！），所以处理每个时间的时间会比较长。这明显不合理嘛！那么Fastcgi是怎么做的呢？首先，Fastcgi会先启一个master，解析配置文件，初始化执行环境，然后再启动多个worker。当请求过来时，master会传递给一个worker，然后立即可以接受下一个请求。这样就避免了重复的劳动，效率自然是高。而且当worker不够用时，master可以根据配置预先启动几个worker等着；当然空闲worker太多时，也会停掉一些，这样就提高了性能，也节约了资源。这就是fastcgi的对进程的管理。</span><br></pre></td></tr></table></figure>
-
-<p>那PHP-FPM又是什么呢？是一个实现了Fastcgi的程序，被PHP官方收了。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">大家都知道，PHP的解释器是php-cgi。php-cgi只是个CGI程序，他自己本身只能解析请求，返回结果，不会进程管理（皇上，臣妾真的做不到啊！）所以就出现了一些能够调度php-cgi进程的程序，比如说由lighthttpd分离出来的spawn-fcgi。好了PHP-FPM也是这么个东东，在长时间的发展后，逐渐得到了大家的认可（要知道，前几年大家可是抱怨PHP-FPM稳定性太差的），也越来越流行。</span><br></pre></td></tr></table></figure>
-
-<p>好了，最后来回来你的问题。 网上有的说，fastcgi是一个协议，php-fpm实现了这个协议</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">对。</span><br></pre></td></tr></table></figure>
-
-<p>有的说，php-fpm是fastcgi进程的管理器，用来管理fastcgi进程的</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">对。php-fpm的管理对象是php-cgi。但不能说php-fpm是fastcgi进程的管理器，因为前面说了fastcgi是个协议，似乎没有这么个进程存在，就算存在php-fpm也管理不了他（至少目前是）。 有的说，php-fpm是php内核的一个补丁</span><br><span class="line"></span><br><span class="line">以前是对的。因为最开始的时候php-fpm没有包含在PHP内核里面，要使用这个功能，需要找到与源码版本相同的php-fpm对内核打补丁，然后再编译。后来PHP内核集成了PHP-FPM之后就方便多了，使用--enalbe-fpm这个编译参数即可。</span><br></pre></td></tr></table></figure>
-
-<p>有的说，修改了php.ini配置文件后，没办法平滑重启，所以就诞生了php-fpm</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">是的，修改php.ini之后，php-cgi进程的确是没办法平滑重启的。php-fpm对此的处理机制是新的worker用新的配置，已经存在的worker处理完手上的活就可以歇着了，通过这种机制来平滑过度。</span><br></pre></td></tr></table></figure>
-
-<p>还有的说PHP-CGI是PHP自带的FastCGI管理器，那这样的话干吗又弄出个php-fpm</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">不对。php-cgi只是解释PHP脚本的程序而已。</span><br></pre></td></tr></table></figure>
-
-
 
       
     </div>

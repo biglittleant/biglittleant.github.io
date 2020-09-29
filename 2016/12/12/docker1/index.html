@@ -22,15 +22,15 @@
     var CONFIG = {"hostname":"www.biglittleant.cn","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
   </script>
 
-  <meta name="description" content="docker快速入门docker的主要特性 文件系统隔离：每个进程容器运行在完全独立的根文件系统里。 资源隔离：可以使用cgroup为每个进程容器分配不同的系统资源，例如CPU和内存。 网络隔离：每个进程容器运行在自己的网络命名空间里，拥有自己的虚拟接口和IP地址。 写时复制：采用写时复制方式创建根文件系统，这让部署变得极其快捷，并且节省内存和硬盘空间。 日志记录：Docker将会收集和记录每个进">
+  <meta name="description" content="Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中，然后发布到任何流行的 Linux 机器上。Docker 使用客户端-服务器 (C&#x2F;S) 架构模式，使用远程API来管理和创建Docker容器。Docker 容器通过 Docker 镜像来 创建。容器与镜像的关系类似于面向对象编程中的对象与类。Docker daemon 作为服务端接受来自客户的请求，并">
 <meta property="og:type" content="article">
 <meta property="og:title" content="docker快速入门">
 <meta property="og:url" content="http://www.biglittleant.cn/2016/12/12/docker1/index.html">
 <meta property="og:site_name" content="biglittleant">
-<meta property="og:description" content="docker快速入门docker的主要特性 文件系统隔离：每个进程容器运行在完全独立的根文件系统里。 资源隔离：可以使用cgroup为每个进程容器分配不同的系统资源，例如CPU和内存。 网络隔离：每个进程容器运行在自己的网络命名空间里，拥有自己的虚拟接口和IP地址。 写时复制：采用写时复制方式创建根文件系统，这让部署变得极其快捷，并且节省内存和硬盘空间。 日志记录：Docker将会收集和记录每个进">
+<meta property="og:description" content="Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中，然后发布到任何流行的 Linux 机器上。Docker 使用客户端-服务器 (C&#x2F;S) 架构模式，使用远程API来管理和创建Docker容器。Docker 容器通过 Docker 镜像来 创建。容器与镜像的关系类似于面向对象编程中的对象与类。Docker daemon 作为服务端接受来自客户的请求，并">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2016-12-12T02:42:16.000Z">
-<meta property="article:modified_time" content="2020-09-16T09:17:07.938Z">
+<meta property="article:modified_time" content="2020-09-28T07:02:04.478Z">
 <meta property="article:author" content="biglittleant">
 <meta property="article:tag" content="docker">
 <meta name="twitter:card" content="summary">
@@ -182,7 +182,7 @@
 
       <!--noindex-->
       <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#docker%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8"><span class="nav-number">1.</span> <span class="nav-text">docker快速入门</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#docker%E7%9A%84%E4%B8%BB%E8%A6%81%E7%89%B9%E6%80%A7"><span class="nav-number">1.1.</span> <span class="nav-text">docker的主要特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85docker%E8%BD%AF%E4%BB%B6%E5%8F%8A%E7%B3%BB%E7%BB%9F%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="nav-number">1.2.</span> <span class="nav-text">安装docker软件及系统环境准备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%8E%AF%E5%A2%83%EF%BC%9A"><span class="nav-number">1.2.1.</span> <span class="nav-text">操作系统环境：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E5%AE%89%E8%A3%85docker%EF%BC%9A"><span class="nav-number">1.2.2.</span> <span class="nav-text">快速安装docker：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%86docker%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E8%BF%81%E7%A7%BB%E5%88%B0%E5%88%AB%E7%9A%84%E4%BD%8D%E7%BD%AE%EF%BC%9A"><span class="nav-number">1.2.3.</span> <span class="nav-text">将docker应用程序迁移到别的位置：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E8%AE%B2%E8%A7%A3%EF%BC%9A"><span class="nav-number">1.2.4.</span> <span class="nav-text">docker常用命令讲解：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E5%85%A5docker%E5%91%BD%E4%BB%A4%EF%BC%9A"><span class="nav-number">1.2.5.</span> <span class="nav-text">进入docker命令：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker%E7%BD%91%E7%BB%9C"><span class="nav-number">1.2.6.</span> <span class="nav-text">docker网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker%E6%98%A0%E5%B0%84%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.2.7.</span> <span class="nav-text">docker映射文件系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker%E6%8B%B7%E8%B4%9D%E6%96%87%E4%BB%B6"><span class="nav-number">1.2.8.</span> <span class="nav-text">docker拷贝文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%8B%B7%E8%B4%9D%E6%96%87%E4%BB%B6"><span class="nav-number">1.2.9.</span> <span class="nav-text">基于文件系统拷贝文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker-%E7%9A%84%E8%BF%9C%E7%A8%8B%E8%AE%BF%E9%97%AE"><span class="nav-number">1.2.10.</span> <span class="nav-text">Docker 的远程访问</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEHTTP%E8%AE%BF%E9%97%AE"><span class="nav-number">1.2.10.1.</span> <span class="nav-text">配置HTTP访问</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E5%8F%B0%E8%AE%BF%E9%97%AE%E7%AC%AC%E4%BA%8C%E5%8F%B0%E6%9C%BA%E5%99%A8%E7%9A%84docker%E6%9C%8D%E5%8A%A1%EF%BC%9A"><span class="nav-number">1.2.10.2.</span> <span class="nav-text">第一台访问第二台机器的docker服务：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E5%86%99docker-file"><span class="nav-number">1.3.</span> <span class="nav-text">编写docker file</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerfile%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%EF%BC%9A"><span class="nav-number">1.3.1.</span> <span class="nav-text">dockerfile最佳实践：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerfile%E5%AE%9E%E4%BE%8B"><span class="nav-number">1.3.2.</span> <span class="nav-text">dockerfile实例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E7%9A%84docker%E5%91%BD%E4%BB%A4"><span class="nav-number">1.4.</span> <span class="nav-text">其他的docker命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8docker%E5%91%BD%E4%BB%A4"><span class="nav-number">1.5.</span> <span class="nav-text">常用docker命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%97%AD%E6%89%80%E6%9C%89%E6%AD%A3%E5%9C%A8%E8%BF%90%E8%A1%8C%E5%AE%B9%E5%99%A8"><span class="nav-number">1.5.1.</span> <span class="nav-text">关闭所有正在运行容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E6%89%80%E6%9C%89%E5%AE%B9%E5%99%A8%E5%BA%94%E7%94%A8"><span class="nav-number">1.5.2.</span> <span class="nav-text">删除所有容器应用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker%E6%8A%A5%E9%94%99%E4%BF%A1%E6%81%AF"><span class="nav-number">1.6.</span> <span class="nav-text">docker报错信息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%AD%E8%BF%90%E8%A1%8Cdocker%E6%98%AF%E6%9C%89%E4%B8%AA%E8%AD%A6%E5%91%8A"><span class="nav-number">1.6.1.</span> <span class="nav-text">在虚拟机中运行docker是有个警告</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#docker%E7%9A%84%E4%B8%BB%E8%A6%81%E7%89%B9%E6%80%A7"><span class="nav-number">1.</span> <span class="nav-text">docker的主要特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker-%E9%95%9C%E5%83%8F"><span class="nav-number">1.1.</span> <span class="nav-text">Docker 镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker-%E4%BB%93%E5%BA%93"><span class="nav-number">1.2.</span> <span class="nav-text">Docker 仓库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker-%E5%AE%B9%E5%99%A8"><span class="nav-number">1.3.</span> <span class="nav-text">Docker 容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker%E5%91%BD%E4%BB%A4%E8%A1%8C"><span class="nav-number">1.4.</span> <span class="nav-text">docker命令行</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85docker%E8%BD%AF%E4%BB%B6%E5%8F%8A%E7%B3%BB%E7%BB%9F%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="nav-number">2.</span> <span class="nav-text">安装docker软件及系统环境准备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%8E%AF%E5%A2%83"><span class="nav-number">2.1.</span> <span class="nav-text">操作系统环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E5%AE%89%E8%A3%85docker"><span class="nav-number">2.2.</span> <span class="nav-text">快速安装docker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%86docker%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E8%BF%81%E7%A7%BB%E5%88%B0%E5%88%AB%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="nav-number">2.3.</span> <span class="nav-text">将docker应用程序迁移到别的位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker%E9%95%9C%E5%83%8F%E5%8A%A0%E9%80%9F"><span class="nav-number">2.4.</span> <span class="nav-text">docker镜像加速</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E8%AE%B2%E8%A7%A3"><span class="nav-number">2.5.</span> <span class="nav-text">docker常用命令讲解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E5%85%A5docker%E5%91%BD%E4%BB%A4"><span class="nav-number">2.6.</span> <span class="nav-text">进入docker命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker%E7%BD%91%E7%BB%9C"><span class="nav-number">2.7.</span> <span class="nav-text">docker网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker-%E5%9B%9B%E7%A7%8D%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.8.</span> <span class="nav-text">Docker 四种网络模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#host-%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.8.1.</span> <span class="nav-text">host 模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#container-%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.8.2.</span> <span class="nav-text">container 模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#none%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.8.3.</span> <span class="nav-text">none模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bridge%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.8.4.</span> <span class="nav-text">bridge模式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker%E6%98%A0%E5%B0%84%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="nav-number">2.9.</span> <span class="nav-text">docker映射文件系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker%E6%8B%B7%E8%B4%9D%E6%96%87%E4%BB%B6"><span class="nav-number">2.10.</span> <span class="nav-text">docker拷贝文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%8B%B7%E8%B4%9D%E6%96%87%E4%BB%B6"><span class="nav-number">2.11.</span> <span class="nav-text">基于文件系统拷贝文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E5%86%99docker-file"><span class="nav-number">3.</span> <span class="nav-text">编写docker file</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerfile%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5"><span class="nav-number">3.1.</span> <span class="nav-text">dockerfile最佳实践</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dockerfile%E5%AE%9E%E4%BE%8B"><span class="nav-number">3.2.</span> <span class="nav-text">dockerfile实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CMD-%E5%92%8C-ENTRYPOINT-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">3.3.</span> <span class="nav-text">CMD 和 ENTRYPOINT 的区别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E7%9A%84docker%E5%91%BD%E4%BB%A4"><span class="nav-number">4.</span> <span class="nav-text">其他的docker命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8docker%E5%91%BD%E4%BB%A4"><span class="nav-number">5.</span> <span class="nav-text">常用docker命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%97%AD%E6%89%80%E6%9C%89%E6%AD%A3%E5%9C%A8%E8%BF%90%E8%A1%8C%E5%AE%B9%E5%99%A8"><span class="nav-number">5.1.</span> <span class="nav-text">关闭所有正在运行容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E6%89%80%E6%9C%89%E5%AE%B9%E5%99%A8%E5%BA%94%E7%94%A8"><span class="nav-number">5.2.</span> <span class="nav-text">删除所有容器应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%AE%B9%E5%99%A8%E5%86%85%E7%9A%84logs"><span class="nav-number">5.3.</span> <span class="nav-text">查看容器内的logs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%90%84%E4%B8%AA%E5%AE%B9%E5%99%A8%E7%9A%84%E8%B5%84%E6%BA%90%E4%BD%BF%E7%94%A8%E6%83%85%E5%86%B5"><span class="nav-number">5.4.</span> <span class="nav-text">查看各个容器的资源使用情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%AE%B9%E5%99%A8%E7%9A%84%E8%AF%A6%E7%BB%86%E4%BF%A1%E6%81%AF"><span class="nav-number">5.5.</span> <span class="nav-text">查看容器的详细信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%AE%B9%E5%99%A8%E5%86%85%E7%9A%84%E8%BF%9B%E7%A8%8B%E6%83%85%E5%86%B5"><span class="nav-number">5.6.</span> <span class="nav-text">查看容器内的进程情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8A%E4%BC%A0%E9%95%9C%E5%83%8F"><span class="nav-number">5.7.</span> <span class="nav-text">上传镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8Bdocker%E7%9A%84%E8%AF%A6%E7%BB%86%E4%BF%A1%E6%81%AF"><span class="nav-number">5.8.</span> <span class="nav-text">查看docker的详细信息</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker-%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E7%9B%AE%E5%BD%95%E6%9E%B6%E6%9E%84"><span class="nav-number">6.</span> <span class="nav-text">docker 生产环境目录架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">7.</span> <span class="nav-text">参考文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E6%B1%87%E6%80%BB"><span class="nav-number">8.</span> <span class="nav-text">报错汇总</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%AD%E8%BF%90%E8%A1%8Cdocker%E6%98%AF%E6%9C%89%E4%B8%AA%E8%AD%A6%E5%91%8A"><span class="nav-number">8.1.</span> <span class="nav-text">在虚拟机中运行docker是有个警告</span></a></li></ol></li></ol></div>
       </section>
       <!--/noindex-->
 
@@ -195,7 +195,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-count">46</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -206,7 +206,7 @@
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-count">37</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -276,7 +276,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-16 17:17:07" itemprop="dateModified" datetime="2020-09-16T17:17:07+08:00">2020-09-16</time>
+        <time title="Modified: 2020-09-28 15:02:04" itemprop="dateModified" datetime="2020-09-28T15:02:04+08:00">2020-09-28</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -309,7 +309,8 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="docker快速入门"><a href="#docker快速入门" class="headerlink" title="docker快速入门"></a>docker快速入门</h1><h2 id="docker的主要特性"><a href="#docker的主要特性" class="headerlink" title="docker的主要特性"></a>docker的主要特性</h2><ul>
+        <p>Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中，然后发布到任何流行的 Linux 机器上。<br>Docker 使用客户端-服务器 (C/S) 架构模式，使用远程API来管理和创建Docker容器。Docker 容器通过 Docker 镜像来 创建。容器与镜像的关系类似于面向对象编程中的对象与类。<br>Docker daemon 作为服务端接受来自客户的请求，并处理这些请求(创建、运行、分发容器)。 客户端和服务端既可 以运行在一个机器上，也可通过 socket 或者RESTful API 来进行通信。<br>Docker daemon 一般在宿主主机后台运行，等待接收来自客户端的消息。 Docker 客户端则为用户提供一系列可执行 命令，用户用这些命令实现跟 Docker daemon 交互。</p>
+<h2 id="docker的主要特性"><a href="#docker的主要特性" class="headerlink" title="docker的主要特性"></a>docker的主要特性</h2><ul>
 <li>文件系统隔离：每个进程容器运行在完全独立的根文件系统里。</li>
 <li>资源隔离：可以使用cgroup为每个进程容器分配不同的系统资源，例如CPU和内存。</li>
 <li>网络隔离：每个进程容器运行在自己的网络命名空间里，拥有自己的虚拟接口和IP地址。</li>
@@ -318,25 +319,278 @@
 <li>变更管理：容器文件系统的变更可以提交到新的映像中，并可重复使用以创建更多的容器。无需使用模板或手动配置。</li>
 <li>交互式Shell：Docker可以分配一个虚拟终端并关联到任何容器的标准输入上，例如运行一个一次性交互shell。</li>
 </ul>
-<h2 id="安装docker软件及系统环境准备"><a href="#安装docker软件及系统环境准备" class="headerlink" title="安装docker软件及系统环境准备"></a>安装docker软件及系统环境准备</h2><h3 id="操作系统环境："><a href="#操作系统环境：" class="headerlink" title="操作系统环境："></a>操作系统环境：</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~15:58:47]#cat /etc/redhat-release</span><br><span class="line">CentOS Linux release 7.1.1503 (Core)</span><br><span class="line">[root@localhost ~11:48:09]#uname -r</span><br><span class="line">3.10.0-229.el7.x86_64</span><br><span class="line">[root@localhost ~11:48:24]#uname -m</span><br><span class="line">x86_64</span><br><span class="line">[root@localhost ~11:48:26]#</span><br></pre></td></tr></table></figure>
+<h3 id="Docker-镜像"><a href="#Docker-镜像" class="headerlink" title="Docker 镜像"></a>Docker 镜像</h3><p><strong>Docker 镜像是 Docker 容器运行时的只读模板，每一个镜像由一系列的层 (layers) 组成。</strong>Docker 使用 UnionFS 来将 这些层联合到单独的镜像中。UnionFS 允许独立文件系统中的文件和文件夹(称之为分支)被透明覆盖，形成一个单独连 贯的文件系统。正因为有了这些层的存在，Docker 是如此的轻量。当你改变了一个 Docker 镜像，比如升级到某个程 序到新的版本，一个新的层会被创建。因此，不用替换整个原先的镜像或者重新建立，只是一个新 的层被添加或升级 了。现在你不用重新发布整个镜像，只需要升级，层使得分发 Docker 镜像变得简单和快速。</p>
+<h3 id="Docker-仓库"><a href="#Docker-仓库" class="headerlink" title="Docker 仓库"></a>Docker 仓库</h3><p><strong>Docker 仓库用来保存镜像，可以理解为代码控制中的代码仓库。</strong>同样的，Docker 仓库也有公有和私有的概念。公有的 Docker 仓库名字是 Docker Hub。Docker Hub 提供了庞大的镜像集合供使用。这些镜像可以是自己创建，或者在别人 的镜像基础上创建。Docker 仓库是 Docker 的分发部分。</p>
+<h3 id="Docker-容器"><a href="#Docker-容器" class="headerlink" title="Docker 容器"></a>Docker 容器</h3><p>Docker 容器和文件夹很类似，<strong>一个Docker容器包含了所有的某个应用运行所需要的环境。每一个 Docker 容器都是从 Docker 镜像创建的。</strong>Docker 容器可以运行、开始、停止、移动和删除。每一个 Docker 容器都是独立和安全的应用平 台，Docker 容器是 Docker 的运行部分。</p>
+<h3 id="docker命令行"><a href="#docker命令行" class="headerlink" title="docker命令行"></a>docker命令行</h3><table>
+<thead>
+<tr>
+<th>docker  命令</th>
+<th>英文注释</th>
+<th>中文注释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>attach</td>
+<td>Attach to a running container</td>
+<td>当前 shell 下 attach 连接指定运行镜像</td>
+</tr>
+<tr>
+<td>build</td>
+<td>Build an image from a Dockerfile</td>
+<td>通过 Dockerfile 定制镜像</td>
+</tr>
+<tr>
+<td>commit</td>
+<td>Create a new image from a container’s changes</td>
+<td>提交当前容器为新的镜像</td>
+</tr>
+<tr>
+<td>cp</td>
+<td>Copy files/folders between a container and the local filesystem</td>
+<td>从容器中拷贝指定文件或者目录到宿主机</td>
+</tr>
+<tr>
+<td>create</td>
+<td>Create a new container</td>
+<td>创建一个新的容器，同 run，但不启动容器</td>
+</tr>
+<tr>
+<td>diff</td>
+<td>Inspect changes on a container’s filesystem</td>
+<td>查看 docker 容器变化</td>
+</tr>
+<tr>
+<td>events</td>
+<td>Get real time events from the server</td>
+<td>从 docker 服务获取容器实时事件</td>
+</tr>
+<tr>
+<td>exec</td>
+<td>Run a command in a running container</td>
+<td>在已存在的容器上运行命令</td>
+</tr>
+<tr>
+<td>export</td>
+<td>Export a container’s filesystem as a tar archive</td>
+<td>导出容器的内容流作为一个 tar 归档文件[对应import]</td>
+</tr>
+<tr>
+<td>history</td>
+<td>Show the history of an image</td>
+<td>展示一个镜像形成历史</td>
+</tr>
+<tr>
+<td>images</td>
+<td>List images</td>
+<td>列出系统当前镜像</td>
+</tr>
+<tr>
+<td>import</td>
+<td>Import the contents from a tarball to create a filesystem image</td>
+<td>从tar包中的内容创建一个新的文件系统映像[对应</td>
+</tr>
+<tr>
+<td>info</td>
+<td>Display system-wide information</td>
+<td>显示系统相关信息</td>
+</tr>
+<tr>
+<td>inspect</td>
+<td>Return low-level information on a container, image or task</td>
+<td>查看容器详细信息</td>
+</tr>
+<tr>
+<td>kill</td>
+<td>Kill one or more running containers</td>
+<td>kill 指定 docker 容器</td>
+</tr>
+<tr>
+<td>load</td>
+<td>Load an image from a tar archive or STDIN</td>
+<td>从一个 tar 包中加载一个镜像[对应 save]</td>
+</tr>
+<tr>
+<td>login</td>
+<td>Log in to a Docker registry.</td>
+<td>注册或者登陆一个 docker 源服务器</td>
+</tr>
+<tr>
+<td>logout</td>
+<td>Log out from a Docker registry.</td>
+<td>从当前 Docker registry 退出</td>
+</tr>
+<tr>
+<td>logs</td>
+<td>Fetch the logs of a container</td>
+<td>输出当前容器日志信息</td>
+</tr>
+<tr>
+<td>network</td>
+<td>Manage Docker networks</td>
+<td>管理Docker网络</td>
+</tr>
+<tr>
+<td>node</td>
+<td>Manage Docker Swarm nodes</td>
+<td>管理Docker Swarm节点</td>
+</tr>
+<tr>
+<td>pause</td>
+<td>Pause all processes within one or more containers</td>
+<td>暂停容器</td>
+</tr>
+<tr>
+<td>port</td>
+<td>List port mappings or a specific mapping for the container</td>
+<td>查看映射端口对应的容器内部源端口</td>
+</tr>
+<tr>
+<td>ps</td>
+<td>List containers</td>
+<td>列出容器列表</td>
+</tr>
+<tr>
+<td>pull</td>
+<td>Pull an image or a repository from a registry</td>
+<td>从docker镜像源服务器拉取指定镜像或者库镜像</td>
+</tr>
+<tr>
+<td>push</td>
+<td>Push an image or a repository to a registry</td>
+<td>推送指定镜像或者库镜像至docker源服务器</td>
+</tr>
+<tr>
+<td>rename</td>
+<td>Rename a container</td>
+<td>重命名一个容器</td>
+</tr>
+<tr>
+<td>restart</td>
+<td>Restart a container</td>
+<td>重启运行的容器</td>
+</tr>
+<tr>
+<td>rm</td>
+<td>Remove one or more containers</td>
+<td>移除一个或者多个容器</td>
+</tr>
+<tr>
+<td>rmi</td>
+<td>Remove one or more images</td>
+<td>移除一个或多个镜像[无容器使用该镜像才可删除，否则需删除相关容器才可继续或 -f 强制删除]</td>
+</tr>
+<tr>
+<td>run</td>
+<td>Run a command in a new container</td>
+<td>创建一个新的容器并运行一个命令</td>
+</tr>
+<tr>
+<td>save</td>
+<td>Save one or more images to a tar archive (streamed to STDOUT by default)</td>
+<td>保存一个镜像为一个 tar 包[对应 load]</td>
+</tr>
+<tr>
+<td>search</td>
+<td>Search the Docker Hub for images</td>
+<td>在docker hub 中搜索镜像</td>
+</tr>
+<tr>
+<td>service</td>
+<td>Manage Docker services</td>
+<td>管理Docker服务</td>
+</tr>
+<tr>
+<td>start</td>
+<td>Start one or more stopped containers</td>
+<td>启动容器</td>
+</tr>
+<tr>
+<td>stats</td>
+<td>Display a live stream of container(s) resource usage statistics</td>
+<td>显示容器的实时流资源使用统计信息</td>
+</tr>
+<tr>
+<td>stop</td>
+<td>Stop one or more running containers</td>
+<td>停止容器</td>
+</tr>
+<tr>
+<td>swarm</td>
+<td>Manage Docker Swarm</td>
+<td>swarm命令</td>
+</tr>
+<tr>
+<td>tag</td>
+<td>Tag an image into a repository</td>
+<td>给源中镜像打标签</td>
+</tr>
+<tr>
+<td>top</td>
+<td>Display the running processes of a container</td>
+<td>显示容器的正在运行的进程</td>
+</tr>
+<tr>
+<td>unpause</td>
+<td>Unpause all processes within one or more containers</td>
+<td>取消暂停容器</td>
+</tr>
+<tr>
+<td>update</td>
+<td>Update configuration of one or more containers</td>
+<td>更新一个或多个容器的配置</td>
+</tr>
+<tr>
+<td>version</td>
+<td>Show the Docker version information</td>
+<td>查看docker版本信息</td>
+</tr>
+<tr>
+<td>volume</td>
+<td>Manage Docker volumes</td>
+<td></td>
+</tr>
+<tr>
+<td>wait</td>
+<td>Block until a container stops, then print its exit code</td>
+<td>截取容器停止时的退出状态值</td>
+</tr>
+</tbody></table>
+<h2 id="安装docker软件及系统环境准备"><a href="#安装docker软件及系统环境准备" class="headerlink" title="安装docker软件及系统环境准备"></a>安装docker软件及系统环境准备</h2><h3 id="操作系统环境"><a href="#操作系统环境" class="headerlink" title="操作系统环境"></a>操作系统环境</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~15:58:47]#cat /etc/redhat-release</span><br><span class="line">CentOS Linux release 7.1.1503 (Core)</span><br><span class="line">[root@localhost ~11:48:09]#uname -r</span><br><span class="line">3.10.0-229.el7.x86_64</span><br><span class="line">[root@localhost ~11:48:24]#uname -m</span><br><span class="line">x86_64</span><br></pre></td></tr></table></figure>
 
-<h3 id="快速安装docker："><a href="#快速安装docker：" class="headerlink" title="快速安装docker："></a>快速安装docker：</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum install -y docker</span><br><span class="line">systemctl start docker</span><br><span class="line">systemctl enable docker</span><br></pre></td></tr></table></figure>
+<h3 id="快速安装docker"><a href="#快速安装docker" class="headerlink" title="快速安装docker"></a>快速安装docker</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum install -y docker</span><br><span class="line">systemctl start docker</span><br><span class="line">systemctl enable docker</span><br></pre></td></tr></table></figure>
 
-<h3 id="将docker应用程序迁移到别的位置："><a href="#将docker应用程序迁移到别的位置：" class="headerlink" title="将docker应用程序迁移到别的位置："></a>将docker应用程序迁移到别的位置：</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mv /var/lib/docker /data/</span><br><span class="line">ln -s /data/docker/ /var/lib/docker</span><br><span class="line">systemctl restart docker</span><br></pre></td></tr></table></figure>
+<h3 id="将docker应用程序迁移到别的位置"><a href="#将docker应用程序迁移到别的位置" class="headerlink" title="将docker应用程序迁移到别的位置"></a>将docker应用程序迁移到别的位置</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mv /var/lib/docker /data/</span><br><span class="line">ln -s /data/docker/ /var/lib/docker</span><br><span class="line">systemctl restart docker</span><br></pre></td></tr></table></figure>
 
-<h3 id="docker常用命令讲解："><a href="#docker常用命令讲解：" class="headerlink" title="docker常用命令讲解："></a>docker常用命令讲解：</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">docker search centos  ##搜索镜像</span><br><span class="line">docker pull centos   ##拉取官方的镜像</span><br><span class="line">docker run -it --name test1 centos /bin/bash #启动容器</span><br><span class="line">docker stop ”CONTAINER id“ #停止容器</span><br><span class="line">docker ps -l #查看正在运行的容器</span><br><span class="line">docker ps -a # 查看所有启动过的容器</span><br><span class="line">docker rm &quot;CONTAINER id&quot; #删除容器</span><br><span class="line">docker rmi &quot;image name&quot; #删除镜像</span><br></pre></td></tr></table></figure>
-<h3 id="进入docker命令："><a href="#进入docker命令：" class="headerlink" title="进入docker命令："></a>进入docker命令：</h3><p>方法一：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker attach #进入容器</span><br><span class="line">docker exec -it nginx1 bash</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>上面进入docker容器的命令，退出的时候，docker镜像也停止了。</p>
-</blockquote>
+<h3 id="docker镜像加速"><a href="#docker镜像加速" class="headerlink" title="docker镜像加速"></a>docker镜像加速</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cat &gt; /etc/docker/daemon.json &lt;&lt;EOF</span><br><span class="line">&#123;</span><br><span class="line">    &quot;registry-mirrors&quot;: [&quot;https://docker.mirrors.ustc.edu.cn&quot;]</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br><span class="line">systemctl restart docker</span><br></pre></td></tr></table></figure>
+
+<p>开源的docker镜像网站</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">https://registry.docker-cn.com</span><br><span class="line">https://docker.mirrors.ustc.edu.cn</span><br><span class="line">https://hub-mirror.c.163.com</span><br></pre></td></tr></table></figure>
+
+<h3 id="docker常用命令讲解"><a href="#docker常用命令讲解" class="headerlink" title="docker常用命令讲解"></a>docker常用命令讲解</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">docker search centos  ##搜索镜像</span><br><span class="line">docker pull centos   ##拉取官方的镜像</span><br><span class="line">docker run -it --name test1 centos /bin/bash #启动容器</span><br><span class="line">docker stop ”CONTAINER id“ #停止容器</span><br><span class="line">docker ps -l #查看正在运行的容器</span><br><span class="line">docker ps -a # 查看所有启动过的容器</span><br><span class="line">docker rm &quot;CONTAINER id&quot; #删除容器</span><br><span class="line">docker rmi &quot;image name&quot; #删除镜像</span><br></pre></td></tr></table></figure>
+
+<h3 id="进入docker命令"><a href="#进入docker命令" class="headerlink" title="进入docker命令"></a>进入docker命令</h3><p>方法一：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it nginx1 bash</span><br></pre></td></tr></table></figure>
+
 <p>方法二：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cat in.sh</span><br><span class="line"><span class="meta">#</span><span class="bash">!/bin/sh</span></span><br><span class="line">CNAME=$1</span><br><span class="line">CPID=$(docker inspect --format &quot;&#123;&#123;.State.Pid&#125;&#125;&quot; $CNAME)</span><br><span class="line">nsenter --target &quot;$CPID&quot; --mount --uts --ipc --net --pid</span><br><span class="line"></span><br><span class="line">执行方法：</span><br><span class="line">sh in.sh names(docker容器名)</span><br></pre></td></tr></table></figure>
+
 <blockquote>
 <p>推荐使用方法二，进入docker容器</p>
 </blockquote>
-<h3 id="docker网络"><a href="#docker网络" class="headerlink" title="docker网络"></a>docker网络</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker run -P #随机映射一个端口</span><br><span class="line">docker -p hostPort：dockerPort #指定端口映射</span><br><span class="line">docker -p ip:hostPort：dockerPort #指定固定IP的固定端口映射</span><br><span class="line">docker ip::dockerPort #指定固定ip映射端口</span><br></pre></td></tr></table></figure>
+<h3 id="docker网络"><a href="#docker网络" class="headerlink" title="docker网络"></a>docker网络</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker run -P #随机映射一个端口</span><br><span class="line">docker -p hostPort:dockerPort #指定端口映射</span><br><span class="line">docker -p ip:hostPort:dockerPort #指定固定IP的固定端口映射</span><br><span class="line">docker ip::dockerPort #指定固定ip映射端口</span><br><span class="line">docker -p Port:DcoekrPort -p Port:DcoekrPort #指定多个映射端口映射</span><br></pre></td></tr></table></figure>
 
+<h3 id="Docker-四种网络模式"><a href="#Docker-四种网络模式" class="headerlink" title="Docker 四种网络模式"></a>Docker 四种网络模式</h3><p>docker run 创建 Docker 容器时，可以用 –net 选项指定容器的网络模式，Docker 有以下 4 种网络模式:</p>
+<ul>
+<li>host 模式，使用 –net=host 指定。</li>
+<li>container 模式，使用 –net=container:NAMEorID 指定。</li>
+<li>none 模式，使用 –net=none 指定。</li>
+<li>bridge 模式，使用 –net=bridge 指定，默认设置。</li>
+</ul>
+<h4 id="host-模式"><a href="#host-模式" class="headerlink" title="host 模式"></a>host 模式</h4><p>如果启动容器的时候使用 host 模式，那么这个容器将不会获得一个独立的 Network Namespace，而是和宿主机共用 一个 Network Namespace。容器将不会虚拟出自己的网卡，配置自己的 IP 等，而是使用宿主机的 IP 和端口。<br>例如，我们在 10.10.101.105/24 的机器上用 host 模式启动一个含有 web 应用的 Docker 容器，监听 tcp 80 端口。当 我们在容器中执行任何类似 ifconfig 命令查看网络环境时，看到的都是宿主机上的信息。而外界访问容器中的应用，则 直接使用 10.10.101.105:80 即可，不用任何 NAT 转换，就如直接跑在宿主机中一样。但是，容器的其他方面，如文件 系统、进程列表等还是和宿主机隔离的。</p>
+<h4 id="container-模式"><a href="#container-模式" class="headerlink" title="container 模式"></a>container 模式</h4><p>这个模式指定新创建的容器和已经存在的一个容器共享一个 Network Namespace，而不是和宿主机共享。新创建的容 器不会创建自己的网卡，配置自己的 IP，而是和一个指定的容器共享 IP、端口范围等。同样，两个容器除了网络方面 ，其他的如文件系统、进程列表等还是隔离的。两个容器的进程可以通过 lo 网卡设备通信。</p>
+<h4 id="none模式"><a href="#none模式" class="headerlink" title="none模式"></a>none模式</h4><p>这个模式和前两个不同。在这种模式下，Docker 容器拥有自己的 Network Namespace，但是，并不为 Docker容器进 行任何网络配置。也就是说，这个 Docker 容器没有网卡、IP、路由等信息。需要我们自己为 Docker 容器添加网卡、 配置 IP 等。</p>
+<h4 id="bridge模式"><a href="#bridge模式" class="headerlink" title="bridge模式"></a>bridge模式</h4><p>bridge 模式是 Docker 默认的网络设置，此模式会为每一个容器分配 Network Namespace、设置 IP 等，并将一个主机 上的 Docker 容器连接到一个虚拟网桥上。当 Docker server 启动时，会在主机上创建一个名为 docker0 的虚拟网桥， 此主机上启动的 Docker 容器会连接到这个虚拟网桥上。虚拟网桥的工作方式和物理交换机类似，这样主机上的所有容 器就通过交换机连在了一个二层网络中。接下来就要为容器分配 IP 了，Docker 会从 RFC1918 所定义的私有 IP 网段 中，选择一个和宿主机不同的IP地址和子网分配给 docker0，连接到 docker0 的容器就从这个子网中选择一个未占用的 IP 使用。如一般 Docker 会使用 172.17.0.0/16 这个网段，并将 172.17.42.1/16 分配给 docker0 网桥(在主机上使用 ifconfig 命令是可以看到 docker0 的，可以认为它是网桥的管理接口，在宿主机上作为一块虚拟网卡使用)</p>
 <h3 id="docker映射文件系统"><a href="#docker映射文件系统" class="headerlink" title="docker映射文件系统"></a>docker映射文件系统</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker run -v /data  #挂载容器的/data目录</span><br><span class="line">docker run -v src:dst ##挂载容器的目录到真实目录中</span><br><span class="line"></span><br><span class="line">docker --volumes-from #挂载容器到容器目录中。</span><br></pre></td></tr></table></figure>
 
 <blockquote>
@@ -347,39 +601,13 @@
 <h3 id="基于文件系统拷贝文件"><a href="#基于文件系统拷贝文件" class="headerlink" title="基于文件系统拷贝文件"></a>基于文件系统拷贝文件</h3><p>还有一个方法，算是比较麻烦的。<br>新版本的docker中这种方式以及废弃了。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">### 获取容器Id</span></span></span><br><span class="line">docker ps -a</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                         PORTS               NAMES</span><br><span class="line">4e52a6a5db69        kafka:v1            &quot;bin/zookeeper-server&quot;   2 hours ago         Up About an hour                                   kafka_zk_1</span><br><span class="line">446cd224ed6f        kafka:v1            &quot;bin/kafka-server-sta&quot;   2 hours ago         Exited (1) About an hour ago                       kafka_kafka_1</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">### 获取完整得ID值</span></span></span><br><span class="line">[root@linux src]# docker inspect -f &#x27;&#123;&#123;.ID&#125;&#125;&#x27; 446cd224ed6f</span><br><span class="line">446cd224ed6f5d6fd14a65f80264156c074bd2cf9af34910d7123b7dda1d3926</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">### 拷贝文件到容器中</span></span></span><br><span class="line">cp /data/scripts/docker_in.sh /var/lib/docker/devicemapper/mnt/446cd224ed6f5d6fd14a65f80264156c074bd2cf9af34910d7123b7dda1d3926/rootfs/root</span><br></pre></td></tr></table></figure>
 
-
-<h3 id="Docker-的远程访问"><a href="#Docker-的远程访问" class="headerlink" title="Docker 的远程访问"></a>Docker 的远程访问</h3><p>我们可以从一台安装了docker的机器访问另一台安装了docker的机器。一般情况下我们使用当前机器的docker客户端访问当前机器的Server端。下面演示如何访问其他docker服务端。</p>
-<p>第一台IP：192.168.56.11<br>第二台IP：192.168.56.12</p>
-<p>使用第二台安装有docker的服务器做演示。为区分，设置label不同。</p>
-<h4 id="配置HTTP访问"><a href="#配置HTTP访问" class="headerlink" title="配置HTTP访问"></a>配置HTTP访问</h4><p>修改守护进程（Server）默认的启动配置:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">默认是：-H fd://</span></span><br><span class="line">修改为：-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock -H fd:// --label name=server_1</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>可设置多个连接方式。</p>
-</blockquote>
-<h4 id="第一台访问第二台机器的docker服务："><a href="#第一台访问第二台机器的docker服务：" class="headerlink" title="第一台访问第二台机器的docker服务："></a>第一台访问第二台机器的docker服务：</h4><p>通过http连接Server:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl http://192.168.12.4:2375/info</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 访问的是服务器192.168.12.4:2375的info接口，返回服务器相关信息。</span></span></span><br></pre></td></tr></table></figure>
-
-<p>通过docker客户端访问Server：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker -H tcp://192.168.12.4:2375 info</span><br></pre></td></tr></table></figure>
-
-<p>如果是是第一台机器访问第一台机器Docker的服务端，则使用127.0.0.1:2375就行了。</p>
-<p>和服务器端一样，客户端也支持三种连接方式，默认是 <code>-H unix:///var/run/docker.sock:</code></p>
-<ul>
-<li>-H unix:///path/to/sock</li>
-<li>tcp://host:port</li>
-<li>fd://socketfd</li>
-</ul>
-<p>docker客户端使用docker info默认访问的是本地Server。可以修改环境变量DOCKER_HOST改变默认连接。命令行直接输入：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export DOCKER_HOST=&quot;tcp://127.0.0.1:2375&quot;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 127.0.0.1:237可以替换为实际的Server地址。</span></span><br></pre></td></tr></table></figure>
-
-<p>如果想恢复本地连接，将DOCKER_HOST置空即可：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export DOCKER_HOST=&quot;&quot;</span><br></pre></td></tr></table></figure>
-
-<h2 id="编写docker-file"><a href="#编写docker-file" class="headerlink" title="编写docker file"></a>编写docker file</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">FROM #指定基础镜像</span><br><span class="line">MAINTAINER #镜像的作者</span><br><span class="line">RUN #在shell或者exec的环境中执行的命令。</span><br><span class="line">ADD #docker镜像中添加文件。</span><br><span class="line">WORKDIR #指定RUN,CMD,ENTERPOINT命令的工作目录。</span><br><span class="line">VOLUME #授权访问物理机的目录</span><br><span class="line">EXPOSE#指定容器运行时的监听端口。</span><br><span class="line">CMD #提供容器默认的执行命令。</span><br><span class="line">ENV #设置环境变量。</span><br><span class="line">USER # 给镜像设置一个UID。</span><br></pre></td></tr></table></figure>
+<h2 id="编写docker-file"><a href="#编写docker-file" class="headerlink" title="编写docker file"></a>编写docker file</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">FROM #指定基础镜像</span><br><span class="line">MAINTAINER #镜像的作者</span><br><span class="line">RUN #在shell或者exec的环境中执行的命令。</span><br><span class="line">ADD #docker镜像中添加文件。</span><br><span class="line">WORKDIR #指定RUN,CMD,ENTERPOINT命令的工作目录。</span><br><span class="line">VOLUME #授权访问物理机的目录</span><br><span class="line"><span class="meta">EXPOSE#</span><span class="bash">指定容器运行时的监听端口。</span></span><br><span class="line">CMD #提供容器默认的执行命令。</span><br><span class="line">ENV #设置环境变量。</span><br><span class="line">USER # 给镜像设置一个UID。</span><br></pre></td></tr></table></figure>
 
 <p>一个dockerfile中只能有一个CMD，如果有多个只有最后一个会执行。</p>
-<h3 id="dockerfile最佳实践："><a href="#dockerfile最佳实践：" class="headerlink" title="dockerfile最佳实践："></a>dockerfile最佳实践：</h3><ul>
+<blockquote>
+<p>推荐使用数组写 CMD 的命令，如果不是数组，则运行时，会加上 /bin/sh -c.</p>
+</blockquote>
+<h3 id="dockerfile最佳实践"><a href="#dockerfile最佳实践" class="headerlink" title="dockerfile最佳实践"></a>dockerfile最佳实践</h3><ul>
 <li>所有的dockerfile 都必须FROM命令开始。</li>
 <li>避免dockerfile映射公网的端口。</li>
 <li>将经常改动的地方放在dockerfile的下面。</li>
@@ -391,27 +619,61 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">cd /data/dockerfile/nginx/</span><br><span class="line">vim Dockerfile ##首字母必须大小</span><br><span class="line"><span class="meta">#</span><span class="bash"> this is my first Dockerfile</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Version 1.0</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Author: niuhengbo</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">Base images</span></span><br><span class="line">From centos</span><br><span class="line"><span class="meta">#</span><span class="bash">MAINTAINER</span></span><br><span class="line">MAINTAINER biglittleant</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">ADD</span></span><br><span class="line">ADD  nginx-1.10.1.tar.gz /usr/local/src</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">RUN</span></span><br><span class="line">RUN yum install -y wget gcc gcc-c++ make openssl-devel pcre pcre-devel</span><br><span class="line">RUN useradd -s /sbin/nologin -M www</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">WORKDIR</span></span><br><span class="line">WORKDIR /usr/local/src/nginx-1.10.1</span><br><span class="line">RUN  ./configure --prefix=/usr/local/nginx --user=www --group=www  --with-http_ssl_module --with-http_stub_status_module  &amp;&amp;make &amp;&amp; make install</span><br><span class="line">RUN echo &quot;daemon off;&quot; &gt;&gt; /usr/local/nginx/conf/nginx.conf</span><br><span class="line"></span><br><span class="line">ENV PATH /usr/local/nginx/sbin:$PAHT</span><br><span class="line">EXPOSE 80</span><br><span class="line">CMD [&quot;nginx&quot;]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p>3： 上传dockerfile需要的软件到目录中.</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node1 nginx10:58:08]#ll</span><br><span class="line">total 892</span><br><span class="line">-rw-r--r-- 1 root root    598 Jun 16 10:34 Dockerfile</span><br><span class="line">-rw-r--r-- 1 root root 909077 Jun 15 17:18 nginx-1.10.1.tar.gz</span><br><span class="line">[root@linux-node1 nginx10:58:10]#</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node1 nginx10:58:08]#ll</span><br><span class="line">total 892</span><br><span class="line">-rw-r--r-- 1 root root    598 Jun 16 10:34 Dockerfile</span><br><span class="line">-rw-r--r-- 1 root root 909077 Jun 15 17:18 nginx-1.10.1.tar.gz</span><br></pre></td></tr></table></figure>
 
 <p>4： 生成docker镜像.</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">docker build -t nginx-file:v1 /data/dockerfile/nginx/</span><br><span class="line">docker images</span><br><span class="line">[root@linux-node1 nginx10:38:45]#docker images</span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE</span><br><span class="line">nginx-file          v1                  a775b585a5f3        6 minutes ago       381 MB</span><br><span class="line">docker.io/centos    latest              e934940aaa90        4 weeks ago         196.7 MB</span><br><span class="line">docker.io/nginx     latest              bbb75b846e7b        4 months ago        134.5 MB</span><br><span class="line">[root@linux-node1 nginx10:45:34]#</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker build -t nginx-file:v1 /data/dockerfile/nginx/</span><br><span class="line">docker images</span><br><span class="line">[root@linux-node1 nginx10:38:45]#docker images</span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE</span><br><span class="line">nginx-file          v1                  a775b585a5f3        6 minutes ago       381 MB</span><br></pre></td></tr></table></figure>
 
+<h3 id="CMD-和-ENTRYPOINT-的区别"><a href="#CMD-和-ENTRYPOINT-的区别" class="headerlink" title="CMD 和 ENTRYPOINT 的区别"></a>CMD 和 ENTRYPOINT 的区别</h3><ol>
+<li>多行CMD命令，最终只有最后一行CMD命令，才能执行。</li>
+<li>docker run 的时候，如果手动输入了执行命令，则会覆盖dockerfile中的默认CMD命令。</li>
+<li>ENTRYPOINT 命令 在docker run的时候不会被覆盖。</li>
+</ol>
+<p>推荐用法<br>ENTRYPOINT [“/usr/sbin/nginx”]<br>CMD [“-h”]</p>
+<p>可以在启动的时候，指定参数，来启动容器，如果不想指定参数，则会使用默认的CMD。<br>可以使用–entrypoint 来覆盖ENTRYPOINT的指令。</p>
 <h2 id="其他的docker命令"><a href="#其他的docker命令" class="headerlink" title="其他的docker命令"></a>其他的docker命令</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 配置容器主机名</span></span></span><br><span class="line">docker run  -h HOSTNAME or --hostname=HOSTNAME</span><br><span class="line"><span class="meta">#</span><span class="bash">导出镜像</span></span><br><span class="line">docker save centos &gt; centos-16-02-17.tar</span><br><span class="line"><span class="meta">#</span><span class="bash">存入镜像</span></span><br><span class="line">docker load --input ubuntu_14.04.tar</span><br><span class="line">docker load &lt; ubuntu_14.04.tar</span><br></pre></td></tr></table></figure>
 
 <h2 id="常用docker命令"><a href="#常用docker命令" class="headerlink" title="常用docker命令"></a>常用docker命令</h2><h3 id="关闭所有正在运行容器"><a href="#关闭所有正在运行容器" class="headerlink" title="关闭所有正在运行容器"></a>关闭所有正在运行容器</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps | awk  &#x27;&#123;print $1&#125;&#x27; | xargs docker stop</span><br></pre></td></tr></table></figure>
 
-<h3 id="删除所有容器应用"><a href="#删除所有容器应用" class="headerlink" title="删除所有容器应用"></a>删除所有容器应用</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps | awk  &#x27;&#123;print $1&#125;&#x27; | xargs docker stop</span><br></pre></td></tr></table></figure>
+<h3 id="删除所有容器应用"><a href="#删除所有容器应用" class="headerlink" title="删除所有容器应用"></a>删除所有容器应用</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps -a | awk  &#x27;&#123;print $1&#125;&#x27; | xargs docker rm</span><br></pre></td></tr></table></figure>
 
 <p>或者</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rm $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
 
-<h2 id="docker报错信息"><a href="#docker报错信息" class="headerlink" title="docker报错信息"></a>docker报错信息</h2><h3 id="在虚拟机中运行docker是有个警告"><a href="#在虚拟机中运行docker是有个警告" class="headerlink" title="在虚拟机中运行docker是有个警告"></a>在虚拟机中运行docker是有个警告</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Usage of loopback devices is strongly discouraged for production use. Either use `--storage-opt dm.thinpooldev` or use `--storage-opt dm.no_warn_on_loop_devices=true` to suppress this warning.</span><br></pre></td></tr></table></figure>
+<h3 id="查看容器内的logs"><a href="#查看容器内的logs" class="headerlink" title="查看容器内的logs"></a>查看容器内的logs</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker logs 63ba23b2bf66</span><br><span class="line">192.168.56.1 - - [03/Aug/2017:08:39:23 +0000] &quot;GET / HTTP/1.1&quot; 200 612 &quot;-&quot; &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36&quot; &quot;-&quot;</span><br><span class="line">192.168.56.1 - - [03/Aug/2017:08:39:24 +0000] &quot;GET /favicon.ico HTTP/1.1&quot; 404 571 &quot;http://192.168.56.12:8082/&quot; &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36&quot; &quot;-&quot;</span><br><span class="line">2017/08/03 08:39:24 [error] 5#5: *1 open() &quot;/usr/share/nginx/html/favicon.ico&quot; failed (2: No such file or directory), client: 192.168.56.1, server: localhost, request: &quot;GET /favicon.ico HTTP/1.1&quot;, host: &quot;192.168.56.12:8082&quot;, referrer: &quot;http://192.168.56.12:8082/&quot;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker logs -f 63ba23b2bf66</span><br><span class="line">192.168.56.1 - - [03/Aug/2017:08:40:11 +0000] &quot;GET / HTTP/1.1&quot; 304 0 &quot;-&quot; &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36&quot; &quot;-&quot;</span><br></pre></td></tr></table></figure>
+
+<h3 id="查看各个容器的资源使用情况"><a href="#查看各个容器的资源使用情况" class="headerlink" title="查看各个容器的资源使用情况"></a>查看各个容器的资源使用情况</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker stats</span><br><span class="line">CONTAINER           CPU %               MEM USAGE / LIMIT       MEM %               NET I/O               BLOCK I/O             PIDS</span><br><span class="line">63ba23b2bf66        0.00%               7.402 MiB / 979.6 MiB   0.76%               4.126 kB / 3.428 kB   6.725 MB / 0 B        0</span><br><span class="line">a5736e32b8d5        0.00%               13.67 MiB / 979.6 MiB   1.40%               16.27 kB / 14.6 kB    15.04 MB / 0 B        0</span><br><span class="line">a81f2cfd558a        0.57%               35.79 MiB / 979.6 MiB   3.65%               208.2 kB / 547.6 kB   49.06 MB / 792.1 kB   0</span><br></pre></td></tr></table></figure>
+
+<h3 id="查看容器的详细信息"><a href="#查看容器的详细信息" class="headerlink" title="查看容器的详细信息"></a>查看容器的详细信息</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker inspect 63ba23b2bf66</span><br></pre></td></tr></table></figure>
+
+<h3 id="查看容器内的进程情况"><a href="#查看容器内的进程情况" class="headerlink" title="查看容器内的进程情况"></a>查看容器内的进程情况</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker top 63ba23b2bf66</span><br><span class="line">UID                 PID                 PPID                C                   STIME               TTY                 TIME                CMD</span><br><span class="line">root                39655               39641               0                   16:35               ?                   00:00:00            nginx: master process nginx -g daemon off;</span><br><span class="line">101                 39673               39655               0                   16:35               ?                   00:00:00            nginx: worker process</span><br></pre></td></tr></table></figure>
+
+<h3 id="上传镜像"><a href="#上传镜像" class="headerlink" title="上传镜像"></a>上传镜像</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker login harbor.biglittleant.cn ## 登录镜像仓库</span><br><span class="line">docker commit -m &#x27;my nginx&#x27;  sdfkjsldfk niuhengbo/mynginx:v1 ##将允许的docker容器提交到image中。</span><br><span class="line">docker tag niuhengbo/mynginx:v1 192.168.56.11:5000/niuhengbo/mynginx:latest  ##给images 打tags</span><br><span class="line">docker push harbor.biglittleant.cn/niuhengbo/mynginx:latest # 推到远端的镜像仓库</span><br></pre></td></tr></table></figure>
+
+<h3 id="查看docker的详细信息"><a href="#查看docker的详细信息" class="headerlink" title="查看docker的详细信息"></a>查看docker的详细信息</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">找到容器id</span><br><span class="line">docker inspect f33b254ccd02 | less</span><br></pre></td></tr></table></figure>
+
+<h2 id="docker-生产环境目录架构"><a href="#docker-生产环境目录架构" class="headerlink" title="docker 生产环境目录架构"></a>docker 生产环境目录架构</h2><p>docker 分层设计架构</p>
+<ul>
+<li>系统层–》运行环境层–》应用服务层</li>
+<li>system 存放各种优化后的系统。</li>
+<li>runtime 存放各种基础环境，比如：java环境，php环境，python环境等。</li>
+<li>app 存放各种完整业务。比如api业务，admin业务。</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">├── app</span><br><span class="line">│   ├── shop-api</span><br><span class="line">│   ├── xxx-admin</span><br><span class="line">│   └── xxx-api</span><br><span class="line">├── runtime</span><br><span class="line">│   ├── java</span><br><span class="line">│   ├── php</span><br><span class="line">│   ├── python</span><br><span class="line">│   └── python-ssh</span><br><span class="line">└── system</span><br><span class="line">    ├── centos</span><br><span class="line">    ├── centos-ssh</span><br><span class="line">    └── ubuntu</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a target="_blank" rel="noopener" href="https://www.gitbook.com/book/yeasy/docker_practice/details">Docker - 从入门到实践</a><br><a target="_blank" rel="noopener" href="https://github.com/vmware/admiral">docker的图像管理界面</a><br><a target="_blank" rel="noopener" href="https://docs.docker.com/edge/engine/reference/commandline/dockerd/#bind-docker-to-another-hostport-or-a-unix-socket">docker-daemon</a></p>
+<h2 id="报错汇总"><a href="#报错汇总" class="headerlink" title="报错汇总"></a>报错汇总</h2><h3 id="在虚拟机中运行docker是有个警告"><a href="#在虚拟机中运行docker是有个警告" class="headerlink" title="在虚拟机中运行docker是有个警告"></a>在虚拟机中运行docker是有个警告</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Usage of loopback devices is strongly discouraged for production use. Either use `--storage-opt dm.thinpooldev` or use `--storage-opt dm.no_warn_on_loop_devices=true` to suppress this warning.</span><br></pre></td></tr></table></figure>
 
 <p>解决办法：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# vim /etc/sysconfig/docker-storage</span><br><span class="line">DOCKER_STORAGE_OPTIONS=&quot;--storage-opt dm.no_warn_on_loop_devices=true&quot;</span><br></pre></td></tr></table></figure>
 
 
-<p>链接补充：<a target="_blank" rel="noopener" href="https://www.gitbook.com/book/yeasy/docker_practice/details">https://www.gitbook.com/book/yeasy/docker_practice/details</a></p>
+<p>–privileged 启动特权模式 允许我们以其宿主机具有的所有能力运行容器，包括一些内核特性和设备访问。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kernel:unregister_netdevice: waiting for lo to become free. Usage count = 1</span><br></pre></td></tr></table></figure>
+
+<p>内核bug 参考 <a target="_blank" rel="noopener" href="https://github.com/moby/moby/issues/5618">https://github.com/moby/moby/issues/5618</a><br>至今未解决。</p>
 
     </div>
 

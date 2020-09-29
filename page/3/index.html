@@ -189,7 +189,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-count">46</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -200,7 +200,7 @@
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-count">37</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -231,6 +231,509 @@
       
 
       
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2016/12/27/kafka1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="biglittleant">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="biglittleant">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2016/12/27/kafka1/" class="post-title-link" itemprop="url">kafka-生产实战</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2016-12-27 14:45:41" itemprop="dateCreated datePublished" datetime="2016-12-27T14:45:41+08:00">2016-12-27</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2020-09-16 17:32:41" itemprop="dateModified" datetime="2020-09-16T17:32:41+08:00">2020-09-16</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/kafka/" itemprop="url" rel="index"><span itemprop="name">kafka</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="kafka简介"><a href="#kafka简介" class="headerlink" title="kafka简介"></a>kafka简介</h2><p>Apache Kafka是由Apache软件基金会开发的一个开源消息系统项目，由Scala写成。Kafka最初是由LinkedIn开发，并于2011年初开源。该项目的目标是为处理实时数据提供一个统一、高通量、低等待的平台。<br>Kafka是一个分布式的、分区的、多复本的日志提交服务。它通过一种独一无二的设计提供了一个消息系统的功能。</p>
+<h3 id="kafka应用场景"><a href="#kafka应用场景" class="headerlink" title="kafka应用场景"></a>kafka应用场景</h3><ul>
+<li>Kafka可以应用于消息系统，比如，当下较为热门的消息推送，这些消息推送系统的消息源，可以使用Kafka作为系统的核心组建来完成消息的生产和消息的消费。</li>
+<li>然后是网站的行迹，我们可以将企业的Portal，用户的操作记录等信息发送到Kafka中，按照实际业务需求，可以进行实时监控，或者做离线处理等。</li>
+<li>一个是日志收集，类似于Flume套件这样的日志收集系统，但Kafka的设计架构采用push/pull，适合异构集群，Kafka可以批量提交消息，对Producer来说，在性能方面基本上是无消耗的，而在Consumer端中，我们可以使用HDFS这类的分布式文件存储系统进行存储。</li>
+</ul>
+<h3 id="相关术语"><a href="#相关术语" class="headerlink" title="相关术语"></a>相关术语</h3><ul>
+<li>Kafka维护按类区分的消息，称为主题（topic）</li>
+<li>生产者（producer）向kafka的主题发布消息</li>
+<li>消费者（consumer）向主题注册，并且接收发布到这些主题的消息</li>
+<li>kafka以一个拥有一台或多台服务器的集群运行着，每一台服务器称为broker</li>
+<li>从高层来说，生产者（producer）通过网络发消息到kafka集群，而kafka集群则以下面这种方式对消费者进行服务。</li>
+</ul>
+<h2 id="kafka实战"><a href="#kafka实战" class="headerlink" title="kafka实战"></a>kafka实战</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/src/</span><br><span class="line">wget https://www.apache.org/dyn/closer.cgi?path=/kafka/0.10.1.0/kafka_2.11-0.10.1.0.tgz</span><br><span class="line">tar -xzf kafka_2.11-0.10.1.0.tgz</span><br><span class="line">mv kafka_2.11-0.10.1.0 /data/app/</span><br><span class="line">ln -s /data/app/kafka_2.11-0.10.1.0 /data/app/kafka</span><br><span class="line"> /data/app/kafka/bin/zookeeper-server-start.sh config/zookeeper.properties</span><br><span class="line">/data/app/kafka/bin/kafka-server-start.sh config/server.properties</span><br></pre></td></tr></table></figure>
+
+<h3 id="kafka单节点实战"><a href="#kafka单节点实战" class="headerlink" title="kafka单节点实战"></a>kafka单节点实战</h3><h4 id="编辑zookeeper配置文件"><a href="#编辑zookeeper配置文件" class="headerlink" title="编辑zookeeper配置文件"></a>编辑zookeeper配置文件</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /data/app/kafka/config/zookeeper.properties</span><br></pre></td></tr></table></figure>
+<h4 id="编辑kafka配置文件"><a href="#编辑kafka配置文件" class="headerlink" title="编辑kafka配置文件"></a>编辑kafka配置文件</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">vim /data/app/kafka/config/server.properties</span><br><span class="line">broker.id=0</span><br><span class="line">port=9092</span><br><span class="line">advertised.host.name=10.0.2.150</span><br><span class="line">num.network.threads=3</span><br><span class="line"></span><br><span class="line">num.io.threads=8</span><br><span class="line">socket.send.buffer.bytes=102400</span><br><span class="line">socket.receive.buffer.bytes=102400</span><br><span class="line">socket.request.max.bytes=104857600</span><br><span class="line">log.dirs=/tmp/kafka-logs</span><br><span class="line">num.partitions=1</span><br><span class="line">num.recovery.threads.per.data.dir=1</span><br><span class="line">log.retention.hours=168</span><br><span class="line">log.segment.bytes=1073741824</span><br><span class="line">log.retention.check.interval.ms=300000</span><br><span class="line">log.cleaner.enable=false</span><br><span class="line">zookeeper.connect=localhost:4188</span><br><span class="line">zookeeper.connection.timeout.ms=6000</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">这三个必须得配置</span></span><br><span class="line"><span class="meta">#</span><span class="bash">这个是配置PRODUCER/CONSUMER连上来的时候使用的地址(必须得配置)</span></span><br><span class="line">advertised.host.name=192.168.56.12</span><br><span class="line"><span class="meta">#</span><span class="bash">设置KAFKA LOG路径</span></span><br><span class="line">log.dirs=$KAFKA_HOME/logs/kafka-logs</span><br><span class="line"><span class="meta">#</span><span class="bash">设置ZOOKEEPER的连接地址</span></span><br><span class="line">zookeeper.connect=192.168.56.12:2181</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>启动kafka服务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh /data/app/kafka/bin/kafka-server-start.sh /data/app/kafka/config/server.properties &gt;/dev/null 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure>
+
+<h3 id="kafka集群实战"><a href="#kafka集群实战" class="headerlink" title="kafka集群实战"></a>kafka集群实战</h3><h4 id="创建三个配置文件"><a href="#创建三个配置文件" class="headerlink" title="创建三个配置文件"></a>创建三个配置文件</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">cat &gt;/data/app/kafka/config/server.properties-0&lt;&lt;EOF</span><br><span class="line">broker.id=0</span><br><span class="line">port=9090</span><br><span class="line">advertised.host.name=10.0.2.150</span><br><span class="line">num.network.threads=3</span><br><span class="line">num.io.threads=8</span><br><span class="line">socket.send.buffer.bytes=102400</span><br><span class="line">socket.receive.buffer.bytes=102400</span><br><span class="line">socket.request.max.bytes=104857600</span><br><span class="line">log.dirs=/tmp/kafka-logs-0</span><br><span class="line">num.partitions=1</span><br><span class="line">num.recovery.threads.per.data.dir=1</span><br><span class="line">log.retention.hours=168</span><br><span class="line">log.segment.bytes=1073741824</span><br><span class="line">log.retention.check.interval.ms=300000</span><br><span class="line">log.cleaner.enable=false</span><br><span class="line">zookeeper.connect=127.0.0.1:2880,127.0.0.1:2881,127.0.0.1:2882</span><br><span class="line">zookeeper.connection.timeout.ms=6000</span><br><span class="line">EOF</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">cat &gt;/data/app/kafka/config/server.properties-1&lt;&lt;EOF</span><br><span class="line">broker.id=1</span><br><span class="line">port=9091</span><br><span class="line">advertised.host.name=10.0.2.150</span><br><span class="line">num.network.threads=3</span><br><span class="line">num.io.threads=8</span><br><span class="line">socket.send.buffer.bytes=102400</span><br><span class="line">socket.receive.buffer.bytes=102400</span><br><span class="line">socket.request.max.bytes=104857600</span><br><span class="line">log.dirs=/tmp/kafka-logs-1</span><br><span class="line">num.partitions=1</span><br><span class="line">num.recovery.threads.per.data.dir=1</span><br><span class="line">log.retention.hours=168</span><br><span class="line">log.segment.bytes=1073741824</span><br><span class="line">log.retention.check.interval.ms=300000</span><br><span class="line">log.cleaner.enable=false</span><br><span class="line">zookeeper.connect=127.0.0.1:2880,127.0.0.1:2881,127.0.0.1:2882</span><br><span class="line">zookeeper.connection.timeout.ms=6000</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">cat &gt;/data/app/kafka/config/server.properties-2&lt;&lt;EOF</span><br><span class="line">broker.id=2</span><br><span class="line">port=9092</span><br><span class="line">advertised.host.name=10.0.2.150</span><br><span class="line">num.network.threads=3</span><br><span class="line">num.io.threads=8</span><br><span class="line">socket.send.buffer.bytes=102400</span><br><span class="line">socket.receive.buffer.bytes=102400</span><br><span class="line">socket.request.max.bytes=104857600</span><br><span class="line">log.dirs=/tmp/kafka-logs-2</span><br><span class="line">num.partitions=1</span><br><span class="line">num.recovery.threads.per.data.dir=1</span><br><span class="line">log.retention.hours=168</span><br><span class="line">log.segment.bytes=1073741824</span><br><span class="line">log.retention.check.interval.ms=300000</span><br><span class="line">log.cleaner.enable=false</span><br><span class="line">zookeeper.connect=127.0.0.1:2880,127.0.0.1:2881,127.0.0.1:2882</span><br><span class="line">zookeeper.connection.timeout.ms=6000</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<h4 id="启动kafka集群"><a href="#启动kafka集群" class="headerlink" title="启动kafka集群"></a>启动kafka集群</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">./kafka-server-start.sh /data/app/kafka/config/server.properties &gt;/dev/null 2&gt;&amp;1 &amp;</span><br><span class="line">./kafka-server-start.sh /data/app/kafka/config/server.properties-1 &gt;/dev/null 2&gt;&amp;1 &amp;</span><br><span class="line">./kafka-server-start.sh /data/app/kafka/config/server.properties-2 &gt;/dev/null 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure>
+
+<h4 id="创建一个topic-一个分区，三个主机"><a href="#创建一个topic-一个分区，三个主机" class="headerlink" title="创建一个topic 一个分区，三个主机"></a>创建一个topic 一个分区，三个主机</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost kafka]# ./bin/kafka-topics.sh --create --zookeeper 127.0.0.1:2880  --replication-factor 3 --partitions 1 --topic topics</span><br><span class="line">Created topic &quot;topics&quot;.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>–topic指定topic name</li>
+<li>–partitions指定分区数，这个参数需要根据broker数和数据量决定，正常情况下，每个broker上两个partition最好；</li>
+<li>–replication-factor指定partition的replicas数，建议设置为2；</li>
+<li>KAFKA有几个，replication-factor就填几个</li>
+</ul>
+<h4 id="查看topics的信息"><a href="#查看topics的信息" class="headerlink" title="查看topics的信息"></a>查看topics的信息</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost kafka]# ./bin/kafka-topics.sh --describe --zookeeper 127.0.0.1:2881 --topic topics</span><br><span class="line">Topic:topics    PartitionCount:1        ReplicationFactor:3     Configs:</span><br><span class="line">        Topic: topics   Partition: 0    Leader: 1       Replicas: 1,0,2 Isr: 1,0,2</span><br><span class="line">[root@localhost kafka]#</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Leader：负责处理消息的读和写，Leader是从所有节点中随机选择的。</li>
+<li>Replicas：列出了所有的副本节点，不管节点是否在服务中。</li>
+<li>Isr：是正在服务中的节点</li>
+</ul>
+<h3 id="kafka创建topic"><a href="#kafka创建topic" class="headerlink" title="kafka创建topic"></a>kafka创建topic</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test</span><br></pre></td></tr></table></figure>
+
+<h2 id="kafka管理"><a href="#kafka管理" class="headerlink" title="kafka管理"></a>kafka管理</h2><h3 id="kafka配置管理"><a href="#kafka配置管理" class="headerlink" title="kafka配置管理"></a>kafka配置管理</h3><ul>
+<li>advertised.host.name=eventbus1.kafka</li>
+<li>num.network.threads=3 broker处理消息的最大线程数，一般情况下数量为cpu核数</li>
+<li>num.io.threads: Kafka broker 处理磁盘 IO 的线程数</li>
+<li>socket.receive.buffer.bytes: socket的接收缓冲区大小</li>
+<li>socket.send.buffer.bytes: socket的发送缓冲区大小</li>
+<li>socket.request.max.bytes=104857600 socket请求的最大数值</li>
+<li>log.dirs=/var/log/kafka  消息日志存放位置</li>
+<li>num.partitions: 创建 topic 如果不指定分区数时的默认值</li>
+<li>log.flush.interval.messages=1000 表示每当消息记录数达到1000时flush一次数据到磁盘</li>
+<li>log.flush.interval.ms=1000 表示每间隔1000毫秒flush一次数据到磁盘</li>
+<li>log.retention.bytes: topic 每个分区的最大文件大小</li>
+<li>log.retention.hours: 消息保留的最大时间</li>
+<li>log.segment.bytes =1024<em>1024</em>1024  topic的分区是以一堆segment文件存储的，这个控制每个segment的大小，会被topic创建时的指定参数覆盖</li>
+<li>log.retention.check.interval.ms=30000000 文件大小检查的周期时间</li>
+<li>auto.create.topics.enable: 自动创建 topic</li>
+<li>default.replication.factor: 创建 topic 如果不指定复制因子时的默认值</li>
+<li>delete.topic.enable: 是否支持删除 topic</li>
+<li>message.max.bytes: 消息的最大尺寸</li>
+<li>num.replica.fetchers: 从分区 Leader 复制消息的线程数</li>
+<li>queued.max.requests: 等待 IO 线程处理的请求队列最大数，若是等待 IO 的请求超过这个数值，就会停止接受外部消息</li>
+<li>zookeeper.connect = localhost:2181  zookeeper集群的地址，可以是多个用逗号分割 <code>hostname1:port1,hostname2:port2,hostname3:port3</code></li>
+<li>zookeeper.session.timeout.ms=6000 ZooKeeper的最大超时时间，就是心跳的间隔，若是没有反映，那么认为已经死了，不易过大</li>
+<li>zookeeper.connection.timeout.ms =6000 ZooKeeper的连接超时时间</li>
+<li>zookeeper.sync.time.ms =2000  ZooKeeper集群中leader和follower之间的同步时间</li>
+</ul>
+<blockquote>
+<p>这里配置broker的时候，每台机器上的broker保证唯一，从0开始。如：在另外2台机器上分别配置broker.id=1，broker.id=2</p>
+</blockquote>
+<h3 id="kafka配置优化"><a href="#kafka配置优化" class="headerlink" title="kafka配置优化"></a>kafka配置优化</h3><h4 id="网络和io操作线程配置优化"><a href="#网络和io操作线程配置优化" class="headerlink" title="网络和io操作线程配置优化"></a>网络和io操作线程配置优化</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> broker处理消息的最大线程数</span></span><br><span class="line">num.network.threads=xxx</span><br><span class="line"><span class="meta">#</span><span class="bash"> broker处理磁盘IO的线程数</span></span><br><span class="line">num.io.threads=xxx</span><br><span class="line"></span><br><span class="line">建议配置：</span><br><span class="line">一般num.network.threads主要处理网络io，读写缓冲区数据，基本没有io等待，配置线程数量为cpu核数加1.</span><br><span class="line"></span><br><span class="line">num.io.threads主要进行磁盘io操作，高峰期可能有些io等待，因此配置需要大些。配置线程数量为cpu核数2倍，最大不超过3倍.</span><br></pre></td></tr></table></figure>
+
+<h4 id="log数据文件刷新策略"><a href="#log数据文件刷新策略" class="headerlink" title="log数据文件刷新策略"></a>log数据文件刷新策略</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">为了大幅度提高producer写入吞吐量，需要定期批量写文件。</span><br><span class="line">建议配置：</span><br><span class="line"><span class="meta">#</span><span class="bash"> 每当producer写入10000条消息时，刷数据到磁盘</span></span><br><span class="line">log.flush.interval.messages=10000</span><br><span class="line"><span class="meta">#</span><span class="bash"> 每间隔1秒钟时间，刷数据到磁盘</span></span><br><span class="line">log.flush.interval.ms=1000</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="日志保留策略配置"><a href="#日志保留策略配置" class="headerlink" title="日志保留策略配置"></a>日志保留策略配置</h4><p>当kafka server的被写入海量消息后，会生成很多数据文件，且占用大量磁盘空间，如果不及时清理，可能磁盘空间不够用，kafka默认是保留7天。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">log.retention.hours=72</span><br><span class="line"><span class="meta">#</span><span class="bash"> 保留三天，也可以更短</span></span><br><span class="line"></span><br><span class="line">log.segment.bytes=1073741824</span><br><span class="line"><span class="meta">#</span><span class="bash"> 段文件配置1GB，有利于快速回收磁盘空间，重启kafka加载也会加快(如果文件过小，则文件数量比较多，</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> kafka启动时是单线程扫描目录(log.dir)下所有数据文件)</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="开启自动创建配置："><a href="#开启自动创建配置：" class="headerlink" title="开启自动创建配置："></a>开启自动创建配置：</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">auto.create.topics.enable=true</span><br><span class="line">使用程序直接往kafka中相应的topic发送数据，如果topic不存在就会按默认配置进行创建。</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建topic"><a href="#创建topic" class="headerlink" title="创建topic"></a>创建topic</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh kafka-topics.sh --create --topic topic --replication-factor 1 --partitions 1 --zookeeper localhost:4188</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>KAFKA有几个，replication-factor就填几个</p>
+</blockquote>
+<h3 id="我们查看该Topic的相关信息"><a href="#我们查看该Topic的相关信息" class="headerlink" title="我们查看该Topic的相关信息"></a>我们查看该Topic的相关信息</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kafka-topics.sh --zookeeper localhost:4188 --topic topic --describe</span><br></pre></td></tr></table></figure>
+
+<h3 id="查看都有哪些topic"><a href="#查看都有哪些topic" class="headerlink" title="查看都有哪些topic"></a>查看都有哪些topic</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/kafka-topics.sh --list --zookeeper localhost:2181</span><br></pre></td></tr></table></figure>
+
+<h3 id="模拟数据的生产和消费"><a href="#模拟数据的生产和消费" class="headerlink" title="模拟数据的生产和消费"></a>模拟数据的生产和消费</h3><h4 id="使用producer生产消息"><a href="#使用producer生产消息" class="headerlink" title="使用producer生产消息"></a>使用producer生产消息</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost bin]# sh kafka-console-producer.sh --broker-list localhost:9092 --sync --topic topic</span><br><span class="line">[2015-12-10 13:54:40,460] WARN Property topic is not valid (kafka.utils.VerifiableProperties)</span><br><span class="line">hello</span><br><span class="line">你好</span><br></pre></td></tr></table></figure>
+
+<h4 id="使用consumer去消费消息"><a href="#使用consumer去消费消息" class="headerlink" title="使用consumer去消费消息"></a>使用consumer去消费消息</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost bin]# sh kafka-console-consumer.sh --zookeeper 10.0.2.150:4188 --topic topic --from-beginning</span><br><span class="line">hello</span><br><span class="line">你好</span><br></pre></td></tr></table></figure>
+
+<h3 id="修改topic的partition"><a href="#修改topic的partition" class="headerlink" title="修改topic的partition"></a>修改topic的partition</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 通过kafka-topics.sh工具的alter命令，将topic_test的partitions从12增加到20</span></span></span><br><span class="line"></span><br><span class="line">./bin/kafka-topics.sh –zookeeper 192.168.2.225:2183/config/mobile/mq –alter –partitions 20 –topic topic_test</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="修改kafka的分片配置"><a href="#修改kafka的分片配置" class="headerlink" title="修改kafka的分片配置"></a>修改kafka的分片配置</h3><p>操作步骤如下：</p>
+<p>操作，是指手动写扩充replicas的配置文件，然后使用工具进行操作</p>
+<h4 id="查看topic的详细信息"><a href="#查看topic的详细信息" class="headerlink" title="查看topic的详细信息"></a>查看topic的详细信息</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">lizhitao@users-MacBook-Pro-2:~$ ./bin/kafka-topics.sh –zookeeper 192.168.2.225:2183/config/mobile/mq –describe –topic test.example</span><br><span class="line">Topic:test.example PartitionCount:12 ReplicationFactor:1 Configs:</span><br><span class="line">Topic: test.example Partition: 0 Leader: 0 Replicas: 0 Isr: 0</span><br><span class="line">Topic: test.example Partition: 1 Leader: 1 Replicas: 1 Isr: 1</span><br><span class="line">Topic: test.example Partition: 2 Leader: 2 Replicas: 2 Isr: 2</span><br><span class="line">Topic: test.example Partition: 3 Leader: 0 Replicas: 0 Isr: 0</span><br><span class="line">Topic: test.example Partition: 4 Leader: 1 Replicas: 1 Isr: 1</span><br><span class="line">Topic: test.example Partition: 5 Leader: 2 Replicas: 2 Isr: 2</span><br><span class="line">Topic: test.example Partition: 6 Leader: 0 Replicas: 0 Isr: 0</span><br><span class="line">Topic: test.example Partition: 7 Leader: 1 Replicas: 1 Isr: 1</span><br><span class="line">Topic: test.example Partition: 8 Leader: 2 Replicas: 2 Isr: 2</span><br><span class="line">Topic: test.example Partition: 9 Leader: 0 Replicas: 0 Isr: 0</span><br><span class="line">Topic: test.example Partition: 10 Leader: 1 Replicas: 1 Isr: 1</span><br><span class="line">Topic: test.example Partition: 11 Leader: 2 Replicas: 2 Isr: 2</span><br></pre></td></tr></table></figure>
+
+<h4 id="修改配置文件"><a href="#修改配置文件" class="headerlink" title="修改配置文件"></a>修改配置文件</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">将原有replicas为[0]扩充为[0,4], [1]扩充为[1,5],[2]扩充为[2,3]</span><br><span class="line">[sankuai@data-kafka01 kafka]$ cat partitions-to-move.json</span><br><span class="line">&#123;</span><br><span class="line">“partitions”:</span><br><span class="line">[</span><br><span class="line">&#123;</span><br><span class="line">“topic”: “test.example”,</span><br><span class="line">“partition”: 0,</span><br><span class="line">“replicas”: [0,4]</span><br><span class="line">&#125;,</span><br><span class="line">.....</span><br><span class="line">&#123;</span><br><span class="line">“topic”: “test.example”,</span><br><span class="line">“partition”: 11,</span><br><span class="line">“replicas”: [2,3]</span><br><span class="line">&#125;</span><br><span class="line">],</span><br><span class="line">“version”:1</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="执行"><a href="#执行" class="headerlink" title="执行"></a>执行</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/kafka-reassign-partitions.sh –zookeeper 192.168.2.225:2183/config/mobile/mq –reassignment-json-file partitions-to-move.json –execute</span><br></pre></td></tr></table></figure>
+
+<h4 id="检查修改情况"><a href="#检查修改情况" class="headerlink" title="检查修改情况"></a>检查修改情况</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[sankuai@data-kafka01 kafka]$ ./bin/kafka-topics.sh –zookeeper 192.168.2.225:2183/config/mobile/mq –describe –topic test.example</span><br><span class="line">Topic:test.example PartitionCount:12 ReplicationFactor:2 Configs:</span><br><span class="line">Topic: test.example Partition: 0 Leader: 0 Replicas: 0,4 Isr: 0,4</span><br><span class="line">Topic: test.example Partition: 1 Leader: 1 Replicas: 1,5 Isr: 1,5</span><br><span class="line">Topic: test.example Partition: 2 Leader: 2 Replicas: 2,3 Isr: 2,3</span><br><span class="line">Topic: test.example Partition: 3 Leader: 0 Replicas: 0,4 Isr: 0,4</span><br><span class="line">Topic: test.example Partition: 4 Leader: 1 Replicas: 1,5 Isr: 1,5</span><br><span class="line">Topic: test.example Partition: 5 Leader: 2 Replicas: 2,3 Isr: 2,3</span><br><span class="line">Topic: test.example Partition: 6 Leader: 0 Replicas: 0,4 Isr: 0,4</span><br><span class="line">Topic: test.example Partition: 7 Leader: 1 Replicas: 1,5 Isr: 1,5</span><br><span class="line">Topic: test.example Partition: 8 Leader: 2 Replicas: 2,3 Isr: 2,3</span><br><span class="line">Topic: test.example Partition: 9 Leader: 0 Replicas: 0,4 Isr: 0,4</span><br><span class="line">Topic: test.example Partition: 10 Leader: 1 Replicas: 1,5 Isr: 1,5</span><br><span class="line">Topic: test.example Partition: 11 Leader: 2 Replicas: 2,3 Isr: 2,3</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="kafka性能优化"><a href="#kafka性能优化" class="headerlink" title="kafka性能优化"></a>kafka性能优化</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">###  配置jmx服务</span></span></span><br><span class="line">kafka server中默认是不启动jmx端口的，需要用户自己配置</span><br><span class="line">vim bin/kafka-run-class.sh</span><br><span class="line"><span class="meta">#</span><span class="bash">最前面添加一行</span></span><br><span class="line">JMX_PORT=8060</span><br></pre></td></tr></table></figure>
+
+<h2 id="kafka监控和告警"><a href="#kafka监控和告警" class="headerlink" title="kafka监控和告警"></a>kafka监控和告警</h2><p>通过使用，个人总结以上三种监控程序的优缺点：</p>
+<p>Kafka Web Console：监控功能较为全面，可以预览消息，监控Offset、Lag等信息，但存在bug，不建议在生产环境中使用。</p>
+<p>Kafka Manager：偏向Kafka集群管理，若操作不当，容易导致集群出现故障。对Kafka实时生产和消费消息是通过JMX实现的。没有记录Offset、Lag等信息。</p>
+<p>KafkaOffsetMonitor：程序一个jar包的形式运行，部署较为方便。只有监控功能，使用起来也较为安全。</p>
+<p>若只需要监控功能，推荐使用KafkaOffsetMonito，若偏重Kafka集群管理，推荐使用Kafka Manager。</p>
+<p>因为都是开源程序，稳定性欠缺。故需先了解清楚目前已存在哪些Bug，多测试一下，避免出现类似于Kafka Web Console的问题。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line">描述：所有的topic的消息速率(消息数/秒)</span><br><span class="line">Mbean名：&quot;kafka.server&quot;:name=&quot;AllTopicsMessagesInPerSec&quot;,type=&quot;BrokerTopicMetrics&quot;</span><br><span class="line">正常的值：</span><br><span class="line"></span><br><span class="line">描述：所有的topic的流入数据速率(字节/秒)</span><br><span class="line">Mbean名：&quot;kafka.server&quot;:name=&quot;AllTopicsBytesInPerSec&quot;,type=&quot;BrokerTopicMetrics&quot;</span><br><span class="line">正常的值：</span><br><span class="line"></span><br><span class="line">描述：producer或Fetch-consumer或Fetch-follower的请求速率(请求次数/秒)</span><br><span class="line">Mbean名：&quot;kafka.network&quot;:name=&quot;&#123;Produce|Fetch-consumer|Fetch-follower&#125;-RequestsPerSec&quot;,type=&quot;RequestMetrics&quot;</span><br><span class="line">正常的值：</span><br><span class="line"></span><br><span class="line">描述：所有的topic的流出数据速率(字节/秒)</span><br><span class="line">Mbean名： &quot;kafka.server&quot;:name=&quot;AllTopicsBytesOutPerSec&quot;,type=&quot;BrokerTopicMetrics&quot;</span><br><span class="line">正常的值：</span><br><span class="line"></span><br><span class="line">描述：刷日志的速率和耗时</span><br><span class="line">Mbean名： &quot;kafka.log&quot;:name=&quot;LogFlushRateAndTimeMs&quot;,type=&quot;LogFlushStats&quot;</span><br><span class="line">正常的值：</span><br><span class="line"></span><br><span class="line">描述：正在做复制的partition的数量(|ISR| &lt; |all replicas|)</span><br><span class="line">Mbean名：&quot;kafka.server&quot;:name=&quot;UnderReplicatedPartitions&quot;,type=&quot;ReplicaManager&quot;</span><br><span class="line">正常的值：0</span><br><span class="line"></span><br><span class="line">描述：当前的broker是否为controller</span><br><span class="line">Mbean名：&quot;kafka.controller&quot;:name=&quot;ActiveControllerCount&quot;,type=&quot;KafkaController&quot;</span><br><span class="line">正常的值：在集群中只有一个broker的这个值为1</span><br><span class="line"></span><br><span class="line">描述：选举leader的速率</span><br><span class="line">Mbean名：&quot;kafka.controller&quot;:name=&quot;LeaderElectionRateAndTimeMs&quot;,type=&quot;ControllerStats&quot;</span><br><span class="line">正常的值：如果有broker挂了，此值非0</span><br><span class="line"></span><br><span class="line">描述：Unclean的leader选举速率</span><br><span class="line">Mbean名：&quot;kafka.controller&quot;:name=&quot;UncleanLeaderElectionsPerSec&quot;,type=&quot;ControllerStats&quot;</span><br><span class="line">正常的值：0</span><br><span class="line"></span><br><span class="line">描述：该broker上的partition的数量</span><br><span class="line">Mbean名： &quot;kafka.server&quot;:name=&quot;PartitionCount&quot;,type=&quot;ReplicaManager&quot;</span><br><span class="line">正常的值：应在各个broker中平均分布</span><br><span class="line"></span><br><span class="line">描述：Leader的replica的数量</span><br><span class="line">Mbean名： &quot;kafka.server&quot;:name=&quot;LeaderCount&quot;,type=&quot;ReplicaManager&quot;</span><br><span class="line">正常的值：应在各个broker中平均分布</span><br><span class="line"></span><br><span class="line">描述：ISR的收缩(shrink)速率</span><br><span class="line">Mbean名：&quot;kafka.server&quot;:name=&quot;ISRShrinksPerSec&quot;,type=&quot;ReplicaManager&quot;</span><br><span class="line">正常的值：如果一个broker挂掉了，一些partition的ISR会收缩。当那个broker重新起来时，一旦它的replica完全跟上，ISR会扩大(expand)。除此之外，正常情况下，此值和下面的扩大速率都是0。</span><br><span class="line"></span><br><span class="line">描述：ISR的扩大(expansion)速率</span><br><span class="line">Mbean名： &quot;kafka.server&quot;:name=&quot;ISRExpandsPerSec&quot;,type=&quot;ReplicaManager&quot;</span><br><span class="line">正常的值：参见ISR的收缩(shrink)速率</span><br><span class="line"></span><br><span class="line">描述：follower落后leader replica的最大的消息数量</span><br><span class="line">Mbean名：&quot;kafka.server&quot;:name=&quot;([-.\w]+)-MaxLag&quot;,type=&quot;ReplicaFetcherManager&quot;</span><br><span class="line">正常的值：小于replica.lag.max.messages</span><br><span class="line"></span><br><span class="line">描述：每个follower replica落后的消息速率</span><br><span class="line">Mbean名：&quot;kafka.server&quot;:name=&quot;([-.\w]+)-ConsumerLag&quot;,type=&quot;FetcherLagMetrics&quot;</span><br><span class="line">正常的值：小于replica.lag.max.messages</span><br><span class="line"></span><br><span class="line">描述：等待producer purgatory的请求数</span><br><span class="line">Mbean名：&quot;kafka.server&quot;:name=&quot;PurgatorySize&quot;,type=&quot;ProducerRequestPurgatory&quot;</span><br><span class="line">正常的值：如果ack=-1，应为非0值</span><br><span class="line"></span><br><span class="line">描述：等待fetch purgatory的请求数</span><br><span class="line">Mbean名：&quot;kafka.server&quot;:name=&quot;PurgatorySize&quot;,type=&quot;FetchRequestPurgatory&quot;</span><br><span class="line">正常的值：依赖于consumer的fetch.wait.max.ms的设置</span><br><span class="line"></span><br><span class="line">描述：一个请求(producer,Fetch-Consumer,Fetch-Follower)耗费的所有时间</span><br><span class="line">Mbean名：&quot;kafka.network&quot;:name=&quot;&#123;Produce|Fetch-Consumer|Fetch-Follower&#125;-TotalTimeMs&quot;,type=&quot;RequestMetrics&quot;</span><br><span class="line">正常的值：包括了queue, local, remote和response send time</span><br><span class="line"></span><br><span class="line">描述：请求(producer,Fetch-Consumer,Fetch-Follower)在请求队列中的等待时间</span><br><span class="line">Mbean名：&quot;kafka.network&quot;:name=&quot;&#123;Produce|Fetch-Consumer|Fetch-Follower&#125;-QueueTimeMs&quot;,type=&quot;RequestMetrics&quot;</span><br><span class="line">正常的值：</span><br><span class="line"></span><br><span class="line">描述：请求(producer,Fetch-Consumer,Fetch-Follower)在leader处理请求花的时间</span><br><span class="line">Mbean名：&quot;kafka.network&quot;:name=&quot;&#123;Produce|Fetch-Consumer|Fetch-Follower&#125;-LocalTimeMs&quot;,type=&quot;RequestMetrics&quot;</span><br><span class="line">正常的值：</span><br><span class="line"></span><br><span class="line">描述：请求(producer,Fetch-Consumer,Fetch-Follower)等待follower花费的时间</span><br><span class="line">Mbean名：&quot;kafka.network&quot;:name=&quot;&#123;Produce|Fetch-Consumer|Fetch-Follower&#125;-RemoteTimeMs&quot;,type=&quot;RequestMetrics&quot;</span><br><span class="line">正常的值：producer的ack=-1时，非0才正常</span><br><span class="line"></span><br><span class="line">描述：发送响应花费的时间</span><br><span class="line">Mbean名：&quot;kafka.network&quot;:name=&quot;&#123;Produce|Fetch-Consumer|Fetch-Follower&#125;-ResponseSendTimeMs&quot;,type=&quot;RequestMetrics&quot;</span><br><span class="line">正常的值：</span><br><span class="line"></span><br><span class="line">描述：consumer落后producer的消息数量</span><br><span class="line">Mbean名：&quot;kafka.consumer&quot;:name=&quot;([-.\w]+)-MaxLag&quot;,type=&quot;ConsumerFetcherManager&quot;</span><br><span class="line">正常的值：</span><br><span class="line"></span><br><span class="line">建议对GC耗时和其他参数和诸如系统CPU，I/O时间等等进行监控。在client端，建议对&quot;消息数量/字节数&quot;的速率(全局的和对于每一个topic)，请求的&quot;速率/大小/耗时&quot;进行监控。还有consumer端，所有partition的最大的落后情况和最小的fetch请求的速率。consumer为了能跟上，最大落后数量需要少于一个threshold并且最小fetch速率需要大于0.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="kafka客户端汇总"><a href="#kafka客户端汇总" class="headerlink" title="kafka客户端汇总"></a>kafka客户端汇总</h2><p><code>pip install kafka-python</code><br><a target="_blank" rel="noopener" href="http://kafka-python.readthedocs.io/en/master/install.html">kafka官方文档</a></p>
+<h2 id="帮助文档"><a href="#帮助文档" class="headerlink" title="帮助文档"></a>帮助文档</h2><p>分布式消息中间件应用实践<br><a target="_blank" rel="noopener" href="http://www.ibm.com/developerworks/cn/opensource/os-cn-kafka-distributed/">http://www.ibm.com/developerworks/cn/opensource/os-cn-kafka-distributed/</a><br>Apache kafka 工作原理介绍<br><a target="_blank" rel="noopener" href="http://www.ibm.com/developerworks/cn/opensource/os-cn-kafka/index.html">http://www.ibm.com/developerworks/cn/opensource/os-cn-kafka/index.html</a></p>
+<p>kafka 快速入门手册<br><a target="_blank" rel="noopener" href="http://www.blogjava.net/paulwong/archive/2014/05/11/413506.html">http://www.blogjava.net/paulwong/archive/2014/05/11/413506.html</a></p>
+<p>kafka 集群安装与扩容<br><a target="_blank" rel="noopener" href="http://my.oschina.net/MaTech/blog/292090">http://my.oschina.net/MaTech/blog/292090</a><br><a target="_blank" rel="noopener" href="http://my.oschina.net/MaTech/blog/292090">http://my.oschina.net/MaTech/blog/292090</a></p>
+<p>kafka入门：简介、使用场景、设计原理、主要配置及集群搭建（转）</p>
+<p>kafka 性能测试<br><a target="_blank" rel="noopener" href="https://engineering.linkedin.com/kafka/benchmarking-apache-kafka-2-million-writes-second-three-cheap-machines">https://engineering.linkedin.com/kafka/benchmarking-apache-kafka-2-million-writes-second-three-cheap-machines</a></p>
+<p>青云kafka集群介绍</p>
+<p><a target="_blank" rel="noopener" href="https://docs.qingcloud.com/guide/queue.html#id7">https://docs.qingcloud.com/guide/queue.html#id7</a></p>
+<p>kafka python+zabbix 监控脚本<br><a target="_blank" rel="noopener" href="http://club.oneapm.com/t/zabbix-kafka/854">http://club.oneapm.com/t/zabbix-kafka/854</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2016/12/26/tomcat-install/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="biglittleant">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="biglittleant">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2016/12/26/tomcat-install/" class="post-title-link" itemprop="url">tomcat生产环境部署</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2016-12-26 16:19:30" itemprop="dateCreated datePublished" datetime="2016-12-26T16:19:30+08:00">2016-12-26</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2020-09-16 17:41:57" itemprop="dateModified" datetime="2020-09-16T17:41:57+08:00">2020-09-16</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/tomcat/" itemprop="url" rel="index"><span itemprop="name">tomcat</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="实验环境介绍"><a href="#实验环境介绍" class="headerlink" title="实验环境介绍"></a>实验环境介绍</h2><p>实验环境规划</p>
+<table>
+<thead>
+<tr>
+<th>主机名</th>
+<th>ip address</th>
+<th>操作系统</th>
+<th>职责</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>linux-node1</td>
+<td>192.168.56.11</td>
+<td>centos7</td>
+<td>tomcat</td>
+</tr>
+</tbody></table>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@linux ~]# uname -r</span><br><span class="line">3.10.0-229.el7.x86_64</span><br><span class="line">[root@linux ~]# uname -m</span><br><span class="line">x86_64</span><br><span class="line">[root@linux ~]# cat &#x2F;etc&#x2F;redhat-release</span><br><span class="line">CentOS Linux release 7.1.1503 (Core)</span><br></pre></td></tr></table></figure>
+<h2 id="tomcat安装过程"><a href="#tomcat安装过程" class="headerlink" title="tomcat安装过程"></a>tomcat安装过程</h2><h3 id="先安装java环境"><a href="#先安装java环境" class="headerlink" title="先安装java环境"></a>先安装java环境</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;local&#x2F;src&#x2F;</span><br><span class="line">tar -zxf jdk-8u65-linux-x64.tar.gz ##从官网下载好java包，上传到这个目录中。</span><br><span class="line">mv jdk1.8.0_65&#x2F; &#x2F;data&#x2F;app&#x2F;</span><br><span class="line">ln -s &#x2F;data&#x2F;app&#x2F;jdk1.8.0_65&#x2F; &#x2F;data&#x2F;app&#x2F;java</span><br><span class="line">vim &#x2F;etc&#x2F;profile</span><br><span class="line">###setup java by biglittleant at 2015-08-28</span><br><span class="line">export JAVA_HOME&#x3D;&#x2F;data&#x2F;app&#x2F;java</span><br><span class="line">export PATH&#x3D;$JAVA_HOME&#x2F;bin:$JAVA_HOME&#x2F;jre&#x2F;bin:$PATH</span><br><span class="line">export JRE_HOME&#x3D;$JAVA_HOME&#x2F;jre</span><br><span class="line">export CLASSPATH&#x3D;.$CLASSPATH:$JAVA_HOME&#x2F;lib:$JAVA_HOME&#x2F;jre&#x2F;lib:$JAVA_HOME&#x2F;lib&#x2F;tools.jar</span><br><span class="line"></span><br><span class="line">source &#x2F;etc&#x2F;profile##生效一下java版本</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="安装tomcat"><a href="#安装tomcat" class="headerlink" title="安装tomcat"></a>安装tomcat</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;local&#x2F;src&#x2F;</span><br><span class="line">tar -zxf apache-tomcat-8.0.32.tar.gz</span><br><span class="line">mv apache-tomcat-8.0.32 &#x2F;data&#x2F;app&#x2F;</span><br><span class="line">ln -s &#x2F;data&#x2F;app&#x2F;apache-tomcat-8.0.32&#x2F; &#x2F;data&#x2F;app&#x2F;tomcat</span><br><span class="line">useradd -d &#x2F;data&#x2F;app&#x2F;tomcat -u 505 tomcat</span><br><span class="line">passwd tomcat</span><br><span class="line">chown -R tomcat.tomcat &#x2F;data&#x2F;app&#x2F;apache-tomcat-8.0.32&#x2F;</span><br><span class="line">cd &#x2F;data&#x2F;app&#x2F;tomcat&#x2F;</span><br><span class="line">chmod 744 -R bin&#x2F;*.sh</span><br><span class="line">su - tomcat</span><br><span class="line">pwd</span><br></pre></td></tr></table></figure>
+
+<h3 id="手动编写tomcat启停脚本"><a href="#手动编写tomcat启停脚本" class="headerlink" title="手动编写tomcat启停脚本"></a>手动编写tomcat启停脚本</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">TOMCAT_PATH=/data/app/tomcat</span><br><span class="line"></span><br><span class="line">usage()&#123;</span><br><span class="line">   echo &quot;Usage: $0 [start|stop|status|restart]&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">status_tomcat()&#123;</span><br><span class="line"></span><br><span class="line">ps aux | grep java | grep tomcat | grep -v &#x27;grep&#x27;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">start_tomcat()&#123;</span><br><span class="line">/data/app/tomcat/bin/startup.sh</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">stop_tomcat()&#123;</span><br><span class="line"></span><br><span class="line">TPID=$(ps aux | grep java | grep tomcat | grep -v &#x27;grep&#x27; | awk &#x27;&#123;print $2&#125;&#x27;)</span><br><span class="line">kill -9 $TPID</span><br><span class="line">sleep 5;</span><br><span class="line"></span><br><span class="line">TSTAT=$(ps aux | grep java | grep tomcat | grep -v &#x27;grep&#x27; | awk &#x27;&#123;print $2&#125;&#x27;)</span><br><span class="line">    if [ -z $TSTAT ];then</span><br><span class="line">      echo &quot;tomcat stop&quot;</span><br><span class="line">    else</span><br><span class="line">      kill -9 $TSTAT</span><br><span class="line">    fi</span><br><span class="line"></span><br><span class="line">cd $TOMCAT_PATH</span><br><span class="line"></span><br><span class="line">rm temp/* -rf</span><br><span class="line">rm work/* -rf</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">main()&#123;</span><br><span class="line">case $1 in</span><br><span class="line"></span><br><span class="line">   start)</span><br><span class="line">      start_tomcat;;</span><br><span class="line">   stop)</span><br><span class="line">      stop_tomcat;;</span><br><span class="line">   status)</span><br><span class="line">      status_tomcat;;</span><br><span class="line">   restart)</span><br><span class="line">      stop_tomcat &amp;&amp; start_tomcat;;</span><br><span class="line">    *)</span><br><span class="line">      usage;</span><br><span class="line">esac</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">main $1</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置server-xml"><a href="#配置server-xml" class="headerlink" title="配置server.xml"></a>配置server.xml</h2><p>tomcat的server.xml 配置文件一共分为五大部分：</p>
+<ul>
+<li>server块</li>
+<li>service块</li>
+<li>connector块</li>
+<li>engine块</li>
+<li>host块<br><code>下图是我看到比较好的一张解释server.xml配置文件的图片</code><br><img src="http://oi3tsepsh.bkt.clouddn.com/tomcat-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E5%9B%BE.gif" alt="tomcat-配置文件结构图"></li>
+</ul>
+<p>看懂配置文件以后我们来说明一下tomcat处理客户端请求的过程</p>
+<ol>
+<li>客户端访问URL：<a href="http://www.biglittleant.cn:8080/java/index.jsp">http://www.biglittleant.cn:8080/java/index.jsp</a> 服务器端收到请求以后，开始解析URL。</li>
+<li>connector块创建8080端口，并接收客户端的请求地址，交给engine块。</li>
+<li>engine会根据域名（<a target="_blank" rel="noopener" href="http://www.biglittleant.cn)读取相应的host块./">www.biglittleant.cn）读取相应的host块。</a></li>
+<li>host块接到请求后，分析URI（/java/index.jsp）匹配相应的context块。然后跳转到context段docBase的目录，并读取index.jsp，返回给engine。</li>
+<li>engine返回给connector。</li>
+<li>connector把结果返回给客户端。</li>
+</ol>
+<h3 id="server-xml-配置文件详细解释"><a href="#server-xml-配置文件详细解释" class="headerlink" title="server.xml 配置文件详细解释"></a>server.xml 配置文件详细解释</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version&#x3D;&#39;1.0&#39; encoding&#x3D;&#39;utf-8&#39;?&gt;</span><br><span class="line"></span><br><span class="line">&lt;Server port&#x3D;&quot;8888&quot; shutdown&#x3D;&quot;shutdowntomcat&quot;&gt;</span><br><span class="line">###开启8888管理端口，设定shutdowntomcat可以关闭tomcat服务器。</span><br><span class="line">  &lt;Listener className&#x3D;&quot;org.apache.catalina.startup.VersionLoggerListener&quot; &#x2F;&gt;</span><br><span class="line">  &lt;Listener className&#x3D;&quot;org.apache.catalina.core.AprLifecycleListener&quot; SSLEngine&#x3D;&quot;on&quot; &#x2F;&gt;</span><br><span class="line">  &lt;Listener className&#x3D;&quot;org.apache.catalina.core.JasperListener&quot; &#x2F;&gt;</span><br><span class="line">  &lt;Listener className&#x3D;&quot;org.apache.catalina.core.JreMemoryLeakPreventionListener&quot; &#x2F;&gt;</span><br><span class="line">  &lt;Listener className&#x3D;&quot;org.apache.catalina.mbeans.GlobalResourcesLifecycleListener&quot; &#x2F;&gt;</span><br><span class="line">  &lt;Listener className&#x3D;&quot;org.apache.catalina.core.ThreadLocalLeakPreventionListener&quot; &#x2F;&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  &lt;GlobalNamingResources&gt;</span><br><span class="line"></span><br><span class="line">    &lt;Resource name&#x3D;&quot;UserDatabase&quot; auth&#x3D;&quot;Container&quot;</span><br><span class="line">              type&#x3D;&quot;org.apache.catalina.UserDatabase&quot;</span><br><span class="line">              description&#x3D;&quot;User database that can be updated and saved&quot;</span><br><span class="line">              factory&#x3D;&quot;org.apache.catalina.users.MemoryUserDatabaseFactory&quot;</span><br><span class="line">              pathname&#x3D;&quot;conf&#x2F;tomcat-users.xml&quot; &#x2F;&gt;</span><br><span class="line">  &lt;&#x2F;GlobalNamingResources&gt;</span><br><span class="line"></span><br><span class="line">  &lt;Service name&#x3D;&quot;Catalina&quot;&gt;</span><br><span class="line">##定义一个service</span><br><span class="line"></span><br><span class="line">    &lt;Connector port&#x3D;&quot;8080&quot; protocol&#x3D;&quot;HTTP&#x2F;1.1&quot;</span><br><span class="line">               connectionTimeout&#x3D;&quot;20000&quot;</span><br><span class="line">               redirectPort&#x3D;&quot;8443&quot; &#x2F;&gt;</span><br><span class="line">##开启一个8080端口，来接收客户端请求，使用HTTP&#x2F;1.1协议，超时时间为20000，redirectPort 是SSL的端口，也可以不配置。</span><br><span class="line">    &lt;Connector port&#x3D;&quot;8009&quot; protocol&#x3D;&quot;AJP&#x2F;1.3&quot; redirectPort&#x3D;&quot;8443&quot; &#x2F;&gt;</span><br><span class="line">##同上。协议改变了。</span><br><span class="line"></span><br><span class="line">    &lt;Engine name&#x3D;&quot;Catalina&quot; defaultHost&#x3D;&quot;localhost&quot;&gt;</span><br><span class="line">		#defaultHost 定义默认host主机，当所有host都匹配不了URL时，将转发给localhost虚拟主机。</span><br><span class="line">      &lt;Realm className&#x3D;&quot;org.apache.catalina.realm.LockOutRealm&quot;&gt;</span><br><span class="line"></span><br><span class="line">        &lt;Realm className&#x3D;&quot;org.apache.catalina.realm.UserDatabaseRealm&quot;</span><br><span class="line">               resourceName&#x3D;&quot;UserDatabase&quot;&#x2F;&gt;</span><br><span class="line">      &lt;&#x2F;Realm&gt;</span><br><span class="line"></span><br><span class="line">      &lt;Host name&#x3D;&quot;localhost&quot;  appBase&#x3D;&quot;webapps&quot;</span><br><span class="line">            unpackWARs&#x3D;&quot;false&quot; autoDeploy&#x3D;&quot;false&quot;&gt;</span><br><span class="line">            ##定义web应用程序的目录，关闭自动解压wAR包，关闭自动部署。生产上一定要关闭。否则会发生意想不到的问题。</span><br><span class="line">      &lt;Context path&#x3D;&quot;&#x2F;java&quot; docBase&#x3D;&quot;&#x2F;data&#x2F;app&#x2F;tomcat&#x2F;webapps&#x2F;java&quot; debug&#x3D;&quot;0&quot; reloadable&#x3D;&quot;false&quot; crossContext&#x3D;&quot;true&quot;&#x2F;&gt;</span><br><span class="line">      ##定义一个路径，当URI中包含&#x2F;java时去，docbase路径下来查找相应的配置文件，reloadable&#x3D;True时，会监控docbase路径下的文件是否发生改变，发生改变就自动重载配置，生产上这个也要禁止掉。</span><br><span class="line"></span><br><span class="line">        &lt;Valve className&#x3D;&quot;org.apache.catalina.valves.AccessLogValve&quot; directory&#x3D;&quot;logs&quot;</span><br><span class="line">               prefix&#x3D;&quot;localhost_access_log.&quot; suffix&#x3D;&quot;.txt&quot;</span><br><span class="line">               pattern&#x3D;&quot;%h %l %u %t %r %s %b %&#123;Referer&#125;i %&#123;User-Agent&#125;i %D&quot; resolveHosts&#x3D;&quot;false&quot; &#x2F;&gt;</span><br><span class="line"> ##定义本host的accesslog的文件名(localhost_access_log)，后缀名（.txt）pattern 定义如何记录accesslog。</span><br><span class="line"></span><br><span class="line">      &lt;&#x2F;Host&gt;</span><br><span class="line">    &lt;&#x2F;Engine&gt;</span><br><span class="line">  &lt;&#x2F;Service&gt;</span><br><span class="line">&lt;&#x2F;Server&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置web-xml"><a href="#配置web-xml" class="headerlink" title="配置web.xml"></a>配置web.xml</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;init-param&gt;</span><br><span class="line">	&lt;param-name&gt;listings&lt;&#x2F;param-name&gt;</span><br><span class="line">	&lt;param-value&gt;false&lt;&#x2F;param-value&gt;</span><br><span class="line">&lt;&#x2F;init-param&gt;</span><br><span class="line">#关闭服务器的list目录的文件内容。</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="删除tomcat的默认文件"><a href="#删除tomcat的默认文件" class="headerlink" title="删除tomcat的默认文件"></a>删除tomcat的默认文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">rm -f tomcat&#x2F;webapps&#x2F;*</span><br><span class="line">rm -f tomcat&#x2F;conf&#x2F;tomcat-user.xml</span><br><span class="line">去除其他用户对tomcat 起停脚本的执行权限</span><br><span class="line">chmod 744 &#x2F;bin&#x2F;*.sh</span><br></pre></td></tr></table></figure>
+
+<h3 id="调优JAVA，开启JVM监控"><a href="#调优JAVA，开启JVM监控" class="headerlink" title="调优JAVA，开启JVM监控"></a>调优JAVA，开启JVM监控</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">vim tomcat&#x2F;bin&#x2F;catalina.sh</span><br><span class="line">JAVA_OPTS&#x3D;&quot;-XX:PermSize&#x3D;64M -XX:MaxPermSize&#x3D;128m -Xms512m -Xmx512m -Duser.timezone&#x3D;Asia&#x2F;Shanghai&quot;</span><br><span class="line">## 配置服务器的jvm参数调优</span><br><span class="line">export CATALINA_OPTS&#x3D;&quot;$CATALINA_OPTS -Dcom.sun.management.jmxremote&quot;</span><br><span class="line">export CATALINA_OPTS&#x3D;&quot;$CATALINA_OPTS -Dcom.sun.management.jmxremote.port&#x3D;10053&quot;</span><br><span class="line">export CATALINA_OPTS&#x3D;&quot;$CATALINA_OPTS -Dcom.sun.management.jmxremote.authenticate&#x3D;false&quot;</span><br><span class="line">export CATALINA_OPTS&#x3D;&quot;$CATALINA_OPTS -Dcom.sun.management.jmxremote.ssl&#x3D;false&quot;</span><br><span class="line">export CATALINA_OPTS&#x3D;&quot;$CATALINA_OPTS -Djava.rmi.server.hostname&#x3D;192.168.56.11&quot;</span><br><span class="line">##开启服务器的远程JVM端口</span><br><span class="line">236  # ----- Execute The Requested Command -----------------------------------------</span><br></pre></td></tr></table></figure>
+
+<p>剩下的问题就是开启zabbix监控tomcat的JVM。</p>
+<h3 id="补充如何查看tomcat的jmx选项"><a href="#补充如何查看tomcat的jmx选项" class="headerlink" title="补充如何查看tomcat的jmx选项"></a>补充如何查看tomcat的jmx选项</h3><p>JMX 有很多 Key 可以监控，具体的值，可以通过 jconsole 参看。如下图所示，如果要监控线程数，就可以写成 jmx[“java.lang:type=Threading”, “ThreadCount”]<br><img src="http://oi3tsepsh.bkt.clouddn.com/14737644434051.jpg"></p>
+<h2 id="Tomcat-日志配置"><a href="#Tomcat-日志配置" class="headerlink" title="Tomcat 日志配置"></a>Tomcat 日志配置</h2><p>pattern属性值由字符串常量和pattern标识符加上前缀”%”组合而成。pattern标识符加上前缀”%”，用来代替当前请求/响应中的对应的变量值。目前支持如下的pattern：</p>
+<ul>
+<li>%a - 远端IP地址</li>
+<li>%A - 本地IP地址</li>
+<li>%b - 发送的字节数，不包括HTTP头，如果为0，使用”－”</li>
+<li>%B - 发送的字节数，不包括HTTP头</li>
+<li>%h - 远端主机名(如果resolveHost=false，远端的IP地址）</li>
+<li>%H - 请求协议</li>
+<li>%l - 从identd返回的远端逻辑用户名（总是返回 ‘-‘）</li>
+<li>%m - 请求的方法（GET，POST，等）</li>
+<li>%p - 收到请求的本地端口号</li>
+<li>%q - 查询字符串(如果存在，以 ‘?’开始)</li>
+<li>%r - 请求的第一行，包含了请求的方法和URI</li>
+<li>%s - 响应的状态码</li>
+<li>%S - 用户的session ID</li>
+<li>%t - 日志和时间，使用通常的Log格式</li>
+<li>%u - 认证以后的远端用户（如果存在的话，否则为’-‘）</li>
+<li>%U - 请求的URI路径</li>
+<li>%v - 本地服务器的名称</li>
+<li>%D - 处理请求的时间，以毫秒为单位</li>
+<li>%T - 处理请求的时间，以秒为单位<br>另外，Access Log中也支持cookie，请求header，响应headers，Session或者其他在ServletRequest中的对象的信息。格式遵循apache语法：</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">%</span><span class="bash">&#123;xxx&#125;i 请求headers的信息</span></span><br><span class="line"><span class="meta">%</span><span class="bash">&#123;xxx&#125;o 响应headers的信息</span></span><br><span class="line"><span class="meta">%</span><span class="bash">&#123;xxx&#125;c 请求cookie的信息</span></span><br><span class="line"><span class="meta">%</span><span class="bash">&#123;xxx&#125;r xxx是ServletRequest的一个属性</span></span><br><span class="line"><span class="meta">%</span><span class="bash">&#123;xxx&#125;s xxx是HttpSession的一个属性</span></span><br></pre></td></tr></table></figure>
+<p>common模式的pattern(即默认pattern参数)的格式为’%h %l %u %t “%r” %s %b’。</p>
+<p>combined模式的pattern可以增加Referer和User-Agent headers的参数形式，每个参数用双引号包起来，引号中的内容还是上面列举的参数。比如”%{User-Agent}i”使其为”%{User-Agent}i“，即请求的User-Agent(客户端，浏览器)。</p>
+<p>关于Common Log Format参考：<a target="_blank" rel="noopener" href="http://baike.baidu.com/view/2948003.htm">http://baike.baidu.com/view/2948003.htm</a></p>
+<h4 id="配置普通日志格式"><a href="#配置普通日志格式" class="headerlink" title="配置普通日志格式"></a>配置普通日志格式</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Valve</span> <span class="attr">className</span>=<span class="string">&quot;org.apache.catalina.valves.AccessLogValve&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">directory</span>=<span class="string">&quot;logs&quot;</span>  <span class="attr">prefix</span>=<span class="string">&quot;localhost_access_log.&quot;</span> <span class="attr">suffix</span>=<span class="string">&quot;.txt&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">pattern</span>=<span class="string">&quot;%h %l %u %t %r %s %b %&#123;Referer&#125;i %&#123;User-Agent&#125;i %D&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">resolveHosts</span>=<span class="string">&quot;false&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>日志访问实例</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">192.168.0.113 - - [11/Jul/2016:16:25:53 +0800] PUT /fontgenerate/ HTTP/1.1 200 37 - Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like G</span><br><span class="line">ecko) Chrome/45.0.2454.101 Safari/537.36 1</span><br></pre></td></tr></table></figure>
+
+<h4 id="将日志格式输出为json格式"><a href="#将日志格式输出为json格式" class="headerlink" title="将日志格式输出为json格式"></a>将日志格式输出为json格式</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Valve</span> <span class="attr">className</span>=<span class="string">&quot;org.apache.catalina.valves.AccessLogValve&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">directory</span>=<span class="string">&quot;logs&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">prefix</span>=<span class="string">&quot;localhost_access_log.&quot;</span> <span class="attr">suffix</span>=<span class="string">&quot;.json&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">pattern</span>=<span class="string">&quot;&#123;<span class="symbol">&amp;quot;</span>client<span class="symbol">&amp;quot;</span>:<span class="symbol">&amp;quot;</span>%h<span class="symbol">&amp;quot;</span>,  <span class="symbol">&amp;quot;</span>client user<span class="symbol">&amp;quot;</span>:<span class="symbol">&amp;quot;</span>%l<span class="symbol">&amp;quot;</span>,   <span class="symbol">&amp;quot;</span>authenticated<span class="symbol">&amp;quot;</span>:<span class="symbol">&amp;quot;</span>%u<span class="symbol">&amp;quot;</span>,   <span class="symbol">&amp;quot;</span>access time<span class="symbol">&amp;quot;</span>:<span class="symbol">&amp;quot;</span>%t<span class="symbol">&amp;quot;</span>,     <span class="symbol">&amp;quot;</span>method<span class="symbol">&amp;quot;</span>:<span class="symbol">&amp;quot;</span>%r<span class="symbol">&amp;quot;</span>,   <span class="symbol">&amp;quot;</span>status<span class="symbol">&amp;quot;</span>:<span class="symbol">&amp;quot;</span>%s<span class="symbol">&amp;quot;</span>,  <span class="symbol">&amp;quot;</span>send bytes<span class="symbol">&amp;quot;</span>:<span class="symbol">&amp;quot;</span>%b<span class="symbol">&amp;quot;</span>  ,  <span class="symbol">&amp;quot;</span>partner<span class="symbol">&amp;quot;</span>:<span class="symbol">&amp;quot;</span>%&#123;Referer&#125;i<span class="symbol">&amp;quot;</span>,  <span class="symbol">&amp;quot;</span>Agent version<span class="symbol">&amp;quot;</span>:<span class="symbol">&amp;quot;</span>%&#123;User-Agent&#125;i<span class="symbol">&amp;quot;</span>,  <span class="symbol">&amp;quot;</span>request_duration<span class="symbol">&amp;quot;</span>:<span class="symbol">&amp;quot;</span>%D<span class="symbol">&amp;quot;</span>&#125;&quot;</span></span></span><br><span class="line"><span class="tag">      <span class="attr">resolveHosts</span>=<span class="string">&quot;false&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>访问日志结果：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;client&quot;</span>: <span class="string">&quot;192.168.0.13&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;client user&quot;</span>: <span class="string">&quot;-&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;authenticated&quot;</span>: <span class="string">&quot;-&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;access time&quot;</span>: <span class="string">&quot;[14/Sep/2016:11:03:33 +0800]&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;method&quot;</span>: <span class="string">&quot;GET /fontgenerate/?text=hello%E5%88%9D%E9%A1%B5&amp;fontName=HYHLZTJ.ttf&amp;type=Woff HTTP/1.1&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;status&quot;</span>: <span class="string">&quot;200&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;send bytes&quot;</span>: <span class="string">&quot;11572&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;partner&quot;</span>: <span class="string">&quot;http://192.168.0.226:8080/&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;Agent version&quot;</span>: <span class="string">&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.101 Safari/537.36&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;request_duration&quot;</span>: <span class="string">&quot;42&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2016/12/25/sort/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="biglittleant">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="biglittleant">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2016/12/25/sort/" class="post-title-link" itemprop="url">sort-命令</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2016-12-25 14:53:01" itemprop="dateCreated datePublished" datetime="2016-12-25T14:53:01+08:00">2016-12-25</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2020-09-18 17:06:03" itemprop="dateModified" datetime="2020-09-18T17:06:03+08:00">2020-09-18</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="sort"><a href="#sort" class="headerlink" title="sort"></a>sort</h1><p>sort将文件的每一行作为一个单位，相互比较，比较原则是从首字符向后，依次按ASCII码值进行比较，最后将他们按升序输出。<br>英文翻译：sort lines of text files .</p>
+<p>格式：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Usage: sort [OPTION]... [FILE]...</span><br><span class="line">  or:  sort [OPTION]... --files0-from=F</span><br></pre></td></tr></table></figure>
+
+<p>参数：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">Ordering options:</span><br><span class="line"></span><br><span class="line">-b, --ignore-leading-blanks  忽略每行前面开始出的空格字符。</span><br><span class="line">-d, --dictionary-order      排序时，处理英文字母、数字及空格字符外，忽略其他的字符。</span><br><span class="line">-f, --ignore-case           排序时，将小写字母视为大写字母。</span><br><span class="line">-g, --general-numeric-sort  按照常规数值排序</span><br><span class="line">-i, --ignore-nonprinting    排序时，除了040至176之间的ASCII字符外，忽略其他的字符。</span><br><span class="line">-M, --month-sort          将前面3个字母依照月份的缩写进行排序。</span><br><span class="line">-h, --human-numeric-sort   使用人类可读的数字(例如： 2K 1G)</span><br><span class="line">-n, --numeric-sort         依照数值的大小排序。</span><br><span class="line">-R, --random-sort           根据随机hash 排序</span><br><span class="line">--random-source=FILE    从指定文件中获得随机字节</span><br><span class="line">-r, --reverse              以相反的顺序来排序。</span><br><span class="line">--sort=WORD             按照WORD 指定的格式排序：</span><br><span class="line">                                        一般数字-g，高可读性-h，月份-M，数字-n，</span><br><span class="line">                                        随机-R，版本-V</span><br><span class="line">-V, --version-sort          按照常规数值排序</span><br><span class="line"></span><br><span class="line">Other options:</span><br><span class="line"></span><br><span class="line">--batch-size=NMERGE   一次最多合并NMERGE 个输入；如果输入更多则使用临时文件</span><br><span class="line">-c, --check, --check=diagnose-first  检查输入是否已排序，若已有序则不进行操作</span><br><span class="line">-C, --check=quiet, --check=silent  类似-c，但不报告第一个无序行</span><br><span class="line">--compress-program=PROG 使用指定程序压缩临时文件；使用该程序</span><br><span class="line">                                        的-d 参数解压缩文件</span><br><span class="line">--debug               为用于排序的行添加注释，并将有可能有问题的</span><br><span class="line">                                        用法输出到标准错误输出</span><br><span class="line">--files0-from=F      从指定文件读取以NUL 终止的名称，如果该文件被</span><br><span class="line">                                        指定为&quot;-&quot;则从标准输入读文件名</span><br><span class="line">-k, --key=KEYDEF         在位置1 开始一个key，在位置2 终止(默认为行尾)</span><br><span class="line">-m, --merge               合并已排序的文件，不再进行排序</span><br><span class="line">-o, --output=FILE         将排序后的结果存入指定的文件。</span><br><span class="line">-s, --stable              禁用last-resort 比较以稳定比较算法</span><br><span class="line">-S, --buffer-size=SIZE    禁用last-resort 比较以稳定比较算法</span><br><span class="line">-t, --field-separator=SEP  使用SEP作为排序时所用的分隔符。</span><br><span class="line">-T, --temporary-directory=DIR  使用指定目录而非$TMPDIR 或/tmp 作为</span><br><span class="line">                                        临时目录，可用多个选项指定多个目录</span><br><span class="line">--parallel=N          将同时运行的排序数改变为N</span><br><span class="line">-u, --unique              配合-c，严格校验排序；不配合-c，则只输出一次排序结果</span><br><span class="line">-z, --zero-terminated     以0 字节而非新行作为行尾标志</span><br><span class="line">--help    显示帮助</span><br><span class="line">--version 显示版本信息</span><br></pre></td></tr></table></figure>
+
+<p>常用参数:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-n 按照数字排序。</span><br><span class="line">-r 倒叙。</span><br><span class="line">-t “.”表示按点号分隔域（awk -F ,cut -d 取段 -f）。</span><br><span class="line">-u 相同的行，只输出一行。</span><br><span class="line">-k 指定列进行排序。</span><br><span class="line">-b会忽略每一行前面的所有空白部分，从第一个可见字符开始比较。</span><br></pre></td></tr></table></figure>
+
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><h3 id="按照数字正序排序"><a href="#按照数字正序排序" class="headerlink" title="按照数字正序排序"></a>按照数字正序排序</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@MySQL /]# sort -n file1.txt</span><br><span class="line">10.0.0.7 f</span><br><span class="line">10.0.0.7 n</span><br><span class="line">10.0.0.8 c</span><br><span class="line">10.0.0.8 k</span><br><span class="line">10.0.0.8 z</span><br><span class="line">10.0.0.9 a</span><br><span class="line">10.0.0.9 o</span><br></pre></td></tr></table></figure>
+
+<h3 id="按照数字排序并倒叙"><a href="#按照数字排序并倒叙" class="headerlink" title="按照数字排序并倒叙"></a>按照数字排序并倒叙</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@MySQL /]# sort -nr file1.txt</span><br><span class="line">10.0.0.9 o</span><br><span class="line">10.0.0.9 a</span><br><span class="line">10.0.0.8 z</span><br><span class="line">10.0.0.8 k</span><br><span class="line">10.0.0.8 c</span><br><span class="line">10.0.0.7 n</span><br><span class="line">10.0.0.7 f</span><br></pre></td></tr></table></figure>
+
+<h3 id="按照第二列开始倒叙排序"><a href="#按照第二列开始倒叙排序" class="headerlink" title="按照第二列开始倒叙排序"></a>按照第二列开始倒叙排序</h3><p>-t 指定分隔符，-k2 表示按照第二列开始倒叙排序</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@MySQL /]# sort -t&quot; &quot; -k2  -r file1.txt</span><br><span class="line">10.0.0.8 z</span><br><span class="line">10.0.0.9 o</span><br><span class="line">10.0.0.7 n</span><br><span class="line">10.0.0.8 k</span><br><span class="line">10.0.0.7 f</span><br><span class="line">10.0.0.8 c</span><br><span class="line">10.0.0.9 a</span><br></pre></td></tr></table></figure>
+
+<p>-t 指定分隔符，-k2 表示按照第二列开始排序</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@MySQL /]# sort -t&quot; &quot; -k2  file1.txt</span><br><span class="line">10.0.0.9 a</span><br><span class="line">10.0.0.8 c</span><br><span class="line">10.0.0.7 f</span><br><span class="line">10.0.0.8 k</span><br><span class="line">10.0.0.7 n</span><br><span class="line">10.0.0.9 o</span><br><span class="line">10.0.0.8 z</span><br></pre></td></tr></table></figure>
+
+<p>先按照第一行排序，在按第三列排序并忽略空格 。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">sort -k 1 -n -k 3 emp.data</span></span><br><span class="line">Beth    4.00    0</span><br><span class="line">Dan     3.75    0</span><br><span class="line">kathy   4.00    10</span><br><span class="line">Susie   4.25    18</span><br><span class="line">Mark    5.00    20</span><br><span class="line">Mary    5.50    22</span><br></pre></td></tr></table></figure>
+
+<h2 id="n-参数讲解"><a href="#n-参数讲解" class="headerlink" title="-n 参数讲解"></a>-n 参数讲解</h2><p>测试文件内容</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> cat info.txt</span></span><br><span class="line">aa,201</span><br><span class="line">zz,502</span><br><span class="line">bb,1</span><br><span class="line">ee,42</span><br></pre></td></tr></table></figure>
+
+<p>第一步 按照第二列倒叙排序</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node2 111:33:23]#sort -t &#x27;,&#x27; -k2r info.txt</span><br><span class="line">zz,502</span><br><span class="line">ee,42</span><br><span class="line">aa,201</span><br><span class="line">bb,1</span><br></pre></td></tr></table></figure>
+
+<p>通过结果查看: 是按照第二列的首字母进行排序。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node2 111:33:30]#sort -t &#x27;,&#x27; -k2nr info.txt</span><br><span class="line">zz,502</span><br><span class="line">aa,201</span><br><span class="line">ee,42</span><br><span class="line">bb,1</span><br></pre></td></tr></table></figure>
+
+<p>加上 -n 后将第二列当成了一个整体进行排序。</p>
+<p>结论:</p>
+<ul>
+<li>如果不加-n 默认按照列的第一个首字母排序，如果首字母相同排序第二列。</li>
+<li>如果加了-n，sort 会将值当成一个整数，而不是按照首字母排序。</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -1013,485 +1516,6 @@
 
 <p>如果你想创建同样的容器，可以点击上图中的Scale Application来体验一下。同样的，你也可以通过marathon的Web界面来进行容器的创建、扩展和销毁。</p>
 <p>创建10台nginx虚拟机<br><img src="http://oi3tsepsh.bkt.clouddn.com/14660478347758.jpg"></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2016/12/17/salt-grains-pillar/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="biglittleant">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="biglittleant">
-    </span>
-
-    
-    
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2016/12/17/salt-grains-pillar/" class="post-title-link" itemprop="url">salt-grains-pillar</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2016-12-17 10:35:57" itemprop="dateCreated datePublished" datetime="2016-12-17T10:35:57+08:00">2016-12-17</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-16 17:40:00" itemprop="dateModified" datetime="2020-09-16T17:40:00+08:00">2020-09-16</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/linux/salt/" itemprop="url" rel="index"><span itemprop="name">salt</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="Grains数据系统"><a href="#Grains数据系统" class="headerlink" title="Grains数据系统"></a>Grains数据系统</h2><p>Grains（鼓励）：静态数据，存储客户端的信息。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">salt &#x27;*&#x27; grains.items ###列出服务器的详细参数</span><br></pre></td></tr></table></figure>
-
-<p>只查看OS的信息：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@centos6 ~]# salt &#x27;*&#x27; grains.item os</span><br><span class="line">minion.saltstack.com:</span><br><span class="line">    ----------</span><br><span class="line">    os:</span><br><span class="line">        CentOS</span><br><span class="line">[root@centos6 ~]# salt &#x27;*&#x27; grains.get os</span><br><span class="line">minion.saltstack.com:</span><br><span class="line">    CentOS</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node1 salt]# salt &#x27;*&#x27; grains.get ip_interfaces:eth0</span><br><span class="line">linux-node2:</span><br><span class="line">    - 10.0.0.8</span><br><span class="line">    - fe80::20c:29ff:fea4:91c7</span><br><span class="line">linux-node1:</span><br><span class="line">    - 10.0.0.7</span><br><span class="line">    - fe80::20c:29ff:fe6a:d896</span><br><span class="line">[root@linux-node1 salt]#</span><br></pre></td></tr></table></figure>
-<p>列出所有信息的名称：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@centos6 ~]# salt &#x27;*&#x27; grains.ls</span><br><span class="line">minion.saltstack.com:</span><br><span class="line">    - SSDs</span><br><span class="line">    - biosreleasedate</span><br><span class="line">    - biosversion</span><br><span class="line">    - cpu_flags</span><br><span class="line">    - cpu_model</span><br><span class="line">    - cpuarch</span><br><span class="line">    - domain</span><br><span class="line">    - fqdn</span><br><span class="line">    - fqdn_ip4</span><br><span class="line">    - fqdn_ip6</span><br><span class="line">省略部分内容。。。。。。。。</span><br></pre></td></tr></table></figure>
-
-
-<p>在服务端测试：-G 表示匹配grains ：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@centos6 ~]# salt -G &#x27;env:prod&#x27; test.ping</span><br><span class="line">minion.saltstack.com:</span><br><span class="line">    True</span><br><span class="line"></span><br><span class="line">[root@linux-node1 salt]# salt -G &#x27;os:CentOS&#x27; cmd.run &#x27;w&#x27;</span><br><span class="line">linux-node2:</span><br><span class="line">     03:35:48 up  9:50,  2 users,  load average: 0.00, 0.00, 0.00</span><br><span class="line">    USER     TTY      FROM              LOGIN@   IDLE   JCPU   PCPU WHAT</span><br><span class="line">    niu      pts/0    10.0.2.1         02:02    1:10m  0.00s  0.00s -bash</span><br><span class="line">    niu      pts/1    10.0.2.1         02:14    1:21m  0.00s  0.00s -bash</span><br><span class="line">linux-node1:</span><br><span class="line">     03:35:46 up 19:30,  2 users,  load average: 0.00, 0.00, 0.00</span><br><span class="line">    USER     TTY      FROM              LOGIN@   IDLE   JCPU   PCPU WHAT</span><br><span class="line">    niu      pts/0    10.0.2.1         02:02    1.00s  0.41s  0.00s sshd: niu [priv</span><br><span class="line">    niu      pts/1    10.0.2.1         02:14    1:07m  0.02s  0.00s sshd: niu [priv</span><br><span class="line">[root@linux-node1 salt]#</span><br></pre></td></tr></table></figure>
-
-<p>在客户端自定义grains：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@centos6 ~]# vim /etc/salt/minion</span><br><span class="line">grains:</span><br><span class="line">  roles: nginx</span><br><span class="line">  env: prod</span><br><span class="line"></span><br><span class="line">&quot;/etc/salt/minion&quot; 627L, 25173C written</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>使用命令行设置minion端的grains。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 给logstash4服务器设置一个elastic_url的grains值</span></span></span><br><span class="line">salt &#x27;chuye.logstash4.service&#x27; grains.setval elastic_url &#x27;http://10.10.196.24:9200&#x27;</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 查看elastic_url的值</span></span></span><br><span class="line">salt &#x27;chuye.logstash4.service&#x27; grains.item  elastic_url</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 重新给elastic_url赋值</span></span></span><br><span class="line">salt &#x27;chuye.logstash5.service&#x27; grains.setval elastic_url &#x27;&quot;http://10.10.160.129:9200&quot;&#x27;</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 查看新赋值是否生效</span></span></span><br><span class="line">salt &#x27;chuye.logstash5.service&#x27; grains.item  elastic_url</span><br></pre></td></tr></table></figure>
-
-<p>设置成功后，minion会在 /etc/minion/grains 增加一行配置文件</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/salt/grains</span><br><span class="line">elastic_url: http://10.10.196.24:9200</span><br></pre></td></tr></table></figure>
-
-<p>也可以在客户端这样定义：<br>客户端编写： grains配置文件中，不能和minion的参数冲突。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@centos6 ~]# vim /etc/salt/grains</span><br><span class="line">cloud: openstack</span><br><span class="line">[root@centos6 ~]# /etc/init.d/salt-minion restart</span><br><span class="line">Stopping salt-minion daemon:                               [  OK  ]</span><br><span class="line">Starting salt-minion daemon:                               [  OK  ]</span><br><span class="line">[root@centos6 ~]#</span><br></pre></td></tr></table></figure>
-
-
-<p>在top.sls中调用grains的方法：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node1 salt]# vim top.sls</span><br><span class="line">base:</span><br><span class="line">  &#x27;web:nginx&#x27;:</span><br><span class="line">    - match: grain</span><br><span class="line">    - apache</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-<p>在服务器端测试：<br>[root@centos6 ~]# salt -G ‘cloud:openstack’ test.ping<br>minion.saltstack.com:<br>    True</p>
-<p>在服务端输入如下命令可以刷新：（客户端更改后不用重启）</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@centos6 ~]# salt &#x27;*&#x27; saltutil.sync_grains</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-<p>在配置文件中调用</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">nginx:</span></span><br><span class="line">  <span class="attr">pkg:</span></span><br><span class="line">   <span class="bullet">-</span> <span class="string">installed</span></span><br><span class="line">  <span class="attr">file.managed:</span></span><br><span class="line">   <span class="bullet">-</span> <span class="attr">source:</span> <span class="string">salt://nginx/nginx.conf</span></span><br><span class="line">   <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">/etc/nginx/nginx.conf</span></span><br><span class="line">   <span class="bullet">-</span> <span class="attr">user:</span> <span class="string">root</span></span><br><span class="line">   <span class="bullet">-</span> <span class="attr">group:</span> <span class="string">root</span></span><br><span class="line">   <span class="bullet">-</span> <span class="attr">mode:</span> <span class="number">644</span></span><br><span class="line">   <span class="bullet">-</span> <span class="attr">template:</span> <span class="string">jinja</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">service.running:</span></span><br><span class="line">   <span class="bullet">-</span> <span class="attr">enable:</span> <span class="literal">True</span></span><br><span class="line">   <span class="bullet">-</span> <span class="attr">reload:</span> <span class="literal">True</span></span><br><span class="line">   <span class="bullet">-</span> <span class="attr">watch:</span></span><br><span class="line">     <span class="bullet">-</span> <span class="attr">file:</span> <span class="string">/etc/nginx/nginx.conf</span></span><br><span class="line">     <span class="bullet">-</span> <span class="attr">pkg:</span> <span class="string">nginx</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-
-
-
-
-
-<p>Pillar（柱子）数据系统：<br>启动pillar功能</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/salt/master</span><br><span class="line">pillar_opts: True</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#piller 默认参数的开启。</span></span></span><br></pre></td></tr></table></figure>
-
-<p>作用：</p>
-<ul>
-<li>处理敏感数据。</li>
-<li>处理差异性的文件。</li>
-</ul>
-<p>第二步：在master文件中配置<code>pillar</code>文件存放的位置</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">vim</span> <span class="string">/etc/salt/master</span></span><br><span class="line"><span class="attr">pillar_roots:</span></span><br><span class="line">  <span class="attr">base:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/etc/salt/pillar</span></span><br></pre></td></tr></table></figure>
-
-<p>第三步：开始编写pillar文件</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> mkdir /etc/salt/pillar</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">cd</span> /etc/salt/pillar/</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> vim top.sls</span></span><br><span class="line">base:</span><br><span class="line">  &#x27;*&#x27;:</span><br><span class="line">    - init.rsyslog</span><br><span class="line">~</span><br><span class="line">&quot;top.sls&quot; [New] 3L, 33C written</span><br></pre></td></tr></table></figure>
-
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> mkdir init</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">cd</span> init/</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> vim rsyslog.sls</span></span><br><span class="line">&#123;% if grains[&#x27;osfinger&#x27;] == &#x27;CentOS-6&#x27; %&#125;</span><br><span class="line">syslog: rsyslog</span><br><span class="line">&#123;% elif grains[&#x27;osfinger&#x27;] == &#x27;CentOS-5&#x27; %&#125;</span><br><span class="line">syslog: syslog</span><br><span class="line">&#123;% endif %&#125;</span><br></pre></td></tr></table></figure>
-
-<p>刷新一下配置：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@centos6 init]# salt &#x27;*&#x27; saltutil.refresh_pillar</span><br><span class="line">minion.saltstack.com:</span><br><span class="line">    True</span><br><span class="line">[root@linux-node1 pillar]# salt &#x27;*&#x27; pillar.items</span><br></pre></td></tr></table></figure>
-
-<p>第四步使用pillar<br>pillar跟grains的使用方法一样<br>可以用索引（pillar[‘pkgs’][‘apache’]）或get方法（pillar.get(‘users’, {})）。</p>
-<p>索引的方式：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">/srv/salt/apache/init.sls：</span><br><span class="line"></span><br><span class="line">apache:</span><br><span class="line">  pkg.installed:</span><br><span class="line">    - name: &#123;&#123; pillar[&#x27;pkgs&#x27;][&#x27;apache&#x27;] &#125;&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>get的方式</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">还可以在state file中设置默认值： srv/salt/apache/init.sls：</span><br><span class="line"></span><br><span class="line">apache:</span><br><span class="line">  pkg.installed:</span><br><span class="line">    - name: &#123;&#123; salt[&#x27;pillar.get&#x27;](&#x27;pkgs:apache&#x27;, &#x27;httpd&#x27;) &#125;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>实例二：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#123;% if grains[&#x27;os&#x27;] == &#x27;CentOS&#x27; %&#125;</span><br><span class="line">apache:httpd</span><br><span class="line">&#123;% elif grains[&#x27;os&#x27;] == &#x27;Debian&#x27; %&#125;</span><br><span class="line">apache:apche2</span><br><span class="line">&#123;% endif %&#125;</span><br><span class="line"></span><br><span class="line">[root@linux-node1 pillar]# cat /srv/pillar/top.sls</span><br><span class="line">base:</span><br><span class="line">  &#x27;*&#x27;:</span><br><span class="line">    - apache</span><br><span class="line"></span><br><span class="line">[root@linux-node1 pillar]# ls</span><br><span class="line">apache.sls  top.sls</span><br><span class="line">[root@linux-node1 pillar]# pwd</span><br><span class="line">/srv/pillar</span><br><span class="line">[root@linux-node1 pillar]#</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-
-
-
-<p>grains和pillar对比：</p>
-<p>使用salt进行nginx配置文件管理。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> For more information on configuration, see:</span></span><br><span class="line">user              nginx;</span><br><span class="line">worker_processes  &#123;&#123; grains[&#x27;num_cpus&#x27;] &#125;&#125;;</span><br><span class="line">&#123;% if grains[&#x27;num_cpus&#x27;] == 2 %&#125;</span><br><span class="line">worker_cpu_affinity 01 10;</span><br><span class="line">&#123;% elif grains[&#x27;num_cpus&#x27;] == 4 %&#125;</span><br><span class="line">worker_cpu_affinity 1000 0100 0010 0001;</span><br><span class="line">&#123;% elif grains[&#x27;num_cpus&#x27;] &gt;= 8 %&#125;</span><br><span class="line">worker_cpu_affinity 00000001 00000010 00000100 00001000 00010000 00100000 01000000 10000000;</span><br><span class="line">&#123;% else %&#125;</span><br><span class="line">worker_cpu_affinity 1000 0100 0010 0001;</span><br><span class="line">&#123;% endif %&#125;</span><br><span class="line">worker_rlimit_nofile &#123;&#123; grains[&#x27;max_open_file&#x27;] &#125;&#125;;</span><br><span class="line"></span><br><span class="line">error_log  /var/log/nginx/error.log;</span><br><span class="line"><span class="meta">#</span><span class="bash">error_log  /var/<span class="built_in">log</span>/nginx/error.log  notice;</span></span><br><span class="line"><span class="meta">#</span><span class="bash">error_log  /var/<span class="built_in">log</span>/nginx/error.log  info;</span></span><br><span class="line"></span><br><span class="line">pid        /var/run/nginx.pid;</span><br><span class="line"></span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections  &#123;&#123; grains[&#x27;max_open_file&#x27;] &#125;&#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line">    include       /etc/nginx/mime.types;</span><br><span class="line">    default_type  application/octet-stream;</span><br><span class="line"></span><br><span class="line">    log_format  main  &#x27;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &#x27;</span><br><span class="line">                      &#x27;$status $body_bytes_sent &quot;$http_referer&quot; &#x27;</span><br><span class="line">                      &#x27;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&#x27;;</span><br><span class="line"></span><br><span class="line">    access_log  /var/log/nginx/access.log  main;</span><br><span class="line"></span><br><span class="line">    sendfile        on;</span><br><span class="line">    #tcp_nopush     on;</span><br><span class="line"></span><br><span class="line">    #keepalive_timeout  0;</span><br><span class="line">    keepalive_timeout  65;</span><br><span class="line"></span><br><span class="line">    #gzip  on;</span><br><span class="line"></span><br><span class="line">    # Load config files from the /etc/nginx/conf.d directory</span><br><span class="line">    # The default server is in conf.d/default.conf</span><br><span class="line">    #include /etc/nginx/conf.d/*.conf;</span><br><span class="line">    server &#123;</span><br><span class="line">        listen       80 default_server;</span><br><span class="line">        server_name  _;</span><br><span class="line"></span><br><span class="line">        #charset koi8-r;</span><br><span class="line"></span><br><span class="line">        #access_log  logs/host.access.log  main;</span><br><span class="line"></span><br><span class="line">        location / &#123;</span><br><span class="line">            root   &#123;&#123; pillar[&#x27;nginx&#x27;][&#x27;root&#x27;] &#125;&#125;;</span><br><span class="line">            index  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        error_page  404              /404.html;</span><br><span class="line">        location = /404.html &#123;</span><br><span class="line">            root   /usr/share/nginx/html;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        # redirect server error pages to the static page /50x.html</span><br><span class="line">        #</span><br><span class="line">        error_page   500 502 503 504  /50x.html;</span><br><span class="line">        location = /50x.html &#123;</span><br><span class="line">            root   /usr/share/nginx/html;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2016/12/16/salt-config/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="biglittleant">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="biglittleant">
-    </span>
-
-    
-    
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2016/12/16/salt-config/" class="post-title-link" itemprop="url">salt-配置文件管理之sls讲解</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2016-12-16 10:31:59" itemprop="dateCreated datePublished" datetime="2016-12-16T10:31:59+08:00">2016-12-16</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-16 17:39:52" itemprop="dateModified" datetime="2020-09-16T17:39:52+08:00">2020-09-16</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/linux/salt/" itemprop="url" rel="index"><span itemprop="name">salt</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>SLS是Salt State系统的核心，用来描述系统的目标状态，使用YAML语言书写。被用作配置文件管理。</p>
-<h2 id="SLS文件"><a href="#SLS文件" class="headerlink" title="SLS文件"></a>SLS文件</h2><p>sls配置文件分为两种类型</p>
-<ul>
-<li>top.sls   这是所有配置文件的入口</li>
-<li>sls          这是每个不同的配置文件</li>
-</ul>
-<h3 id="top-sls"><a href="#top-sls" class="headerlink" title="top.sls"></a>top.sls</h3><ul>
-<li>top.sls 文件是其他sls文件的起始位置，使用<code>salt &#39;*&#39; state.highstate</code>调用。</li>
-<li>top.sls 文件的位置：master文件中base环境定义的文件夹下。</li>
-<li>假设base路径为：<code>/srv/salt/base</code> 则top文件路径：<code>/srv/salt/base/top.sls</code></li>
-</ul>
-<p>top.sls 文件格式如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">base: ## 从哪里开始读取配置文件，可以是base，prod等，</span><br><span class="line">  &#x27;os:centos&#x27;:   ## 目标主机</span><br><span class="line">    - match: grain  ## match 匹配方式，</span><br><span class="line">    - init.env_init  ## 需要执行的什么命令</span><br><span class="line">    - zabbix-agent-linux.config</span><br><span class="line">    - salt.agent</span><br><span class="line"></span><br><span class="line">prod:</span><br><span class="line">  &#x27;blog.*.(service|mongodb|proxydb)&#x27;:</span><br><span class="line">    - match: pcre</span><br><span class="line">    - publish.config</span><br><span class="line">    - filebeat.config</span><br></pre></td></tr></table></figure>
-<p>解释：</p>
-<ul>
-<li>top文件遵循YAML语法，不同的层级用不同的空格定义。</li>
-<li>base：表示文件的其实位置。</li>
-<li>‘os:centos’ ：表示目标主机。</li>
-<li>match：<ul>
-<li>grain: 按照grains规则去匹配</li>
-<li>nodegroup: 按照分组名进行匹配</li>
-<li>pcre: 正则匹配</li>
-<li>如果不写match行，则默认使用通配符匹配。</li>
-</ul>
-</li>
-</ul>
-<h3 id="sls文件编写方法"><a href="#sls文件编写方法" class="headerlink" title="sls文件编写方法"></a>sls文件编写方法</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">agent-config:</span>  <span class="comment">##定义一个名称</span></span><br><span class="line">  <span class="attr">file.managed:</span>  <span class="comment">## 定义一个方法</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">/etc/salt/minion</span>   <span class="comment">##定义方法需要的相关参数</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">source:</span> <span class="string">salt://salt/files/minion-config</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">user:</span> <span class="string">root</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">group:</span> <span class="string">root</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">mode:</span> <span class="number">644</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">template:</span> <span class="string">jinja</span>  <span class="comment">##启用jinja模板匹配</span></span><br></pre></td></tr></table></figure>
-
-<p>简写方法：</p>
-<p><code>vim /srv/salt/apache/install.sls</code></p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apache:</span>                 <span class="comment"># 定义名称</span></span><br><span class="line">  <span class="attr">pkg:</span>                     <span class="comment"># 定义函数</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">installed</span>         <span class="comment"># 定义方法</span></span><br></pre></td></tr></table></figure>
-
-<p>简版的语法与上面的语法一致，区别在于可以将名称写在行首。这样就不用定义方法名称了。</p>
-<p>最后执行 <code>salt &#39;*&#39; state.highstate test=True</code>测试编写的文件是否正常。结果正常，则去掉<code>test=True</code>正式执行。</p>
-<h3 id="sls编写方法注意事项"><a href="#sls编写方法注意事项" class="headerlink" title="sls编写方法注意事项"></a>sls编写方法注意事项</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">include:</span></span><br><span class="line">  <span class="string">apache.install</span></span><br><span class="line"></span><br><span class="line"><span class="attr">agent-config:</span></span><br><span class="line">  <span class="attr">file.managed:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">/etc/salt/minion</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">source:</span> <span class="string">salt://salt/files/minion-config</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">user:</span> <span class="string">root</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">group:</span> <span class="string">root</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">mode:</span> <span class="number">644</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">template:</span> <span class="string">jinja</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">require:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">pkg:</span> <span class="string">apache</span></span><br></pre></td></tr></table></figure>
-
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">include:</span><br><span class="line">  apache.install</span><br></pre></td></tr></table></figure>
-<p><code>include</code>可以把已经写好的文件包含进来一起执行。</p>
-<p>一个agent-config代表一个命名空间，一个命名空间内只有有一种方法即<code>file.managed</code>方法只能出现一次。<br>如果写多个<code>file.managed</code>就需要使用不用的命名空间。</p>
-<p><code>- template: jinja </code> 表示配置文件中定义了jinja模板。</p>
-<h3 id="jinja模板语法："><a href="#jinja模板语法：" class="headerlink" title="jinja模板语法："></a>jinja模板语法：</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;% for i in [&#x27;/etc/&#x27;,&#x27;/usr&#x27;]%&#125;</span><br><span class="line">touch  &#123;&#123; i &#125;&#125;/1.txt</span><br><span class="line">&#123;% endfor %&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">httpd:</span></span><br><span class="line">  <span class="attr">pkg.managed:</span></span><br><span class="line">&#123;<span class="string">%</span> <span class="string">if</span> <span class="string">grains</span>[<span class="string">&#x27;os&#x27;</span>] <span class="string">==</span> <span class="string">&#x27;Ubuntu&#x27;</span> <span class="string">%</span>&#125;</span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">apache2</span></span><br><span class="line">&#123;<span class="string">%</span> <span class="string">elif</span> <span class="string">grains</span>[<span class="string">&#x27;os&#x27;</span>] <span class="string">==</span> <span class="string">&#x27;CentOS&#x27;</span> <span class="string">%</span>&#125;</span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">httpd</span></span><br><span class="line">&#123;<span class="string">%</span> <span class="string">endif</span> <span class="string">%</span>&#125;</span><br><span class="line">    <span class="bullet">-</span> <span class="string">installed</span></span><br></pre></td></tr></table></figure>
-
-<p>set 这是jinja模板的值</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#123;% set site_user &#x3D; &#39;testuser&#39; %&#125;</span><br><span class="line">&#123;% set site_name &#x3D; &#39;test_site&#39; %&#125;</span><br><span class="line">&#123;% set project_name &#x3D; &#39;test_proj&#39; %&#125;</span><br><span class="line">&#123;% set sites_dir &#x3D; &#39;test_dir&#39; %&#125;</span><br><span class="line"></span><br><span class="line">django-project:</span><br><span class="line">  file.recurse:</span><br><span class="line">    - name: &#123;&#123; sites_dir &#125;&#125;&#x2F;&#123;&#123; site_name &#125;&#125;&#x2F;&#123;&#123; project_name &#125;&#125;</span><br><span class="line">    - user: &#123;&#123; site_user &#125;&#125;</span><br><span class="line">    - dir_mode: 2775</span><br><span class="line">    - file_mode: &#39;0644&#39;</span><br><span class="line">    - template: jinja</span><br><span class="line">    - source: salt:&#x2F;&#x2F;project&#x2F;templates_dir</span><br><span class="line">    - include_empty: True</span><br></pre></td></tr></table></figure>
-
-<p><code>- require</code>表示依赖，Apache表示命名空间，pkg表示命名空间中的某一个方法。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">- require:</span><br><span class="line">  - pkg: apache</span><br></pre></td></tr></table></figure>
-
-<h3 id="其他配置"><a href="#其他配置" class="headerlink" title="其他配置"></a>其他配置</h3><ul>
-<li>watch： 监控状态是否变化，常用在service.running中。</li>
-<li>last：想让某个state最后一个运行，可以用last。</li>
-<li>order：优先级比require和watch低，有order指定的state比没有order指定的优先级高。</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vim:</span><br><span class="line">  pkg.installed:</span><br><span class="line">    - order: 1</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2016/12/15/salt-modules/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="biglittleant">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="biglittleant">
-    </span>
-
-    
-    
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2016/12/15/salt-modules/" class="post-title-link" itemprop="url">salt-modules讲解</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2016-12-15 18:38:47" itemprop="dateCreated datePublished" datetime="2016-12-15T18:38:47+08:00">2016-12-15</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-16 17:40:27" itemprop="dateModified" datetime="2020-09-16T17:40:27+08:00">2020-09-16</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/linux/salt/" itemprop="url" rel="index"><span itemprop="name">salt</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>saltstack 常用模块介绍</p>
-<h2 id="file模块"><a href="#file模块" class="headerlink" title="file模块"></a>file模块</h2><p>被控主机文件常见操作，包括文件读写、权限、查找、校验等</p>
-<p><code>salt &#39;*&#39; file.get_sum /etc/resolv.conf md5</code><br><code>salt &#39;*&#39; file.stats /etc/resolv.conf</code></p>
-<h3 id="file-managed-文件管理"><a href="#file-managed-文件管理" class="headerlink" title="file.managed-文件管理"></a>file.managed-文件管理</h3><p>先来一个实例</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">/etc/http/conf/http.conf:</span></span><br><span class="line">  <span class="attr">file.managed:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">source:</span> <span class="string">salt://apache/http.conf</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">user:</span> <span class="string">root</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">group:</span> <span class="string">root</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">mode:</span> <span class="number">644</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">template:</span> <span class="string">jinja</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">defaults:</span></span><br><span class="line">        <span class="attr">custom_var:</span> <span class="string">&quot;default value&quot;</span></span><br><span class="line">        <span class="attr">other_var:</span> <span class="number">123</span></span><br><span class="line">&#123;<span class="string">%</span> <span class="string">if</span> <span class="string">grains</span>[<span class="string">&#x27;os&#x27;</span>] <span class="string">==</span> <span class="string">&#x27;Ubuntu&#x27;</span> <span class="string">%</span>&#125;</span><br><span class="line">    <span class="bullet">-</span> <span class="attr">context:</span></span><br><span class="line">        <span class="attr">custom_var:</span> <span class="string">&quot;override&quot;</span></span><br><span class="line">&#123;<span class="string">%</span> <span class="string">endif</span> <span class="string">%</span>&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="source-指定源文件"><a href="#source-指定源文件" class="headerlink" title="source-指定源文件"></a>source-指定源文件</h4><p> source参数可以作为一个列表指定。如果这样做的话，那么会使用第一个匹配到的文件。这个特性允许你如果请求的文件不存在于salt文件服务器时有一个默认的文件回溯。</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">/etc/foo.conf:</span></span><br><span class="line">  <span class="attr">file.managed:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">source:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">salt://foo.conf.&#123;&#123;</span> <span class="string">grains[&#x27;fqdn&#x27;]</span> <span class="string">&#125;&#125;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">salt://foo.conf.fallback</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">user:</span> <span class="string">foo</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">group:</span> <span class="string">users</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">mode:</span> <span class="number">644</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">backup:</span> <span class="string">minion</span></span><br></pre></td></tr></table></figure>
-<p> source 参数同样可以指定一个在另一个Salt环境的文件。在这个例子中 foo.conf 将会使用 dev 环境中的来替代。</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">/etc/foo.conf:</span></span><br><span class="line">  <span class="attr">file.managed:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">source:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">salt://foo.conf?saltenv=dev</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">user:</span> <span class="string">foo</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">group:</span> <span class="string">users</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">mode:</span> <span class="string">&#x27;0644&#x27;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="file-directory-目录管理"><a href="#file-directory-目录管理" class="headerlink" title="file.directory-目录管理"></a>file.directory-目录管理</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">/srv/stuff/substuf:</span></span><br><span class="line">  <span class="attr">file.directory:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">user:</span> <span class="string">fred</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">group:</span> <span class="string">users</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">mode:</span> <span class="number">755</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">makedirs:</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
-
-<p>使用 dir_mode 和 file_mode，同时指定目录和文件的权限。</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">/srv/stuff/substuf:</span></span><br><span class="line">  <span class="attr">file.directory:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">user:</span> <span class="string">fred</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">group:</span> <span class="string">users</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">file_mode:</span> <span class="number">744</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">dir_mode:</span> <span class="number">755</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">makedirs:</span> <span class="literal">True</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">recurse:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">user</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">group</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">mode</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="file-recurse-递归目录"><a href="#file-recurse-递归目录" class="headerlink" title="file.recurse - 递归目录"></a>file.recurse - 递归目录</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">/opt/code/flask:</span></span><br><span class="line">  <span class="attr">file.recurse:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">source:</span> <span class="string">salt://code/flask</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">include_empty:</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="file-synlink-创建快捷方式"><a href="#file-synlink-创建快捷方式" class="headerlink" title="file.synlink - 创建快捷方式"></a>file.synlink - 创建快捷方式</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">/etc/grub.conf:</span></span><br><span class="line">  <span class="attr">file.symlink:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">target:</span> <span class="string">/boot/grub/grub.conf</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="file-append-文件后面追加内容"><a href="#file-append-文件后面追加内容" class="headerlink" title="file.append - 文件后面追加内容"></a>file.append - 文件后面追加内容</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">/etc/motd:</span></span><br><span class="line">  <span class="attr">file.append:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">text:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">Trust</span> <span class="literal">no</span> <span class="string">one</span> <span class="string">unless</span> <span class="string">you</span> <span class="string">have</span> <span class="string">eaten</span> <span class="string">much</span> <span class="string">salt</span> <span class="string">with</span> <span class="string">him.</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;Salt is born of the purest of parents: the sun and the sea.&quot;</span></span><br></pre></td></tr></table></figure>
-<p>官方帮助文档：<a target="_blank" rel="noopener" href="https://docs.saltstack.com/en/latest/ref/states/all/salt.states.file.html">https://docs.saltstack.com/en/latest/ref/states/all/salt.states.file.html</a></p>
-<h2 id="cmd模块"><a href="#cmd模块" class="headerlink" title="cmd模块"></a>cmd模块</h2><p>实现远程的命令行调用执行</p>
-<h3 id="run-执行命令"><a href="#run-执行命令" class="headerlink" title="run-执行命令"></a>run-执行命令</h3><p> <code>salt &#39;*&#39; cmd.run &#39;ss -lntup&#39;</code></p>
-<p> cmd模块执行windows命令</p>
-<p> <code>salt &#39;*&#39; cmd.run &#39;dir&#39; shell=powershell </code></p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">getpip:</span></span><br><span class="line">  <span class="attr">cmd.run:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">/usr/bin/python</span> <span class="string">/usr/local/sbin/get-pip.py</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">unless:</span> <span class="string">which</span> <span class="string">pip</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">require:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">pkg:</span> <span class="string">python</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">file:</span> <span class="string">/usr/local/sbin/get-pip.py</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">reload_modules:</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="script-执行脚本"><a href="#script-执行脚本" class="headerlink" title="script-执行脚本"></a>script-执行脚本</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">salt://scripts/bar.sh:</span></span><br><span class="line">  <span class="attr">cmd.script:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">env:</span> <span class="string">&quot;PATH=/some/path:$PATH&quot;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="pkg包管理模块"><a href="#pkg包管理模块" class="headerlink" title="pkg包管理模块"></a>pkg包管理模块</h2><h3 id="installed-安装包"><a href="#installed-安装包" class="headerlink" title="installed - 安装包"></a>installed - 安装包</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">php.packages:</span></span><br><span class="line">  <span class="attr">pkg.installed:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">fromrepo:</span> <span class="string">wheezy-php55</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">pkgs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">php5-fpm</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">php5-cli</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">php5-curl</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">bar:</span> <span class="string">&#x27;&gt;=1.2.3-4&#x27;</span></span><br></pre></td></tr></table></figure>
-
-<p>也可以指定安装包的位置</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">mypkgs:</span></span><br><span class="line">  <span class="attr">pkg.installed:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">sources:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">foo:</span> <span class="string">salt://rpms/foo.rpm</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">bar:</span> <span class="string">http://somesite.org/bar.rpm</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">baz:</span> <span class="string">ftp://someothersite.org/baz.rpm</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">qux:</span> <span class="string">/minion/path/to/qux.rpm</span></span><br></pre></td></tr></table></figure>
-
-<p>命令行的方式安装包</p>
-<p><code>salt &#39;*&#39; pkg.install nmap</code><br><code>salt &#39;*&#39; pkg.file_list nmap</code></p>
-<h2 id="service-服务模块"><a href="#service-服务模块" class="headerlink" title="service 服务模块"></a>service 服务模块</h2><h3 id="running-配置服务启动"><a href="#running-配置服务启动" class="headerlink" title="running 配置服务启动"></a>running 配置服务启动</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">redis:</span></span><br><span class="line">  <span class="attr">service.running:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">enable:</span> <span class="literal">True</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">reload:</span> <span class="literal">True</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">watch:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">pkg:</span> <span class="string">redis</span></span><br></pre></td></tr></table></figure>
-
-<p><code>reload</code>和<code>watch</code>一起使用,<code>watch</code>监控到服务的变化，<code>reload</code>会自动重载服务。</p>
-<h3 id="dead-停止服务"><a href="#dead-停止服务" class="headerlink" title="dead 停止服务"></a>dead 停止服务</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">redis:</span></span><br><span class="line">  <span class="attr">service.dead:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">enable:</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
-
-<p>确定redis服务已经停止，并加入开机自启动。</p>
-<p>shell端执行命令</p>
-<p>使<code>sshd</code>加入开机自启动<br><code>salt &#39;*&#39; service.enable sshd</code></p>
-<p>使<code>sshd</code>加入开机自启动<br><code> salt &#39;*&#39; service.disable sshd</code></p>
-<p>查看<code>sshd</code>的状态<br><code>salt &#39;*&#39; service.status sshd</code></p>
-<p>停止<code>sshd</code>服务<br><code>salt &#39;*&#39; service.stop sshd</code></p>
-<p>启动<code>sshd</code>服务<br><code>salt &#39;*&#39; service.start sshd</code></p>
-<p>重启<code>sshd</code>服务<br><code> salt &#39;*&#39; service.restart sshd</code></p>
-<p>重载<code>sshd</code>服务<br><code>salt &#39;*&#39; service.reload sshd</code></p>
-<h2 id="useradd用户模块"><a href="#useradd用户模块" class="headerlink" title="useradd用户模块"></a>useradd用户模块</h2><h3 id="absent-删除用户"><a href="#absent-删除用户" class="headerlink" title="absent - 删除用户"></a>absent - 删除用户</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">nginx:</span></span><br><span class="line">  <span class="attr">user.present:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">purge:</span> <span class="literal">True</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">force:</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
-
-<p>purge: 清楚用户家目录<br>force: 即使用户登录，也要删除用户（默认用户登录时，清除会失败）。</p>
-<h3 id="present-创建用户"><a href="#present-创建用户" class="headerlink" title="present - 创建用户"></a>present - 创建用户</h3><p>一、添加单个用户：<br>生成密码</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">openssl passwd -1 -salt &#x27;nginx&#x27;</span><br><span class="line">Password:</span><br><span class="line"><span class="meta">$</span><span class="bash">1<span class="variable">$nginx</span><span class="variable">$LrLRyngZUF2qJ8f3a31cN0</span></span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">nginx:</span></span><br><span class="line">  <span class="attr">user.present:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">fullname:</span> <span class="string">nginx</span> <span class="string">web</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">shell:</span> <span class="string">/bin/bash</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">password:</span> <span class="string">&#x27;$1$nginx$LrLRyngZUF2qJ8f3a31cN0&#x27;</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">home:</span> <span class="string">/home/nginx</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uid:</span> <span class="number">1000</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">gid:</span> <span class="number">1000</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">groups:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">nginx</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">require:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">group:</span> <span class="string">nginx</span></span><br><span class="line">  <span class="attr">group.present:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">gid:</span> <span class="number">1000</span></span><br></pre></td></tr></table></figure>
-
-<p>  创建一个不能登录，没有家目录的用户</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">nginx:</span></span><br><span class="line">  <span class="attr">user.present:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">fullname:</span> <span class="string">nginx</span> <span class="string">web</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">shell:</span> <span class="string">/sbin/nologin</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">password:</span> <span class="string">&#x27;$1$nginx$LrLRyngZUF2qJ8f3a31cN0&#x27;</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">createhome:</span> <span class="literal">False</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uid:</span> <span class="number">1000</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">gid:</span> <span class="number">1000</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">groups:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">nginx</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">require:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">group:</span> <span class="string">nginx</span></span><br><span class="line">  <span class="attr">group.present:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">gid:</span> <span class="number">1000</span></span><br></pre></td></tr></table></figure>
-
-<p>gid_from_name: 如果设置为_True_，默认的组id将自动设置为和本用户同名的组id<br>groups: 分配给该用户的组列表(a list of groups). 如果组在minion上不存在，则本state会报错. 如果设置会空，将会删除本用户所属的除了默认组之外的其他组<br>optional_groups: 分配给用户的组列表。 如果组在minion上不存在，则state会忽略它.</p>
-<p>配合jinja模板批量添加多个用户</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123; <span class="string">set</span> <span class="string">userlist=</span>[<span class="string">&#x27;big&#x27;</span>,<span class="string">&#x27;little&#x27;</span>,<span class="string">&#x27;ant&#x27;</span>] &#125;&#125;</span><br><span class="line">&#123;<span class="string">%</span> <span class="string">for</span> <span class="string">user</span> <span class="string">in</span> <span class="string">userlist</span> <span class="string">%</span>&#125;</span><br><span class="line">&#123;&#123; <span class="string">user</span> &#125;&#125;<span class="string">:</span></span><br><span class="line">  <span class="attr">user.present:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">fullname:</span> &#123;&#123; <span class="string">user</span> &#125;&#125; <span class="string">web</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">shell:</span> <span class="string">/sbin/nologin</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">password:</span> <span class="string">&#x27;$1$nginx$LrLRyngZUF2qJ8f3a31cN0&#x27;</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">createhome:</span> <span class="literal">False</span></span><br><span class="line">&#123;<span class="string">%</span> <span class="string">endfor</span> <span class="string">%</span>&#125;</span><br></pre></td></tr></table></figure>
-
-
-<h2 id="cp模块"><a href="#cp模块" class="headerlink" title="cp模块"></a>cp模块</h2><p>实现远程文件、目录的复制，以及下载URL文件等操作</p>
-<p>将主服务器file_roots指定位置下的目录复制到被控主机<br> <code>salt &#39;chuye.backup*&#39; cp.get_dir salt://iis-works/files/ /tmp/ </code></p>
-<p>将主服务器file_roots指定位置下的文件复制到被控主机<br><code>salt &#39;chuye.backup*&#39; cp.get_file salt://iis-works/files/web-config /tmp/</code></p>
-<p>下载指定URL内容到被控主机指定位置<br><code>salt &#39;*&#39; cp.get_url http://xxx.xyz.com/download/0/files.tgz /root/files.tgz</code></p>
-<h2 id="cron模块"><a href="#cron模块" class="headerlink" title="cron模块"></a>cron模块</h2><h3 id="present-管理crontab"><a href="#present-管理crontab" class="headerlink" title="present - 管理crontab"></a>present - 管理crontab</h3><p>实现被控主机的crontab操作</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">date</span> <span class="string">&gt;</span> <span class="string">/tmp/crontest:</span></span><br><span class="line">  <span class="attr">cron.present:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">user:</span> <span class="string">root</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">minute:</span> <span class="string">&#x27;*/5&#x27;</span></span><br></pre></td></tr></table></figure>
-
-
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">superscript</span> <span class="string">&gt;</span> <span class="string">/tmp/crontest:</span></span><br><span class="line">  <span class="attr">cron.present:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">identifier:</span> <span class="string">SUPERCRON</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">user:</span> <span class="string">root</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">minute:</span> <span class="number">3</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">hour:</span> <span class="number">4</span></span><br></pre></td></tr></table></figure>
-<p>identifier：文件的标示，默认是状态ID。</p>
-<h3 id="file-为crontab提供类似文件管理的功能"><a href="#file-为crontab提供类似文件管理的功能" class="headerlink" title="file - 为crontab提供类似文件管理的功能"></a>file - 为crontab提供类似文件管理的功能</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">foo_crontab:</span></span><br><span class="line">  <span class="attr">cron.file:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">https://mydomain.tld/dir2/foo.txt</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">source_hash:</span> <span class="string">https://mydomain.tld/hashes</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">source_hash_name:</span> <span class="string">./dir2/foo.txt</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="命令行执行"><a href="#命令行执行" class="headerlink" title="命令行执行"></a>命令行执行</h3><p>查看指定主机某用户的crontab<br> <code>salt &#39;*&#39; cron.raw_cron root</code></p>
-<p>为指定的被控主机、root用户添加crontab信息<br><code>salt &#39;*&#39; cron.set_job root &#39;*/5&#39; &#39;*&#39; &#39;*&#39; &#39;*&#39; &#39;*&#39; &#39;date &gt;/dev/null 2&gt;&amp;1&#39;</code></p>
-<p>删除指定的被控主机、root用户的crontab信息<br><code>salt &#39;*&#39; cron.rm_job root &#39;date &gt;/dev/null 2&gt;&amp;1&#39;</code></p>
-<h2 id="dnsutil模块"><a href="#dnsutil模块" class="headerlink" title="dnsutil模块"></a>dnsutil模块</h2><p>实现被控主机通用DNS操作</p>
-<p>为被控主机添加指定的hosts主机配置项<br><code>salt &#39;*&#39; dnsutil.hosts_append /etc/hosts 192.168.56.12 linux-node2</code></p>
-<h2 id="network模块"><a href="#network模块" class="headerlink" title="network模块"></a>network模块</h2><p>返回被控主机网络信息<br><code>salt &#39;*&#39; network.ip_addrs</code></p>
-<p><code>salt &#39;*&#39; network.interfaces</code></p>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a target="_blank" rel="noopener" href="https://docs.saltstack.com/en/latest/ref/states/all/index.html">state modules</a></p>
-<p><a target="_blank" rel="noopener" href="https://docs.saltstack.com/en/latest/ref/modules/all/index.html">execution modules</a></p>
 
       
     </div>

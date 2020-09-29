@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.biglittleant.cn","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+  </script>
+
+  <meta name="description" content="什么是 Helm在没使用 helm 之前，向 kubernetes 部署应用，我们要依次部署 deployment、svc 等，步骤较繁琐。况且随 着很多项目微服务化，复杂的应用在容器中部署以及管理显得较为复杂，helm 通过打包的方式，支持发布的版本 管理和控制，很大程度上简化了 Kubernetes 应用的部署和管理 Helm 本质就是让 K8s 的应用管理(Deployment,Servic">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Helm 服务部署">
+<meta property="og:url" content="http://www.biglittleant.cn/2020/09/28/kubernetes-helm/index.html">
+<meta property="og:site_name" content="biglittleant">
+<meta property="og:description" content="什么是 Helm在没使用 helm 之前，向 kubernetes 部署应用，我们要依次部署 deployment、svc 等，步骤较繁琐。况且随 着很多项目微服务化，复杂的应用在容器中部署以及管理显得较为复杂，helm 通过打包的方式，支持发布的版本 管理和控制，很大程度上简化了 Kubernetes 应用的部署和管理 Helm 本质就是让 K8s 的应用管理(Deployment,Servic">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-09-28T07:58:26.458Z">
+<meta property="article:modified_time" content="2020-09-28T07:58:38.054Z">
+<meta property="article:author" content="biglittleant">
+<meta property="article:tag" content="kubernetes">
+<meta property="article:tag" content="Helm">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.biglittleant.cn/2020/09/28/kubernetes-helm/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Helm 服务部署 | biglittleant</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">biglittleant</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">不被嘲笑的梦想，是不值得去实现的</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-文章分类">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a>
+
+  </li>
+        <li class="menu-item menu-item-归档">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-Helm"><span class="nav-number">1.</span> <span class="nav-text">什么是 Helm</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Helm-%E9%83%A8%E7%BD%B2"><span class="nav-number">1.1.</span> <span class="nav-text">Helm 部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Helm-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A8%A1%E6%9D%BF"><span class="nav-number">1.2.</span> <span class="nav-text">Helm 自定义模板</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%AE%E5%8A%A9%E6%96%87%E6%A1%A3"><span class="nav-number">2.</span> <span class="nav-text">帮助文档</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">biglittleant</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">37</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2020/09/28/kubernetes-helm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="biglittleant">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="biglittleant">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Helm 服务部署
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2020-09-28 15:58:26 / Modified: 15:58:38" itemprop="dateCreated datePublished" datetime="2020-09-28T15:58:26+08:00">2020-09-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/kubernetes/" itemprop="url" rel="index"><span itemprop="name">kubernetes</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="什么是-Helm"><a href="#什么是-Helm" class="headerlink" title="什么是 Helm"></a>什么是 Helm</h2><p>在没使用 helm 之前，向 kubernetes 部署应用，我们要依次部署 deployment、svc 等，步骤较繁琐。况且随 着很多项目微服务化，复杂的应用在容器中部署以及管理显得较为复杂，helm 通过打包的方式，支持发布的版本 管理和控制，很大程度上简化了 Kubernetes 应用的部署和管理</p>
+<p>Helm 本质就是让 K8s 的应用管理(Deployment,Service 等 ) 可配置，能动态生成。通过动态生成 K8s 资源清单文件(deployment.yaml，service.yaml)。然后调用 Kubectl 自动执行 K8s 资源部署</p>
+<p>Helm 是官方提供的类似于 YUM 的包管理器，是部署环境的流程封装。Helm 有两个重要的概念:chart 和 release</p>
+<ul>
+<li>chart 是创建一个应用的信息集合，包括各种 Kubernetes 对象的配置模板、参数定义、依赖关系、文档说 明等。chart 是应用部署的自包含逻辑单元。可以将 chart 想象成 apt、yum 中的软件安装包</li>
+<li>release 是 chart 的运行实例，代表了一个正在运行的应用。当 chart 被安装到 Kubernetes 集群，就生成 一个 release。chart 能够多次安装到同一个集群，每次安装都是一个 release</li>
+</ul>
+<p>Helm 包含两个组件:Helm 客户端和 Tiller 服务器，如下图所示<br>缺图</p>
+<p>Helm 客户端负责 chart 和 release 的创建和管理以及和 Tiller 的交互。Tiller 服务器运行在 Kubernetes 集群 中，它会处理 Helm 客户端的请求，与 Kubernetes API Server 交互</p>
+<h3 id="Helm-部署"><a href="#Helm-部署" class="headerlink" title="Helm 部署"></a>Helm 部署</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">ntpdate</span> <span class="string">ntp1.aliyun.com</span></span><br><span class="line"><span class="string">wget</span> <span class="string">https://get.helm.sh/helm-v2.16.5-linux-amd64.tar.gz</span></span><br><span class="line"><span class="string">tar</span> <span class="string">-zxvf</span> <span class="string">helm-v2.16.5-linux-amd64.tar.gz</span></span><br><span class="line"><span class="string">cd</span> <span class="string">linux-amd64/</span></span><br><span class="line"><span class="string">cp</span> <span class="string">helm</span> <span class="string">/usr/local/bin/</span></span><br></pre></td></tr></table></figure>
+
+<p>为了安装服务端 tiller，还需要在这台机器上配置好 kubectl 工具和 kubeconfig 文件，确保 kubectl 工具可以 在这台机器上访问 apiserver 且正常使用。 这里的 node1 节点以及配置好了 kubectl</p>
+<p>因为 Kubernetes APIServer 开启了 RBAC 访问控制，所以需要创建 tiller 使用的 service account: tiller 并分 配合适的角色给它。 详细内容可以查看helm文档中的 Role-based Access Control。 这里简单起见直接分配 cluster- admin 这个集群内置的 ClusterRole 给它。创建 rbac-config.yaml 文件:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">cat</span> <span class="string">&gt;</span> <span class="string">rbac-config.yaml</span> <span class="string">&lt;&lt;EOF</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">ServiceAccount</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">tiller</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">kube-system</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">rbac.authorization.k8s.io/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">ClusterRoleBinding</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">tiller</span></span><br><span class="line"><span class="attr">roleRef:</span></span><br><span class="line">  <span class="attr">apiGroup:</span> <span class="string">rbac.authorization.k8s.io</span></span><br><span class="line">  <span class="attr">kind:</span> <span class="string">ClusterRole</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">cluster-admin</span></span><br><span class="line"><span class="attr">subjects:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">kind:</span> <span class="string">ServiceAccount</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">tiller</span></span><br><span class="line">    <span class="attr">namespace:</span> <span class="string">kube-system</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f rbac-config.yaml</span><br><span class="line">serviceaccount/tiller created</span><br><span class="line">clusterrolebinding.rbac.authorization.k8s.io/tiller created</span><br></pre></td></tr></table></figure>
+
+<p>拉取镜像</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/tiller:v2.16.6</span><br><span class="line">docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/tiller:v2.16.6 k8s.gcr.io/tiller:v2.16.6</span><br><span class="line">docker rmi registry.cn-hangzhou.aliyuncs.com/google_containers/tiller:v2.16.6</span><br></pre></td></tr></table></figure>
+
+<p>安装tiller</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">helm</span> <span class="string">init</span> <span class="string">--service-account</span> <span class="string">tiller</span> <span class="string">--history-max</span> <span class="number">200</span> <span class="string">--upgrade</span> <span class="string">--tiller-image</span> <span class="string">k8s.gcr.io/tiller:v2.16.6</span> <span class="string">--stable-repo-url</span> <span class="string">https://cnych.github.io/kube-charts-mirror/</span></span><br></pre></td></tr></table></figure>
+
+<p>tiller 默认被部署在 k8s 集群中的 kube-system 这个 namespace 下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pod -n kube-system -l app=helm</span><br><span class="line">NAME                             READY   STATUS    RESTARTS   AGE</span><br><span class="line">tiller-deploy-55479b584d-4kc4b   1/1     Running   2          21h</span><br><span class="line">helm version</span><br><span class="line">Client: &amp;version.Version&#123;SemVer:&quot;v2.16.9&quot;, GitCommit:&quot;8ad7037828e5a0fca1009dabe290130da6368e39&quot;, GitTreeState:&quot;clean&quot;&#125;</span><br><span class="line">Server: &amp;version.Version&#123;SemVer:&quot;v2.16.6&quot;, GitCommit:&quot;dd2e5695da88625b190e6b22e9542550ab503a47&quot;, GitTreeState:&quot;clean&quot;&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Helm-自定义模板"><a href="#Helm-自定义模板" class="headerlink" title="Helm 自定义模板"></a>Helm 自定义模板</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 创建文件夹</span></span><br><span class="line">mkdir ./hello-world</span><br><span class="line">cd ./hello-world</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 创建自描述文件 Chart.yaml , 这个文件必须有 name 和 version 定义</span></span><br><span class="line">cat &lt;&lt;&#x27;EOF&#x27; &gt; ./Chart.yaml</span><br><span class="line">name: hello-world</span><br><span class="line">version: 1.0.0</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 创建模板文件， 用于生成 Kubernetes 资源清单(manifests)</span></span><br><span class="line">mkdir ./templates</span><br><span class="line">cat &lt;&lt;&#x27;EOF&#x27; &gt; ./templates/deployment.yaml</span><br><span class="line">apiVersion: apps/v1</span><br><span class="line">kind: Deployment</span><br><span class="line">metadata:</span><br><span class="line">  name: hello-world</span><br><span class="line">  labels:</span><br><span class="line">    app: hello-world</span><br><span class="line">spec:</span><br><span class="line">  replicas: 3</span><br><span class="line">  selector:</span><br><span class="line">    matchLabels:</span><br><span class="line">      app: hello-world</span><br><span class="line">  template:</span><br><span class="line">    metadata:</span><br><span class="line">      labels:</span><br><span class="line">        app: hello-world</span><br><span class="line">    spec:</span><br><span class="line">      containers:</span><br><span class="line">      - name: nginx</span><br><span class="line">        image: nginx:lasest</span><br><span class="line">        ports:</span><br><span class="line">        - containerPort: 80</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">cat &lt;&lt;&#x27;EOF&#x27; &gt; ./templates/service.yaml</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: Service</span><br><span class="line">metadata:</span><br><span class="line">  name: hello-world</span><br><span class="line">spec:</span><br><span class="line">  type: NodePort</span><br><span class="line">  ports:</span><br><span class="line">    - name: http</span><br><span class="line">      protocol: TCP</span><br><span class="line">      port: 80</span><br><span class="line">  selector:</span><br><span class="line">    app: hello-world</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 使用命令 helm install RELATIVE_PATH_TO_CHART 创建一次Release</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> helm install .</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看 hello-world的部署情况</span></span><br><span class="line">helm list</span><br><span class="line">NAME            REVISION        UPDATED                         STATUS          CHART                   APP VERSION     NAMESPACE</span><br><span class="line">wistful-ferret  1               Thu Jul  2 18:42:42 2020        DEPLOYED        hello-world-1.0.0                       default</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 这个文件中定义的值，在模板文件中可以通过 .VAlues对象访问到</span></span><br><span class="line">cat &lt;&lt;&#x27;EOF&#x27; &gt; ./templates/deployment.yaml</span><br><span class="line">apiVersion: apps/v1</span><br><span class="line">kind: Deployment</span><br><span class="line">metadata:</span><br><span class="line">  name: hello-world</span><br><span class="line">  labels:</span><br><span class="line">    app: hello-world</span><br><span class="line">spec:</span><br><span class="line">  replicas: 3</span><br><span class="line">  selector:</span><br><span class="line">    matchLabels:</span><br><span class="line">      app: hello-world</span><br><span class="line">  template:</span><br><span class="line">    metadata:</span><br><span class="line">      labels:</span><br><span class="line">        app: hello-world</span><br><span class="line">    spec:</span><br><span class="line">      containers:</span><br><span class="line">      - name: nginx</span><br><span class="line">        image: &#123;&#123; .Values.image.repository &#125;&#125;:&#123;&#123; .Values.image.tag &#125;&#125;</span><br><span class="line">        ports:</span><br><span class="line">        - containerPort: 80</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<p>创建一个 values.yaml 定义相关值</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 配置体现在配置文件 values.yaml</span></span><br><span class="line">cat &lt;&lt;&#x27;EOF&#x27; &gt; ./values.yaml</span><br><span class="line">image:</span><br><span class="line">  repository: nginx</span><br><span class="line">  tag: &#x27;1.18&#x27;</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 查看当前的版本信息</span></span><br><span class="line">helm list</span><br><span class="line">NAME            REVISION        UPDATED                         STATUS          CHART                   APP VERSION     NAMESPACE</span><br><span class="line">wistful-ferret  1               Thu Jul  2 18:42:42 2020        DEPLOYED        hello-world-1.0.0                       default</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 升级版本</span></span><br><span class="line">helm upgrade -f values.yaml wistful-ferret .</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># REVISION 版本号变成了2</span></span></span><br><span class="line">helm list</span><br><span class="line">NAME            REVISION        UPDATED                         STATUS          CHART                   APP VERSION     NAMESPACE</span><br><span class="line">wistful-ferret  2               Fri Jul  3 15:16:24 2020        DEPLOYED        hello-world-1.0.0                       default</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 查看镜像号已经变更成功</span></span></span><br><span class="line">kubectl get pods  hello-world-8689856fc-v9s2m -o yaml |grep &quot;\- image: &quot;</span><br><span class="line">  - image: nginx:1.18</span><br></pre></td></tr></table></figure>
+
+<p>也可以通过命令行显式指定版本号</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 在 values.yaml 中的值可以被部署 release 时用到的参数 --values YAML_FILE_PATH 或 --<span class="built_in">set</span> key1=value1, key2=value2 覆盖掉</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> helm install --<span class="built_in">set</span> image.tag=<span class="string">&#x27;latest&#x27;</span> .</span></span><br></pre></td></tr></table></figure>
+
+<p>helm 常用命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 列出已经部署的 Release</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> helm ls</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查询一个特定的 Release 的状态</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> helm status RELEASE_NAME</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 移除所有与这个 Release 相关的 Kubernetes 资源</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> helm delete cautious-shrimp</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> helm rollback RELEASE_NAME REVISION_NUMBER</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> helm rollback cautious-shrimp 1</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 使用 helm delete --purge RELEASE_NAME 移除所有与指定 Release 相关的 Kubernetes 资源和所有这个 Release 的记录</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> helm delete --purge cautious-shrimp</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> helm ls --deleted</span></span><br></pre></td></tr></table></figure>
+
+<p>Debug</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 使用模板动态生成K8s资源清单，非常需要能提前预览生成的结果。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 使用--dry-run --debug 选项来打印出生成的清单文件内容，而不执行部署</span></span><br><span class="line">helm install . --dry-run --debug --set image.tag=latest</span><br></pre></td></tr></table></figure>
+
+<h2 id="帮助文档"><a href="#帮助文档" class="headerlink" title="帮助文档"></a>帮助文档</h2><p><a target="_blank" rel="noopener" href="https://github.com/helm/helm/blob/master/docs/charts.md">官方文档</a><br><a target="_blank" rel="noopener" href="https://imroc.io/posts/kubernetes/deploy-kubernetes-dashboard-and-enable-free-https/">helm 安装 dashboard</a><br><a target="_blank" rel="noopener" href="https://kubernetes.github.io/ingress-nginx/deploy/">ingress-nginx deploy</a><br><a target="_blank" rel="noopener" href="https://github.com/kubernetes/ingress-nginx">ingress-nginx</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/kubernetes/" rel="tag"># kubernetes</a>
+              <a href="/tags/Helm/" rel="tag"># Helm</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/09/28/kubernetes-coredns/" rel="prev" title="coredns服务搭建">
+                  <i class="fa fa-chevron-left"></i> coredns服务搭建
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/09/29/kubernetes-ingress/" rel="next" title="ingress nginx 服务部署">
+                  ingress nginx 服务部署 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+  
+  
+  
+
+
+
+      
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">biglittleant</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
