@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.biglittleant.cn","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="如何自定义变量123- hosts: webservers  vars:    http_port: 80  可以在temple 文件中使用 &amp;#123;&amp;#123;  &amp;#125;&amp;#125; 来使用变量 1My amp goes to &amp;#123;&amp;#123; max_amp_value &amp;#125;&amp;#125;  也可以在写playbook的时候使用变量 1template: src&#x3D;foo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="死磕ansible系列--一文搞懂 ansible 变量配置">
+<meta property="og:url" content="http://www.biglittleant.cn/2018/09/20/ansible-vars/index.html">
+<meta property="og:site_name" content="Big Little Ant">
+<meta property="og:description" content="如何自定义变量123- hosts: webservers  vars:    http_port: 80  可以在temple 文件中使用 &amp;#123;&amp;#123;  &amp;#125;&amp;#125; 来使用变量 1My amp goes to &amp;#123;&amp;#123; max_amp_value &amp;#125;&amp;#125;  也可以在写playbook的时候使用变量 1template: src&#x3D;foo">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2018-09-20T12:18:33.000Z">
+<meta property="article:modified_time" content="2020-10-10T03:24:31.199Z">
+<meta property="article:author" content="Big Little Ant">
+<meta property="article:tag" content="死磕ansible系列">
+<meta property="article:tag" content="ansible">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.biglittleant.cn/2018/09/20/ansible-vars/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://www.biglittleant.cn/2018/09/20/ansible-vars/","path":"2018/09/20/ansible-vars/","title":"死磕ansible系列--一文搞懂 ansible 变量配置"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>死磕ansible系列--一文搞懂 ansible 变量配置 | Big Little Ant</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Big Little Ant</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">不被嘲笑的梦想，是不值得去实现的</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-文章分类"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a></li><li class="menu-item menu-item-golang"><a href="/categories/go" rel="section"><i class="fa fa-th fa-fw"></i>Golang</a></li><li class="menu-item menu-item-kubernetes"><a href="/categories/kubernetes" rel="section"><i class="fa fa-th fa-fw"></i>Kubernetes</a></li><li class="menu-item menu-item-标签"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-归档"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-关于"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8F%98%E9%87%8F"><span class="nav-number">1.</span> <span class="nav-text">如何自定义变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#facts-%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BF%A1%E6%81%AF"><span class="nav-number">2.</span> <span class="nav-text">facts: 系统的信息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%97%ADfacts"><span class="nav-number">2.1.</span> <span class="nav-text">关闭facts</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0facts-facts-d"><span class="nav-number">2.2.</span> <span class="nav-text">本地facts(facts.d)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%93%E5%AD%98-facts%E6%95%B0%E6%8D%AE"><span class="nav-number">2.3.</span> <span class="nav-text">缓存 facts数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8facter%E6%89%A9%E5%B1%95facts%E4%BF%A1%E6%81%AF"><span class="nav-number">2.4.</span> <span class="nav-text">使用facter扩展facts信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8ohai%E6%89%A9%E5%B1%95facts%E4%BF%A1%E6%81%AF"><span class="nav-number">2.5.</span> <span class="nav-text">使用ohai扩展facts信息</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Registered-%E8%8E%B7%E5%8F%96%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4%E7%9A%84%E8%BE%93%E5%87%BA"><span class="nav-number">3.</span> <span class="nav-text">Registered 获取执行命令的输出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E7%BD%AE%E5%8F%98%E9%87%8F"><span class="nav-number">4.</span> <span class="nav-text">内置变量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#hostvars"><span class="nav-number">4.1.</span> <span class="nav-text">hostvars</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#groups"><span class="nav-number">4.2.</span> <span class="nav-text">groups</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#group-names"><span class="nav-number">4.3.</span> <span class="nav-text">group_names</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E8%AF%BB%E5%8F%96%E7%9A%84%E4%BC%98%E5%85%88%E7%BA%A7"><span class="nav-number">5.</span> <span class="nav-text">变量读取的优先级</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">6.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Big Little Ant</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">55</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2018/09/20/ansible-vars/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Big Little Ant">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Big Little Ant">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="死磕ansible系列--一文搞懂 ansible 变量配置 | Big Little Ant">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          死磕ansible系列--一文搞懂 ansible 变量配置
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2018-09-20 20:18:33" itemprop="dateCreated datePublished" datetime="2018-09-20T20:18:33+08:00">2018-09-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2020-10-10 11:24:31" itemprop="dateModified" datetime="2020-10-10T11:24:31+08:00">2020-10-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/ansible/" itemprop="url" rel="index"><span itemprop="name">ansible</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="如何自定义变量"><a href="#如何自定义变量" class="headerlink" title="如何自定义变量"></a>如何自定义变量</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">hosts:</span> <span class="string">webservers</span></span><br><span class="line">  <span class="attr">vars:</span></span><br><span class="line">    <span class="attr">http_port:</span> <span class="number">80</span></span><br></pre></td></tr></table></figure>
+
+<p>可以在temple 文件中使用 <code>&#123;&#123;  &#125;&#125;</code> 来使用变量</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">My</span> <span class="string">amp</span> <span class="string">goes</span> <span class="string">to</span> &#123;&#123; <span class="string">max_amp_value</span> &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>也可以在写playbook的时候使用变量</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">template:</span> <span class="string">src=foo.cfg.j2</span> <span class="string">dest=&#123;&#123;</span> <span class="string">remote_install_path</span> <span class="string">&#125;&#125;/foo.cfg</span></span><br></pre></td></tr></table></figure>
+
+<p>这里有个小技巧，使用变量时，要用双引号引用。<br>错误写法</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">hosts:</span> <span class="string">app_servers</span></span><br><span class="line">  <span class="attr">vars:</span></span><br><span class="line">      <span class="attr">app_path:</span> &#123;&#123; <span class="string">base_path</span> &#125;&#125;<span class="string">/22</span></span><br></pre></td></tr></table></figure>
+
+<p>正确写法</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">hosts:</span> <span class="string">app_servers</span></span><br><span class="line">  <span class="attr">vars:</span></span><br><span class="line">       <span class="attr">app_path:</span> <span class="string">&quot;<span class="template-variable">&#123;&#123; base_path &#125;&#125;</span>/22&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="facts-系统的信息"><a href="#facts-系统的信息" class="headerlink" title="facts: 系统的信息"></a>facts: 系统的信息</h2><p>从远程节点搜集到的系统信息称为facts。facts包括远程主机的IP地址，和操作系统类型，磁盘相关信息等等。</p>
+<p>执行下边的命令来查看都有哪些信息：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">debug:</span> <span class="string">var=ansible_facts</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ansible test -m setup</span><br></pre></td></tr></table></figure>
+
+<p>返回内容类似下边这样：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">ansible linux-node2 -m setup  |head</span><br><span class="line">linux-node2 | SUCCESS =&gt; &#123;</span><br><span class="line">    &quot;ansible_facts&quot;: &#123;</span><br><span class="line">        &quot;ansible_all_ipv4_addresses&quot;: [</span><br><span class="line">            &quot;10.0.2.12&quot;,</span><br><span class="line">            &quot;192.168.56.12&quot;</span><br><span class="line">        ],</span><br><span class="line">        &quot;ansible_all_ipv6_addresses&quot;: [</span><br><span class="line">            &quot;fe80::250:56ff:fe3f:cc94&quot;,</span><br><span class="line">            &quot;fe80::250:56ff:fe30:8f96&quot;</span><br><span class="line">        ],</span><br><span class="line">        ......省略若干行内容......</span><br></pre></td></tr></table></figure>
+
+<p>可以在temple模板中使用上边返回的值：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123; ansible_devices.sda.model &#125;&#125;</span><br><span class="line">&#123;&#123; ansible_facts[&#x27;devices&#x27;][&#x27;xvda&#x27;][&#x27;model&#x27;] &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>要获取系统的主机名：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123; ansible_hostname &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>facts会经常在条件语句及模板中使用。如，根据不同的linux发行版，执行不同的包管理程序。</p>
+<h3 id="关闭facts"><a href="#关闭facts" class="headerlink" title="关闭facts"></a>关闭facts</h3><p>如果你确信不需要主机的任何facts信息，而且对远程节点主机都了解的很清楚，那么可以将其关闭。远程操作节点较多的时候，关闭facts会提升ansible的性能。</p>
+<p>只需要在play中设置如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">- hosts: whatever</span><br><span class="line">  gather_facts: no</span><br></pre></td></tr></table></figure>
+
+<h3 id="本地facts-facts-d"><a href="#本地facts-facts-d" class="headerlink" title="本地facts(facts.d)"></a>本地facts(facts.d)</h3><p>如果远程节点系统上存在etc&#x2F;ansible&#x2F;facts.d目录，这个目录下的以.fact为后缀的文件，里面的内容可以是JSON格式，或者ini格式书写；或者是一个可以返回json格式数据的可执行文件，都可以用来提供本地facts信息。</p>
+<p>在远程节点创建一个<code>/etc/ansible/facts.d/preferences.fact</code>的文件，内容如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /etc/ansible/facts.d</span><br><span class="line">cat &gt;&gt;/etc/ansible/facts.d/preferences.fact&lt;&lt;EOF</span><br><span class="line">[general]</span><br><span class="line">name=linux</span><br><span class="line">test=True</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<p>在控制节点获取自定义的信息：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">ansible linux-node2 -m setup -a &quot;filter=ansible_local&quot;</span><br><span class="line">linux-node2 | SUCCESS =&gt; &#123;</span><br><span class="line">    &quot;ansible_facts&quot;: &#123;</span><br><span class="line">        &quot;ansible_local&quot;: &#123;</span><br><span class="line">            &quot;preferences&quot;: &#123;</span><br><span class="line">                &quot;general&quot;: &#123;</span><br><span class="line">                    &quot;name&quot;: &quot;linux&quot;,</span><br><span class="line">                    &quot;test&quot;: &quot;True&quot;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;changed&quot;: false</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以在playbooks或者模板中这样使用获取到的信息：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123; <span class="string">ansible_local.preferences.general.name</span> &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>linux-node2 服务器配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mkdir /etc/ansible/facts.d -p</span><br><span class="line"></span><br><span class="line">cat /etc/ansible/facts.d/ini.fact</span><br><span class="line">[mytest]</span><br><span class="line">niu=key</span><br><span class="line"></span><br><span class="line">cat /etc/ansible/facts.d/niu.fact</span><br><span class="line">&#123; &quot;name&quot;:&quot;shencan&quot; , &quot;list&quot;:[&quot;three&quot;,&quot;one&quot;,&quot;two&quot;], &quot;Dict&quot;: &#123;&quot;A&quot;:&quot;B&quot;&#125; &#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果展示</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">ansible -i inventory/ linux-node2 -m setup -a &quot;filter=ansible_local&quot;</span><br><span class="line">linux-node2 | SUCCESS =&gt; &#123;</span><br><span class="line">    &quot;ansible_facts&quot;: &#123;</span><br><span class="line">        &quot;ansible_local&quot;: &#123;</span><br><span class="line">            &quot;ini&quot;: &#123;</span><br><span class="line">                &quot;mytest&quot;: &#123;</span><br><span class="line">                    &quot;niu&quot;: &quot;key&quot;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;niu&quot;: &#123;</span><br><span class="line">                &quot;Dict&quot;: &#123;</span><br><span class="line">                    &quot;A&quot;: &quot;B&quot;</span><br><span class="line">                &#125;,</span><br><span class="line">                &quot;list&quot;: [</span><br><span class="line">                    &quot;three&quot;,</span><br><span class="line">                    &quot;one&quot;,</span><br><span class="line">                    &quot;two&quot;</span><br><span class="line">                ],</span><br><span class="line">                &quot;name&quot;: &quot;shencan&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;preferences&quot;: &#123;</span><br><span class="line">                &quot;general&quot;: &#123;</span><br><span class="line">                    &quot;name&quot;: &quot;linux&quot;,</span><br><span class="line">                    &quot;test&quot;: &quot;True&quot;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;changed&quot;: false</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="缓存-facts数据"><a href="#缓存-facts数据" class="headerlink" title="缓存 facts数据"></a>缓存 facts数据</h3><p>编辑 ansible.cfg 添加如下内容，让数据缓存到redis中。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[defaults]</span><br><span class="line">gathering = smart</span><br><span class="line">fact_caching = redis</span><br><span class="line">fact_caching_timeout = 86400</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">seconds</span></span><br></pre></td></tr></table></figure>
+
+<p>需要安装相关的依赖程序</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum install redis</span><br><span class="line">service redis start</span><br><span class="line">pip install redis</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用facter扩展facts信息"><a href="#使用facter扩展facts信息" class="headerlink" title="使用facter扩展facts信息"></a>使用facter扩展facts信息</h3><p>使用过Puppet的读者都熟悉facter是Puppet里面一个负责收集主机静态信息的组件，Ansible的facts功能也一样。Ansible的facts组件也会判断被控制机器上是否安装有facter和ruby-json包，如果存在的话，Ansible的facts也会采集facter信息。我们来查看以下机器信息：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ansible linux-node2 -m shell -a &#x27;rpm -qa ruby-json facter&#x27;</span><br><span class="line"></span><br><span class="line">ansible linux-node2 -m facter</span><br></pre></td></tr></table></figure>
+
+<p>当然，如果直接运行setup模块也会采集facter信息<br>所有facter信息在ansible_facts下以facter_开头，这些信息的引用方式跟Ansible自带facts组件收集的信息引用方式一致。</p>
+<h3 id="使用ohai扩展facts信息"><a href="#使用ohai扩展facts信息" class="headerlink" title="使用ohai扩展facts信息"></a>使用ohai扩展facts信息</h3><p>ohai是Chef配置管理工具中检测节点属性的工具，Ansible的facts也支持ohai信息的采集。当然需要被管机器上安装ohai包。下面介绍ohai相关信息的采集：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ansible linux-node2 -m shell -a &#x27;gem list|grep ohai&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>如果主机上没有安装ohai包，可以使用gem方式进行安装。如果存在ohai包，可以直接运行ohai模块查看ohai属性：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ansible linux-node2 -m ohai</span><br></pre></td></tr></table></figure>
+
+<p>如果直接运行setup模块，也会采集ohai信息</p>
+<h2 id="Registered-获取执行命令的输出"><a href="#Registered-获取执行命令的输出" class="headerlink" title="Registered 获取执行命令的输出"></a>Registered 获取执行命令的输出</h2><p>register方式用于在task之间传递变量。</p>
+<p>在刚开始使用 ansible-playbook 做应用程序部署的时候，因为在部署的过程中有使用到 command 或 shell 模块执行一些自定义的脚本，而且这些脚本都会有输出，用来表示是否执行正常或失败。如果像之前自己写脚本做应用程序部署的，这很好实现。但现在是用 Ansible 做，那么要怎么样做可以获取到 ansible playbook 中 command 模块的输出呢？ Ansible 也提供的解决办法，这时我们就可以通过使用 register 关键字来实现，register 关键字可以存储指定命令的输出结果到一个自定义的变量中，我们通过访问这个自定义变量就可以获取到命令的输出结果。Register 的使用很方便，只需要在 task 声明 register 关键字，并自定义一个变量名就可以。如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">hosts:</span> <span class="string">web_servers</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">tasks:</span></span><br><span class="line"></span><br><span class="line">     <span class="bullet">-</span> <span class="attr">shell:</span> <span class="string">/usr/bin/foo</span></span><br><span class="line">       <span class="attr">register:</span> <span class="string">foo_result</span></span><br><span class="line">       <span class="attr">ignore_errors:</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">     <span class="bullet">-</span> <span class="attr">shell:</span> <span class="string">/usr/bin/bar</span></span><br><span class="line">       <span class="attr">when:</span> <span class="string">foo_result.rc</span> <span class="string">==</span> <span class="number">5</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>register 中存放的的数据其实是ansible stdout返回的json数据，拿到json数椐后就可以做相关使用和处理了。可以使用-v 查看上一个task的stdout 数据。</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- name: echo date</span><br><span class="line"> command: date</span><br><span class="line"> register: date_output</span><br><span class="line"></span><br><span class="line">- name: echo date_output</span><br><span class="line"> command: echo &quot;30&quot;</span><br><span class="line"> when: date_output.stdout.split(&#x27; &#x27;)[2] == &quot;30&quot;</span><br></pre></td></tr></table></figure>
+
+<p>这里第 1 个 task 是执行了一个 date 命令，register 关键字将 date 命令的输出存储到 date_output 变量名。第 2 个 task 对输出进行分析，并使用 when 对关键字对分析后的进行判断，如果匹配，则执行这个 task，不匹配就不执行。这里要重点说下的，因为 register 获取到的输出内容都是字符串，而 ansible 又是 python 写的，你可以使用 python 字符串的方法对其做处理，比如本文中使用的 split，还可以使用 find 方法。个人觉得，真是非常灵活方便。</p>
+<p>注册变量</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">register: xxx</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>xxx.stdout.find(sdf)</li>
+<li>xxx.stdout_lines</li>
+</ul>
+<p>使用debug模块查看register中的数据</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">hosts:</span> <span class="string">all</span></span><br><span class="line">      <span class="attr">gather_facts:</span> <span class="literal">False</span></span><br><span class="line">      <span class="attr">tasks:</span></span><br><span class="line">          <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">register</span> <span class="string">variable</span></span><br><span class="line">              <span class="attr">shell:</span> <span class="string">hostname</span></span><br><span class="line">              <span class="attr">register:</span> <span class="string">info</span></span><br><span class="line">          <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">display</span> <span class="string">variable</span></span><br><span class="line">              <span class="attr">debug:</span> <span class="string">msg=&quot;The</span> <span class="string">varibale</span> <span class="string">is</span>  &#123;&#123; <span class="string">info</span>  &#125;&#125;<span class="string">&quot;</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="内置变量"><a href="#内置变量" class="headerlink" title="内置变量"></a>内置变量</h2><p>ansible 默认内置了一下变量，可以直接使用。hostvars, groups, group_names, and inventory_hostname</p>
+<h3 id="hostvars"><a href="#hostvars" class="headerlink" title="hostvars"></a>hostvars</h3><p>hostvars 是用来调用指定主机变量，需要传入主机信息，返回结果也是一个 JSON 字符串，同样，也可以直接引用 JSON 字符串内的指定信息。如果主机执行获取了 facts 数据，则hosts中将会包含 facts 中的数据。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- name: Get the masters IP</span><br><span class="line">  set_fact: dns_master=&quot;&#123;&#123; hostvars.ns1.ansible_default_ipv4.address &#125;&#125;&quot;</span><br><span class="line"></span><br><span class="line">- name: Configure BIND</span><br><span class="line">  template: dest=/etc/named.conf src=templates/named.conf.j2</span><br></pre></td></tr></table></figure>
+
+<p>hostvars 例子</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">	&#x27;linux-node1&#x27;<span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">		&#x27;inventory_file&#x27;<span class="punctuation">:</span> &#x27;/data/db/playbooks/inventory/open_falcon&#x27;<span class="punctuation">,</span></span><br><span class="line">		&#x27;ansible_playbook_python&#x27;<span class="punctuation">:</span> &#x27;/usr/bin/python2&#x27;<span class="punctuation">,</span></span><br><span class="line">		&#x27;falcon_mysql_port&#x27;<span class="punctuation">:</span> <span class="number">3306</span><span class="punctuation">,</span></span><br><span class="line">		&#x27;ansible_check_mode&#x27;<span class="punctuation">:</span> True<span class="punctuation">,</span></span><br><span class="line">		&#x27;falcon_mysql_passwd&#x27;<span class="punctuation">:</span> <span class="number">123456</span><span class="punctuation">,</span></span><br><span class="line">		&#x27;ansible_diff_mode&#x27;<span class="punctuation">:</span> True<span class="punctuation">,</span></span><br><span class="line">		&#x27;open_falcon_path&#x27;<span class="punctuation">:</span> &#x27;/data/app/open-falcon&#x27;<span class="punctuation">,</span></span><br><span class="line">		&#x27;groups&#x27;<span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">			&#x27;ungrouped&#x27;<span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">			&#x27;judge&#x27;<span class="punctuation">:</span> <span class="punctuation">[</span>&#x27;linux-node2_judge1&#x27;<span class="punctuation">,</span> &#x27;linux-node2_judge2&#x27;<span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">			&#x27;all&#x27;<span class="punctuation">:</span> <span class="punctuation">[</span>&#x27;linux-node1&#x27;<span class="punctuation">,</span> &#x27;linux-node2_judge1&#x27;<span class="punctuation">,</span> &#x27;linux-node2_judge2&#x27;<span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">			&#x27;open_falcon&#x27;<span class="punctuation">:</span> <span class="punctuation">[</span>&#x27;linux-node2_judge1&#x27;<span class="punctuation">,</span> &#x27;linux-node2_judge2&#x27;<span class="punctuation">,</span> &#x27;linux-node1&#x27;<span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">			&#x27;api&#x27;<span class="punctuation">:</span> <span class="punctuation">[</span>&#x27;linux-node1&#x27;<span class="punctuation">]</span></span><br><span class="line">		<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">		&#x27;ansible_forks&#x27;<span class="punctuation">:</span> <span class="number">5</span><span class="punctuation">,</span></span><br><span class="line">		&#x27;ansible_facts&#x27;<span class="punctuation">:</span> <span class="punctuation">&#123;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">		&#x27;inventory_hostname&#x27;<span class="punctuation">:</span> &#x27;linux-node1&#x27;<span class="punctuation">,</span></span><br><span class="line">		&#x27;ansible_inventory_sources&#x27;<span class="punctuation">:</span> <span class="punctuation">[</span>&#x27;/data/db/playbooks/inventory/open_falcon&#x27;<span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">		&#x27;target&#x27;<span class="punctuation">:</span> &#x27;judge&#x27;<span class="punctuation">,</span></span><br><span class="line">		&#x27;inventory_hostname_short&#x27;<span class="punctuation">:</span> &#x27;linux-node1&#x27;<span class="punctuation">,</span></span><br><span class="line">		&#x27;playbook_dir&#x27;<span class="punctuation">:</span> &#x27;/data/db/playbooks/playbooks&#x27;<span class="punctuation">,</span></span><br><span class="line">		&#x27;omit&#x27;<span class="punctuation">:</span> &#x27;__omit_place_holder__38ba14590a3d51c234a21046ca130054f96cc570&#x27;<span class="punctuation">,</span></span><br><span class="line">		&#x27;ansible_skip_tags&#x27;<span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">		&#x27;inventory_dir&#x27;<span class="punctuation">:</span> &#x27;/data/db/playbooks/inventory&#x27;<span class="punctuation">,</span></span><br><span class="line">		&#x27;ansible_verbosity&#x27;<span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">		&#x27;role&#x27;<span class="punctuation">:</span> &#x27;test&#x27;<span class="punctuation">,</span></span><br><span class="line">		&#x27;group_names&#x27;<span class="punctuation">:</span> <span class="punctuation">[</span>&#x27;api&#x27;<span class="punctuation">,</span> &#x27;open_falcon&#x27;<span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">		&#x27;falcon_mysql_host&#x27;<span class="punctuation">:</span> &#x27;<span class="number">192.168</span><span class="number">.56</span><span class="number">.12</span>&#x27;<span class="punctuation">,</span></span><br><span class="line">		&#x27;ansible_run_tags&#x27;<span class="punctuation">:</span> <span class="punctuation">[</span>&#x27;test_vars&#x27;<span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">		&#x27;ansible_version&#x27;<span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">			&#x27;major&#x27;<span class="punctuation">:</span> <span class="number">2</span><span class="punctuation">,</span></span><br><span class="line">			&#x27;full&#x27;<span class="punctuation">:</span> &#x27;<span class="number">2.7</span><span class="number">.1</span>&#x27;<span class="punctuation">,</span></span><br><span class="line">			&#x27;string&#x27;<span class="punctuation">:</span> &#x27;<span class="number">2.7</span><span class="number">.1</span>&#x27;<span class="punctuation">,</span></span><br><span class="line">			&#x27;minor&#x27;<span class="punctuation">:</span> <span class="number">7</span><span class="punctuation">,</span></span><br><span class="line">			&#x27;revision&#x27;<span class="punctuation">:</span> <span class="number">1</span></span><br><span class="line">		<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">		&#x27;falcon_mysql_name&#x27;<span class="punctuation">:</span> &#x27;falcon&#x27;</span><br><span class="line">	<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  ’linux-node2_judge2‘<span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    &#x27;ansible_hostname&#x27;<span class="punctuation">:</span> &#x27;linux-node2&#x27;<span class="punctuation">,</span></span><br><span class="line">		&#x27;ansible_ssh_port&#x27;<span class="punctuation">:</span> <span class="number">52113</span><span class="punctuation">,</span></span><br><span class="line">    &#x27;ansible_ssh_host&#x27;<span class="punctuation">:</span> &#x27;linux-node2&#x27;<span class="punctuation">,</span></span><br><span class="line">    &#x27;ansible_system&#x27;<span class="punctuation">:</span> &#x27;Linux&#x27;<span class="punctuation">,</span></span><br><span class="line">		&#x27;playbook_dir&#x27;<span class="punctuation">:</span> &#x27;/data/db/playbooks/playbooks&#x27;<span class="punctuation">,</span></span><br><span class="line">		&#x27;ansible_run_tags&#x27;<span class="punctuation">:</span> <span class="punctuation">[</span>&#x27;test_vars&#x27;<span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">		&#x27;judge_http_port&#x27;<span class="punctuation">:</span> <span class="number">6081</span><span class="punctuation">,</span></span><br><span class="line">		&#x27;ansible_python_version&#x27;<span class="punctuation">:</span> &#x27;<span class="number">2.7</span><span class="number">.5</span>&#x27;</span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="groups"><a href="#groups" class="headerlink" title="groups"></a>groups</h3><p>groups 变量是一个全局变量，引用了inventory文件里所有的主机以及主机组信息 它返回的是一个json字符串。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">	&#x27;ungrouped&#x27;<span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">	u &#x27;judge&#x27;<span class="punctuation">:</span> <span class="punctuation">[</span>u &#x27;linux-node2_judge1&#x27;<span class="punctuation">,</span> u &#x27;linux-node2_judge2&#x27;<span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">	&#x27;all&#x27;<span class="punctuation">:</span> <span class="punctuation">[</span>u &#x27;linux-node1&#x27;<span class="punctuation">,</span> u &#x27;linux-node2_judge1&#x27;<span class="punctuation">,</span> u &#x27;linux-node2_judge2&#x27;<span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">	u &#x27;open_falcon&#x27;<span class="punctuation">:</span> <span class="punctuation">[</span>u &#x27;linux-node2_judge1&#x27;<span class="punctuation">,</span> u &#x27;linux-node2_judge2&#x27;<span class="punctuation">,</span> u &#x27;linux-node1&#x27;<span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">	u &#x27;api&#x27;<span class="punctuation">:</span> <span class="punctuation">[</span>u &#x27;linux-node1&#x27;<span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>playbook中通过或是的方式来引用</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- name: Create a user for all app servers</span><br><span class="line">with_items: groups.appservers</span><br><span class="line">mysql_user: name=kate password=test host=&#123;&#123; hostvars.[item].ansible_eth0.ipv4.address &#125;&#125; state=present</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">%</span> <span class="string">for</span> <span class="string">host</span> <span class="string">in</span> <span class="string">groups</span>[<span class="string">&#x27;app_servers&#x27;</span>] <span class="string">%</span>&#125;</span><br><span class="line">   &#123;&#123; <span class="string">hostvars</span>[<span class="string">host</span>][<span class="string">&#x27;ansible_facts&#x27;</span>][<span class="string">&#x27;eth0&#x27;</span>][<span class="string">&#x27;ipv4&#x27;</span>][<span class="string">&#x27;address&#x27;</span>] &#125;&#125;</span><br><span class="line">&#123;<span class="string">%</span> <span class="string">endfor</span> <span class="string">%</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">etcd_initial_cluster: |-</span><br><span class="line">      &#123;% for item in groups[&#x27;etcd&#x27;] -%&#125;</span><br><span class="line">        &#123;&#123; hostvars[item][&#x27;node_name&#x27;] &#125;&#125;=http://&#123;&#123; hostvars[item][&#x27;ansible_default_ipv4&#x27;][&#x27;address&#x27;] &#125;&#125;:2380&#123;% if not loop.last %&#125;,&#123;% endif %&#125;</span><br><span class="line">      &#123;%- endfor %&#125;</span><br><span class="line">etcd_initial_cluster_state: &quot;new&quot;</span><br></pre></td></tr></table></figure>
+
+<h3 id="group-names"><a href="#group-names" class="headerlink" title="group_names"></a>group_names</h3><p>group_names引用当前主机所在的group的名称</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;% if &#x27;webserver&#x27; in group_names %&#125;</span><br><span class="line"><span class="meta prompt_">   # </span><span class="language-bash">some part of a configuration file that only applies to webservers</span></span><br><span class="line">&#123;% endif %&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- name: For secure machines</span><br><span class="line">  set_fact: sshconfig=files/ssh/sshd_config_secure</span><br><span class="line">  when: &quot;&#x27;secure&#x27; in group_names&quot;</span><br><span class="line"></span><br><span class="line">- name: For non-secure machines</span><br><span class="line">  set_fact: sshconfig=files/ssh/sshd_config_default</span><br><span class="line">  when: &quot;&#x27;secure&#x27; not in group_names&quot;</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>inventory_hostname 变量保存了在设备配置清单中服务器的主机名</li>
+<li>inventory_hostname_short 变量跟inventory_hostname一样，只是去掉域名，比如inventory_hostname 是host.example 那么inventory_hostname_short就是host</li>
+<li>inventory_dir 是设备清单文件的路径</li>
+<li>inventory_file 是设备清单文件的文件名</li>
+</ul>
+<p>通过 vars_files 指定变量文件</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">hosts:</span> <span class="string">all</span></span><br><span class="line">  <span class="attr">remote_user:</span> <span class="string">root</span></span><br><span class="line">  <span class="attr">vars:</span></span><br><span class="line">    <span class="attr">favcolor:</span> <span class="string">blue</span></span><br><span class="line">  <span class="attr">vars_files:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/vars/external_vars.yml</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">tasks:</span></span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">this</span> <span class="string">is</span> <span class="string">just</span> <span class="string">a</span> <span class="string">placeholder</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">/bin/echo</span> <span class="string">foo</span></span><br></pre></td></tr></table></figure>
+
+<p><code>/vars/external_vars.yml</code> 文件内容</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="comment"># in the above example, this would be vars/external_vars.yml</span></span><br><span class="line"><span class="attr">somevar:</span> <span class="string">somevalue</span></span><br><span class="line"><span class="attr">password:</span> <span class="string">magic</span></span><br></pre></td></tr></table></figure>
+
+<p>使用 –extra-vars (or -e ) 命令行传入 变量</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ansible-playbook release.yml --extra-vars &quot;version=1.23.45 other_variable=foo&quot;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ansible-playbook release.yml --extra-vars &quot;@some_file.json&quot;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">ansible-playbook</span> <span class="string">release.yml</span> <span class="string">--extra-vars</span> <span class="string">&#x27;&#123;&quot;version&quot;:&quot;1.23.45&quot;,&quot;other_variable&quot;:&quot;foo&quot;&#125;&#x27;</span></span><br><span class="line"><span class="string">ansible-playbook</span> <span class="string">arcade.yml</span> <span class="string">--extra-vars</span> <span class="string">&#x27;&#123;&quot;pacman&quot;:&quot;mrs&quot;,&quot;ghosts&quot;:[&quot;inky&quot;,&quot;pinky&quot;,&quot;clyde&quot;,&quot;sue&quot;]&#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="变量读取的优先级"><a href="#变量读取的优先级" class="headerlink" title="变量读取的优先级"></a>变量读取的优先级</h2><p>读取顺序倒叙实现，<code>最后一行是优先级最高的</code>。</p>
+<ul>
+<li>command line values (eg “-u user”)</li>
+<li>role defaults [1]</li>
+<li>inventory file or script group vars [2]</li>
+<li>inventory group_vars&#x2F;all [3]</li>
+<li>playbook group_vars&#x2F;all [3]</li>
+<li>inventory group_vars&#x2F;* [3]</li>
+<li>playbook group_vars&#x2F;* [3]</li>
+<li>inventory file or script host vars [2]</li>
+<li>inventory host_vars&#x2F;* [3]</li>
+<li>playbook host_vars&#x2F;* [3]</li>
+<li>host facts &#x2F; cached set_facts [4]</li>
+<li>play vars</li>
+<li>play vars_prompt</li>
+<li>play vars_files</li>
+<li>role vars (defined in role&#x2F;vars&#x2F;main.yml)</li>
+<li>block vars (only for tasks in block)</li>
+<li>task vars (only for the task)</li>
+<li>include_vars</li>
+<li>set_facts &#x2F; registered vars</li>
+<li>role (and include_role) params</li>
+<li>include params</li>
+<li>extra vars (always win precedence)</li>
+</ul>
+<p>定义一个roles 来测试执行顺序 <code>vim roles/test/main.yaml</code></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">debug:</span></span><br><span class="line">    <span class="attr">msg:</span> <span class="string">test_vars</span> &#123;&#123; <span class="string">test_vars</span> &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>playbook 中定义 vars <code>vim playbooks/role.yaml</code></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">hosts:</span> <span class="string">&quot;<span class="template-variable">&#123;&#123; target &#125;&#125;</span>&quot;</span></span><br><span class="line">  <span class="attr">roles:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&quot;<span class="template-variable">&#123;&#123; role &#125;&#125;</span>&quot;</span></span><br><span class="line">  <span class="attr">vars:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">test_vars:</span> <span class="string">playbook</span></span><br></pre></td></tr></table></figure>
+
+<p>执行roles <code>ansible-playbook -i inventory/ -e target=localhost -e role=test playbooks/role.yaml  -t test_vars -CD</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">TASK [test : debug] **************************************************************************************************************************************************************************************************</span><br><span class="line">ok: [localhost] =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: &quot;test_vars playbook&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第二步 在roles&#x2F;vars中定义变量</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vim test/vars/main.yaml</span><br><span class="line">test_vars: test_vars</span><br></pre></td></tr></table></figure>
+
+<p>执行roles <code>ansible-playbook -i inventory/ -e target=localhost -e role=test playbooks/role.yaml  -t test_vars -CD</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">TASK [test : debug] **************************************************************************************************************************************************************************************************</span><br><span class="line">ok: [localhost] =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: &quot;test_vars test_vars&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第三步 在roles文件中定义 <code>vim roles/test/main.yaml</code></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">debug:</span></span><br><span class="line">    <span class="attr">msg:</span> <span class="string">test_vars</span> &#123;&#123; <span class="string">test_vars</span> &#125;&#125;</span><br><span class="line">  <span class="attr">vars:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">test_vars:</span> <span class="string">block</span></span><br></pre></td></tr></table></figure>
+
+<p>执行roles <code>ansible-playbook -i inventory/ -e target=localhost -e role=test playbooks/role.yaml  -t test_vars -CD</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">TASK [test : debug] **************************************************************************************************************************************************************************************************</span><br><span class="line">ok: [localhost] =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: &quot;test_vars block&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第四步 命令行中使用 -e 传入变量</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ansible-playbook -i inventory/ -e target=localhost -e role=test playbooks/role.yaml  -t test_vars -CD  -e &quot;test_vars=cmdline&quot;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">TASK [test : debug] **************************************************************************************************************************************************************************************************</span><br><span class="line">ok: [localhost] =&gt; &#123;</span><br><span class="line">    &quot;msg&quot;: &quot;test_vars cmdline&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a target="_blank" rel="noopener" href="https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable">Using Variables</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%AD%BB%E7%A3%95ansible%E7%B3%BB%E5%88%97/" rel="tag"># 死磕ansible系列</a>
+              <a href="/tags/ansible/" rel="tag"># ansible</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/09/20/ansible-when/" rel="prev" title="死磕ansible系列--when函数的作用">
+                  <i class="fa fa-chevron-left"></i> 死磕ansible系列--when函数的作用
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/09/24/ansible-create-library/" rel="next" title="死磕ansible系列--Ansible模块开发-自定义模块">
+                  死磕ansible系列--Ansible模块开发-自定义模块 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Big Little Ant</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

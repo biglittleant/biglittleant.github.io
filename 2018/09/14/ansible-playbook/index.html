@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.biglittleant.cn","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="playbook是由一个或多个“play”组成的列表。play的主要功能在于将事先归并为一组的主机装扮成事先通过ansible中的task定义好的角色。从根本上来讲，所谓task无非是调用ansible的一个module。将多个play组织在一个playbook中，即可以让它们联合起来按事先编排的机制完成某一任务。 playbook 分为四大任务块：  Target section: 定义将要执行">
+<meta property="og:type" content="article">
+<meta property="og:title" content="死磕ansible系列--playbook">
+<meta property="og:url" content="http://www.biglittleant.cn/2018/09/14/ansible-playbook/index.html">
+<meta property="og:site_name" content="Big Little Ant">
+<meta property="og:description" content="playbook是由一个或多个“play”组成的列表。play的主要功能在于将事先归并为一组的主机装扮成事先通过ansible中的task定义好的角色。从根本上来讲，所谓task无非是调用ansible的一个module。将多个play组织在一个playbook中，即可以让它们联合起来按事先编排的机制完成某一任务。 playbook 分为四大任务块：  Target section: 定义将要执行">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2018-09-14T12:18:33.000Z">
+<meta property="article:modified_time" content="2020-10-10T03:24:27.551Z">
+<meta property="article:author" content="Big Little Ant">
+<meta property="article:tag" content="死磕ansible系列">
+<meta property="article:tag" content="ansible">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.biglittleant.cn/2018/09/14/ansible-playbook/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://www.biglittleant.cn/2018/09/14/ansible-playbook/","path":"2018/09/14/ansible-playbook/","title":"死磕ansible系列--playbook"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>死磕ansible系列--playbook | Big Little Ant</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Big Little Ant</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">不被嘲笑的梦想，是不值得去实现的</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-文章分类"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a></li><li class="menu-item menu-item-golang"><a href="/categories/go" rel="section"><i class="fa fa-th fa-fw"></i>Golang</a></li><li class="menu-item menu-item-kubernetes"><a href="/categories/kubernetes" rel="section"><i class="fa fa-th fa-fw"></i>Kubernetes</a></li><li class="menu-item menu-item-标签"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-归档"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-关于"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%89%A7%E8%A1%8C"><span class="nav-number">1.</span> <span class="nav-text">命令行执行</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ansible-playbook-%E5%B8%B8%E7%94%A8%E5%8F%82%E6%95%B0"><span class="nav-number">1.1.</span> <span class="nav-text">ansible-playbook 常用参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Target-section"><span class="nav-number">2.</span> <span class="nav-text">Target section</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Variable-section"><span class="nav-number">3.</span> <span class="nav-text">Variable section</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Task-section"><span class="nav-number">4.</span> <span class="nav-text">Task section</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#task%E4%BB%BB%E5%8A%A1%E7%9A%84%E7%BC%96%E5%86%99%E6%96%B9%E6%B3%95"><span class="nav-number">4.1.</span> <span class="nav-text">task任务的编写方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#task%E4%BB%BB%E5%8A%A1%E4%B8%AD%E7%9A%84%E5%B8%B8%E7%94%A8%E6%A8%A1%E5%9D%97"><span class="nav-number">4.2.</span> <span class="nav-text">task任务中的常用模块</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#template"><span class="nav-number">4.2.1.</span> <span class="nav-text">template</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#set-fact"><span class="nav-number">4.2.2.</span> <span class="nav-text">set_fact</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pause"><span class="nav-number">4.2.3.</span> <span class="nav-text">pause</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#wait-for"><span class="nav-number">4.2.4.</span> <span class="nav-text">wait_for</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#assemble"><span class="nav-number">4.2.5.</span> <span class="nav-text">assemble</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#add-host"><span class="nav-number">4.2.6.</span> <span class="nav-text">add_host</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#group-by"><span class="nav-number">4.2.7.</span> <span class="nav-text">group_by</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#get-url"><span class="nav-number">4.2.8.</span> <span class="nav-text">get_url</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#debug"><span class="nav-number">4.2.9.</span> <span class="nav-text">debug</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#fail"><span class="nav-number">4.2.10.</span> <span class="nav-text">fail</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Handler-section"><span class="nav-number">5.</span> <span class="nav-text">Handler section</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#serial-%E5%8F%82%E6%95%B0%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-number">6.</span> <span class="nav-text">serial 参数的作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ansible-disable-swap"><span class="nav-number">7.</span> <span class="nav-text">ansible disable swap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">8.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Big Little Ant</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">55</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2018/09/14/ansible-playbook/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Big Little Ant">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Big Little Ant">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="死磕ansible系列--playbook | Big Little Ant">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          死磕ansible系列--playbook
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2018-09-14 20:18:33" itemprop="dateCreated datePublished" datetime="2018-09-14T20:18:33+08:00">2018-09-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2020-10-10 11:24:27" itemprop="dateModified" datetime="2020-10-10T11:24:27+08:00">2020-10-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/ansible/" itemprop="url" rel="index"><span itemprop="name">ansible</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>playbook是由一个或多个“play”组成的列表。play的主要功能在于将事先归并为一组的主机装扮成事先通过ansible中的task定义好的角色。从根本上来讲，所谓task无非是调用ansible的一个module。将多个play组织在一个playbook中，即可以让它们联合起来按事先编排的机制完成某一任务。</p>
+<p>playbook 分为四大任务块：</p>
+<ul>
+<li>Target section: 定义将要执行playbook的远程主机组。</li>
+<li>Variable section: 定义playbook运行时需要使用的变量。</li>
+<li>Task section: 定义将要在远程主机上执行的任务列表。</li>
+<li>Handler section: 定义task执行完成以后需要调用的任务。</li>
+</ul>
+<p>一个完整的例子：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- hosts: mfs_node</span><br><span class="line">  user: root</span><br><span class="line">  vars:</span><br><span class="line">      - motd_warning: &#x27;WARNING: Use by ACME Employees ONLY&#x27;</span><br><span class="line">  tasks:</span><br><span class="line">      - name: setup a MOTD</span><br><span class="line">        copy: dest=/etc/motd content=&quot;&#123;&#123; motd_warning &#125;&#125;&quot;</span><br><span class="line">        notify: say someting</span><br><span class="line">   handlers:</span><br><span class="line">        - name: say someting</span><br><span class="line">	 command: echo &quot;copy OK&quot;</span><br></pre></td></tr></table></figure>
+
+<h2 id="命令行执行"><a href="#命令行执行" class="headerlink" title="命令行执行"></a>命令行执行</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ansible-playbook -i inventory/devlop site.yaml</span><br><span class="line">ansible-playbook -i inventory/devlop site.yaml -l linux-node2</span><br><span class="line">ansible-playbook -i inventory/devlop -e target=gsg_tmp -e role=php56 role.yml</span><br></pre></td></tr></table></figure>
+
+<h3 id="ansible-playbook-常用参数"><a href="#ansible-playbook-常用参数" class="headerlink" title="ansible-playbook 常用参数"></a>ansible-playbook 常用参数</h3><ul>
+<li>-C ：只显示哪些有变更，但是不执行任何参数。</li>
+<li>-D： 通常和-C参数一起使用，显示变化的内容。</li>
+<li>-t：匹配tags。</li>
+<li>-e: 增加扩展的参数。</li>
+<li>-v: 显示详细内容。</li>
+<li>-vvv: 显示更详细的内容。</li>
+</ul>
+<h2 id="Target-section"><a href="#Target-section" class="headerlink" title="Target section"></a>Target section</h2><ul>
+<li>hosts：定义远程的主机组。</li>
+<li>user：执行该任务组的用户。</li>
+<li>remote_user：与user相同。</li>
+<li>sudo：如果设置为yes，执行该任务组的用户在执行任务的时候，获取root权限。</li>
+<li>sudo_user：如果你设置user为tom，sudo为yes，sudo_user为jerry，则tom用户则会获取jerry用户的权限。</li>
+<li>connection：通过什么方式连接到远程主机，默认为ssh。</li>
+<li>gather_facts：除非你明确说明不需要在远程主机上执行setup模块，否则默认会自动执行。如果你确实不需要setup模块所传递过来的变量，你可以启用该选项。</li>
+</ul>
+<h2 id="Variable-section"><a href="#Variable-section" class="headerlink" title="Variable section"></a>Variable section</h2><p>vars<br>vars_files<br>vars_prompt<br>setup</p>
+<h2 id="Task-section"><a href="#Task-section" class="headerlink" title="Task section"></a>Task section</h2><h3 id="task任务的编写方法"><a href="#task任务的编写方法" class="headerlink" title="task任务的编写方法"></a>task任务的编写方法</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">tasks:</span><br><span class="line">    - name: install apache</span><br><span class="line">       action: yum name=httpd state=installed     #第一种方法</span><br><span class="line"></span><br><span class="line">    - name: configure apache</span><br><span class="line">       copy: src=files/httpd.conf dest=/etc/httpd/conf/httpd.conf    #第二种方法</span><br><span class="line"></span><br><span class="line">    - name: restart apache</span><br><span class="line">       service:</span><br><span class="line">            name: httpd</span><br><span class="line">            state: restarted                         #第三种方法</span><br></pre></td></tr></table></figure>
+
+<h3 id="task任务中的常用模块"><a href="#task任务中的常用模块" class="headerlink" title="task任务中的常用模块"></a>task任务中的常用模块</h3><h4 id="template"><a href="#template" class="headerlink" title="template"></a>template</h4><p>template模块是Ansible中最常用的模块之一。它可以让你设计一个框架式的配置文件，如何把Anisble需要的值插入到合适的位置。其中Jinja2模板尤为复杂，其中可以包含条件、循环、宏。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tasks:</span><br><span class="line">    - name: copy config file to remote server</span><br><span class="line">      template: src=named.conf.j2 dest=/etc/named.conf</span><br></pre></td></tr></table></figure>
+
+<p>named.conf.j2 模板的内容</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">&#123;&#123; ansible_managed &#125;&#125;</span></span><br><span class="line">options &#123;</span><br><span class="line">listen-on port 53 &#123;</span><br><span class="line">127.0.0.1;</span><br><span class="line">&#123;% for ip in ansible_all_ipv4_addresses %&#125;</span><br><span class="line">&#123;&#123; ip &#125;&#125;;</span><br><span class="line">&#123;% endfor %&#125;</span><br><span class="line">&#125;;</span><br><span class="line">listen-on-v6 port 53 &#123; ::1; &#125;;</span><br><span class="line">directory &quot;/var/named&quot;;</span><br><span class="line">dump-file &quot;/var/named/data/cache_dump.db&quot;;</span><br><span class="line">statistics-file &quot;/var/named/data/named_stats.txt&quot;;</span><br><span class="line">memstatistics-file &quot;/var/named/data/named_mem_stats.txt&quot;;</span><br><span class="line">&#125;;</span><br><span class="line">zone &quot;.&quot; IN &#123;</span><br><span class="line">type hint;</span><br><span class="line">file &quot;named.ca&quot;;</span><br><span class="line">&#125;;</span><br><span class="line">include &quot;/etc/named.rfc1912.zones&quot;;</span><br><span class="line">include &quot;/etc/named.root.key&quot;;</span><br><span class="line">&#123;# Variables for zone config #&#125;</span><br><span class="line"></span><br><span class="line">&#123;% if &#x27;authorativenames&#x27; in group_names %&#125;</span><br><span class="line">&#123;% set zone_type = &#x27;master&#x27; %&#125;</span><br><span class="line">&#123;% set zone_dir = &#x27;data&#x27; %&#125;</span><br><span class="line"></span><br><span class="line">&#123;% else %&#125;</span><br><span class="line">&#123;% set zone_type = &#x27;slave&#x27; %&#125;</span><br><span class="line">&#123;% set zone_dir = &#x27;slaves&#x27; %&#125;</span><br><span class="line">&#123;% endif %&#125;</span><br><span class="line"></span><br><span class="line">zone &quot;internal.example.com&quot; IN &#123;</span><br><span class="line">type &#123;&#123; zone_type &#125;&#125;;</span><br><span class="line">file &quot;&#123;&#123; zone_dir &#125;&#125;/internal.example.com&quot;;</span><br><span class="line"></span><br><span class="line">&#123;% if &#x27;authorativenames&#x27; not in group_names %&#125;</span><br><span class="line">masters &#123; 192.168.2.2; &#125;;</span><br><span class="line">&#123;% endif %&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="set-fact"><a href="#set-fact" class="headerlink" title="set_fact"></a>set_fact</h4><p>set_fact模块可以让你在远程受管机器上执行脚本的过程中来计算我们需要的值，这些值可以被用在模板或者变量中。这些值有点类似setup模块中的参数，只不过setup模块是以单台主机为单位的。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- hosts: mysqlservers</span><br><span class="line">  tasks:</span><br><span class="line">    - name: install MySql</span><br><span class="line">    yum: name=mysql-server state=installed</span><br><span class="line">    - name: Calculate InnoDB buffer pool size</span><br><span class="line">    set_fact: innodb_buffer_pool_size_mb=&quot;&#123;&#123; ansible_memtotal_mb /2 &#125;&#125;&quot;</span><br><span class="line">    - name: Configure MySQL</span><br><span class="line">    template: src=templates/my.cnf.j2 dest=/etc/my.cnf owner=root group=root mode=0644</span><br><span class="line">    notify: restart mysql</span><br><span class="line">    - name: Start MySQL</span><br><span class="line">    service: name=mysqld state=started enabled=yes</span><br><span class="line"></span><br><span class="line">  handlers:</span><br><span class="line">    - name: restart mysql</span><br><span class="line">    service: name=mysqld state=restarted</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[mysqld]</span><br><span class="line">datadir=/var/lib/mysql</span><br><span class="line">socket=/var/lib/mysql/mysql.sock</span><br><span class="line">symbolic-links=0</span><br><span class="line">innodb_buffer_pool_size = &#123;&#123; innodb_buffer_pool_size_mb|default(128) &#125;&#125;M</span><br><span class="line"></span><br><span class="line">[mysqld_safe]</span><br><span class="line">log-error=/var/log/mysqld.log</span><br><span class="line">pid-file=/var/run/mysqld/mysqld.pid</span><br></pre></td></tr></table></figure>
+
+<p>补充一个官方的例子</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Example setting host facts using key=value pairs</span></span><br><span class="line">- set_fact: one_fact=&quot;something&quot; other_fact=&quot;&#123;&#123; local_var * 2 &#125;&#125;&quot;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Example setting host facts using complex arguments</span></span><br><span class="line">- set_fact:</span><br><span class="line">     one_fact: something</span><br><span class="line">     other_fact: &quot;&#123;&#123; local_var * 2 &#125;&#125;&quot;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">As of 1.8, Ansible will convert boolean strings (<span class="string">&#x27;true&#x27;</span>, <span class="string">&#x27;false&#x27;</span>, <span class="string">&#x27;yes&#x27;</span>, <span class="string">&#x27;no&#x27;</span>)</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">to proper boolean values when using the key=value syntax, however it is still</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">recommended that booleans be <span class="built_in">set</span> using the complex argument style:</span></span><br><span class="line">- set_fact:</span><br><span class="line">    one_fact: true</span><br><span class="line">    other_fact: false</span><br></pre></td></tr></table></figure>
+
+<h4 id="pause"><a href="#pause" class="headerlink" title="pause"></a>pause</h4><p>暂停模块可以让我们在playbook中暂停一段时间，可以指定一个时间段，或者提示用户继续。在命令行模式中，这没什么用，但是在playbook中，这很有用处。<br>暂停模块通常被用在当我们需要用户来提供一个确认来继续的时候，或者在一个特殊的时间点手动确认。比如你更新一个web应用程序之后，你需要用户在接受用户的连接之前，手工确认一切Ok。这也可以用来提示用户一些可能出现的问题，并提供选项继续。Ansible会打印出服务器的名字，要求用户确认之后继续。如果在目标选项中设置了串行参数，Ansible会询问组里面的每一个主机。这种方式可以让用户在部署的时候，灵活的控制整个节奏，并监控整个交互过程。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- name: wait on user input</span><br><span class="line">  pause: prompt=&quot;Warning! Detected slight issue. ENTER to continue CTRL-C to quit.&quot;</span><br><span class="line"></span><br><span class="line">- name: timed wait</span><br><span class="line">  pause: seconds=30</span><br></pre></td></tr></table></figure>
+
+<h4 id="wait-for"><a href="#wait-for" class="headerlink" title="wait_for"></a>wait_for</h4><p>wait_for模块用来检测一个tcp端口是否准备好接收远程连接，这是由远程主机来完成的。如果你只指定了端口，或者主机参数被设置为localhost，它会尝试连接远程受管主机。你可以用local_action参数来指定从控制机器来运行命令，并使用ansible_hostname做为主机参数来连接远程受管主机。这个模块在后台运行某些程序，或者启动某些进程需要一些时间的时候特别有用。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">- hosts: webapps</span><br><span class="line">  tasks:</span><br><span class="line">     - name: Install Tomcat</span><br><span class="line">       yum: name=tomcat6 state=installed</span><br><span class="line"></span><br><span class="line">     - name: Start Tomcat</span><br><span class="line">       service: name=tomcat6 state=started</span><br><span class="line"></span><br><span class="line">    - name: Wait for Tomcat to start</span><br><span class="line">      wait_for: port=8080 state=started</span><br></pre></td></tr></table></figure>
+
+<h4 id="assemble"><a href="#assemble" class="headerlink" title="assemble"></a>assemble</h4><p>assemble组装模块把多个受管主机的文件合并成一个文件，当配置文件不允许包含的时候，这非常有用，特别是在设置root用户的authorized_keys文件的时候。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- hosts: all</span><br><span class="line"></span><br><span class="line">  tasks:</span><br><span class="line">     - name: Make a Directory in /opt</span><br><span class="line">       file: path=/opt/sshkeys state=directory owner=root group=root mode=0700</span><br><span class="line">     - name: Copy SSH keys over</span><br><span class="line">       copy: src=keys/&#123;&#123; item &#125;&#125;.pub dest=/opt/sshkeys/&#123;&#123; item &#125;&#125;.pub owner=root group=root mode=0600</span><br><span class="line">       with_items:</span><br><span class="line">          - dan</span><br><span class="line">          - kate</span><br><span class="line">          - mal</span><br><span class="line">    - name: Make the root users SSH config directory</span><br><span class="line">      file: path=/root/.ssh state=directory owner=root group=root mode=0700</span><br><span class="line">    - name: Build the authorized_keys file</span><br><span class="line">      assemble: src=/opt/sshkeys dest=/root/.ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+
+<h4 id="add-host"><a href="#add-host" class="headerlink" title="add_host"></a>add_host</h4><p>add_host 添加主机模块是playbook中一个强大的模块，它可以让你动态的添加受管主机到一个play中。我们可以使用uri模块从CMDB中获得主机信息然后添加他们。它还可以将主机加到组里面，如果组不存在的话还会自动创建它。这个模块仅需要主机名和组名2个参数，跟主机库存清单的配置一样，我们还可以添加扩展的参数像ansible_ssh_user , ansible_ssh_port等等。</p>
+<h4 id="group-by"><a href="#group-by" class="headerlink" title="group_by"></a>group_by</h4><p>group_by 模块可以让我们根据主机的真实特性来进行分组，真实特性可以通过add_fact来实现（前面已经介绍过set_fact）。group_by模块只接受一个参数，key，同样组名的机器就被分到一个组里面。如果我们在这里使用变量，我们就可以把同一个操作系统类型、同一个拓扑结构的、或者其他我们希望的拥有同样特性的主机分成一组，组可以在子play中、模板中的目标选项被使用。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">- name: Create operating system group</span><br><span class="line">  hosts: all</span><br><span class="line"></span><br><span class="line">  tasks:</span><br><span class="line">    - group_by: key=os_&#123;&#123; ansible_distribution &#125;&#125;</span><br><span class="line"></span><br><span class="line">    - name: Run on CentOS hosts only</span><br><span class="line">      hosts: os_CentOS</span><br><span class="line"></span><br><span class="line">  tasks:</span><br><span class="line">    - name: Install Apache</span><br><span class="line">      yum: name=httpd state=latest</span><br><span class="line"></span><br><span class="line">    - name: Run on Ubuntu hosts only</span><br><span class="line">      hosts: os_Ubuntu</span><br><span class="line"></span><br><span class="line">  tasks:</span><br><span class="line">    - name: Install Apache</span><br><span class="line">      apt: pkg=apache2 state=latest</span><br></pre></td></tr></table></figure>
+
+<h4 id="get-url"><a href="#get-url" class="headerlink" title="get_url"></a>get_url</h4><p>将文件从HTTP，HTTPS或FTP下载到远程服务器。远程服务器必须能够直接访问远程资源。默认情况下，如果在目标主机上设置了环境变量<protocol> _proxy，那么请求将通过该代理发送。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- name: download foo.conf</span><br><span class="line">  get_url: url=http://example.com/path/file.conf dest=/etc/foo.conf mode=0440</span><br><span class="line"></span><br><span class="line">- name: download file with sha256 check</span><br><span class="line">  get_url: url=http://example.com/path/file.conf dest=/etc/foo.conf sha256sum=b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c</span><br></pre></td></tr></table></figure>
+
+<h4 id="debug"><a href="#debug" class="headerlink" title="debug"></a>debug</h4><p>该模块在执行期间打印语句，可用于调试变量或表达式，而无需停止操作手册。用于与’when：’指令一起调试。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Example that prints the loopback address and gateway <span class="keyword">for</span> each host</span></span><br><span class="line">- debug: msg=&quot;System &#123;&#123; inventory_hostname &#125;&#125; has uuid &#123;&#123; ansible_product_uuid &#125;&#125;&quot;</span><br><span class="line"></span><br><span class="line">- debug: msg=&quot;System &#123;&#123; inventory_hostname &#125;&#125; has gateway &#123;&#123; ansible_default_ipv4.gateway &#125;&#125;&quot;</span><br><span class="line">  when: ansible_default_ipv4.gateway is defined</span><br><span class="line"></span><br><span class="line">- name: Display all variables/facts known for a host</span><br><span class="line">  debug: var=hostvars[inventory_hostname]</span><br><span class="line"></span><br><span class="line">  debug: msg=&quot;The varibale is  &#123;&#123; info[&#x27;stdout&#x27;]  &#125;&#125;&quot;</span><br></pre></td></tr></table></figure>
+
+<p>查看shell的输出</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- name: check oenresty</span><br><span class="line">  shell: openresty -t</span><br><span class="line">  register: message</span><br><span class="line">- debug: var=message.stdout_lines</span><br><span class="line">- debug: var=message.stderr_lines</span><br></pre></td></tr></table></figure>
+
+<h4 id="fail"><a href="#fail" class="headerlink" title="fail"></a>fail</h4><p>该模块无法通过自定义消息取得进展。当使用何时满足某个条件时，它可以用于救援。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Example playbook using fail and when together</span></span><br><span class="line">- fail: msg=&quot;The system may not be provisioned according to the CMDB status.&quot;</span><br><span class="line">  when: cmdb_status != &quot;to-be-staged&quot;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Handler-section"><a href="#Handler-section" class="headerlink" title="Handler section"></a>Handler section</h2><p>Handler 模块提供回调功能，在所有tasks任务执行完成后，才会执行Handler模块。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">tasks:</span><br><span class="line">   - name: template configuration file</span><br><span class="line">     template: src=template.j2 dest=/etc/foo.conf</span><br><span class="line">     notify:</span><br><span class="line">         - restart memcached</span><br><span class="line">         - restart apache</span><br><span class="line"></span><br><span class="line">handlers:</span><br><span class="line">    - name: restart memcached</span><br><span class="line">      service: name= memcached state=restarted</span><br><span class="line">    - name: restart apache</span><br><span class="line">      service: name=httpd state=restarted</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">- hosts: all</span><br><span class="line">  user: root</span><br><span class="line"></span><br><span class="line">  tasks:</span><br><span class="line">    - name: install memcached</span><br><span class="line">      yum: name=memcached state=installed</span><br><span class="line">    - name: set memcached size</span><br><span class="line">      set_fact: memcached_size=&quot;&#123;&#123; ansible_memtotal_mb /4 &#125;&#125;&quot;</span><br><span class="line">    - name: copy configurations</span><br><span class="line">      template: src=templates/memcached.j2 dest=/etc/sysconfig/memcached</span><br><span class="line">      notify:</span><br><span class="line">        - restart memcached</span><br><span class="line"></span><br><span class="line">  handlers:</span><br><span class="line">    - name: restart memcached</span><br><span class="line">      service: name=memcached state=restarted enabled=yes</span><br></pre></td></tr></table></figure>
+
+<p>·Handlers只会在Play的末尾运行一次；如果想在一个Playbook的中间运行Handlers，则需要使用meta模块来实现，例如：-meta:flush_handlers。</p>
+<p>·如果一个Play在运行到调用Handlers的语句之前失败了，那么这个Handlers将不会被执行。我们可以使用mega模块的–force-handlers选项来强制执行Handlers，即使是Handlers所在的Play中途运行失败也能执行。</p>
+<h2 id="serial-参数的作用"><a href="#serial-参数的作用" class="headerlink" title="serial 参数的作用"></a>serial 参数的作用</h2><p>你可以定义Ansible可以在一个特定时间同时控制多少主机,使用<code>serial</code> 关键词:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- name: test play</span><br><span class="line">  hosts: webservers</span><br><span class="line">  serial: 3</span><br></pre></td></tr></table></figure>
+<p>在上面的例子,如果我们有100台主机,3 台主机定义在组’webservers’ 可以在下面3个主机开始之前完全完成。</p>
+<p>这个<code>serial</code>关键词在Ansible 1.8 以后可以被定义为百分数,用来定义每一次操作一个play中百分之多少主机:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- name: test play</span><br><span class="line">  hosts: websevers</span><br><span class="line">  serial: &quot;30%&quot;</span><br></pre></td></tr></table></figure>
+
+<p>如果主机数不能被passes数量整除,最后的pass将会包含提醒信息。</p>
+<h2 id="ansible-disable-swap"><a href="#ansible-disable-swap" class="headerlink" title="ansible disable swap"></a>ansible disable swap</h2><p><a target="_blank" rel="noopener" href="https://germaniumhq.com/2019/02/14/2019-02-14-Disabling-Swap-for-Kubernetes-in-an-Ansible-Playbook/">https://germaniumhq.com/2019/02/14/2019-02-14-Disabling-Swap-for-Kubernetes-in-an-Ansible-Playbook/</a></p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a target="_blank" rel="noopener" href="https://github.com/ansible/ansible-examples">ansible-examples</a><br><a target="_blank" rel="noopener" href="http://sapser.github.io/ansible/2014/07/21/ansible-playbook">ansible学习之四：Playbooks</a><br><a target="_blank" rel="noopener" href="https://galaxy.ansible.com/home">galaxy ansible 分享role配置文件的路径</a><br><a target="_blank" rel="noopener" href="https://docs.ansible.com/ansible/2.4/ansible-playbook.html">ansible-playbook command tools</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%AD%BB%E7%A3%95ansible%E7%B3%BB%E5%88%97/" rel="tag"># 死磕ansible系列</a>
+              <a href="/tags/ansible/" rel="tag"># ansible</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/09/12/ansible-inventory/" rel="prev" title="ansible hosts及Inventory文件">
+                  <i class="fa fa-chevron-left"></i> ansible hosts及Inventory文件
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/09/14/ansible-config/" rel="next" title="死磕ansible系列--修改cfg配置文件">
+                  死磕ansible系列--修改cfg配置文件 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Big Little Ant</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.1.1">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -14,25 +14,22 @@
 
 
 
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"www.biglittleant.cn","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
-  </script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.biglittleant.cn","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-  <meta name="description" content="简介：upsync模块是用来解决配置文件修改后，reload nginx进程造成性能下降的问题。 处理流程它的功能是拉取 consul 的后端 server 的列表，并更新 Nginx 的路由信息。此模块不依赖于任何第三方模块。consul 作为 Nginx 的 db，利用 consul 的 KV 服务，每个 Nginx work 进程独立的去拉取各个 upstream 的配置，并更新各自的路由。">
+    <meta name="description" content="简介：upsync模块是用来解决配置文件修改后，reload nginx进程造成性能下降的问题。 处理流程它的功能是拉取 consul 的后端 server 的列表，并更新 Nginx 的路由信息。此模块不依赖于任何第三方模块。consul 作为 Nginx 的 db，利用 consul 的 KV 服务，每个 Nginx work 进程独立的去拉取各个 upstream 的配置，并更新各自的路由。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="死磕nginx系列--使用upsync模块实现负载均衡">
 <meta property="og:url" content="http://www.biglittleant.cn/2017/01/05/nginx-upsync/index.html">
-<meta property="og:site_name" content="biglittleant">
+<meta property="og:site_name" content="Big Little Ant">
 <meta property="og:description" content="简介：upsync模块是用来解决配置文件修改后，reload nginx进程造成性能下降的问题。 处理流程它的功能是拉取 consul 的后端 server 的列表，并更新 Nginx 的路由信息。此模块不依赖于任何第三方模块。consul 作为 Nginx 的 db，利用 consul 的 KV 服务，每个 Nginx work 进程独立的去拉取各个 upstream 的配置，并更新各自的路由。">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://oi3tsepsh.bkt.clouddn.com/14841282377231.jpg">
 <meta property="article:published_time" content="2017-01-05T00:17:36.000Z">
 <meta property="article:modified_time" content="2020-09-16T09:36:53.414Z">
-<meta property="article:author" content="biglittleant">
+<meta property="article:author" content="Big Little Ant">
 <meta property="article:tag" content="死磕nginx系列">
 <meta property="article:tag" content="nginx">
 <meta name="twitter:card" content="summary">
@@ -42,17 +39,11 @@
 <link rel="canonical" href="http://www.biglittleant.cn/2017/01/05/nginx-upsync/">
 
 
-<script class="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'en'
-  };
-</script>
 
-  <title>死磕nginx系列--使用upsync模块实现负载均衡 | biglittleant</title>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://www.biglittleant.cn/2017/01/05/nginx-upsync/","path":"2017/01/05/nginx-upsync/","title":"死磕nginx系列--使用upsync模块实现负载均衡"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>死磕nginx系列--使用upsync模块实现负载均衡 | Big Little Ant</title>
   
 
 
@@ -60,51 +51,23 @@
 
 
 
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
   <noscript>
-  <style>
-  body { margin-top: 2rem; }
-
-  .use-motion .menu-item,
-  .use-motion .sidebar,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header {
-    visibility: visible;
-  }
-
-  .use-motion .header,
-  .use-motion .site-brand-container .toggle,
-  .use-motion .footer { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle,
-  .use-motion .custom-logo-image {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line {
-    transform: scaleX(1);
-  }
-
-  .search-pop-overlay, .sidebar-nav { display: none; }
-  .sidebar-panel { display: block; }
-  </style>
-</noscript>
-
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
   <div class="headband"></div>
 
   <main class="main">
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Toggle navigation bar">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
         <span class="toggle-line"></span>
         <span class="toggle-line"></span>
         <span class="toggle-line"></span>
@@ -115,7 +78,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">biglittleant</h1>
+      <p class="site-title">Big Little Ant</p>
       <i class="logo-line"></i>
     </a>
       <p class="site-subtitle" itemprop="description">不被嘲笑的梦想，是不值得去实现的</p>
@@ -130,47 +93,16 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
-
-  </li>
-        <li class="menu-item menu-item-标签">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-文章分类">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a>
-
-  </li>
-        <li class="menu-item menu-item-归档">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-        <li class="menu-item menu-item-关于">
-
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
-
-  </li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-文章分类"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a></li><li class="menu-item menu-item-golang"><a href="/categories/go" rel="section"><i class="fa fa-th fa-fw"></i>Golang</a></li><li class="menu-item menu-item-kubernetes"><a href="/categories/kubernetes" rel="section"><i class="fa fa-th fa-fw"></i>Kubernetes</a></li><li class="menu-item menu-item-标签"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-归档"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-关于"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
   </ul>
 </nav>
 
 
 
 
-</div>
+</header>
         
   
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-  </div>
-
   <aside class="sidebar">
 
     <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
@@ -183,33 +115,34 @@
         </li>
       </ul>
 
-      <!--noindex-->
-      <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E6%88%98"><span class="nav-number">1.</span> <span class="nav-text">实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%99nginx%E6%89%93%E8%A1%A5%E4%B8%81%E5%8C%85"><span class="nav-number">1.1.</span> <span class="nav-text">给nginx打补丁包</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8consul"><span class="nav-number">2.</span> <span class="nav-text">启动consul</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95"><span class="nav-number">3.</span> <span class="nav-text">测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%9C%8D%E5%8A%A1"><span class="nav-number">4.</span> <span class="nav-text">添加服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%AE%E5%8A%A9%E6%96%87%E6%A1%A3"><span class="nav-number">5.</span> <span class="nav-text">帮助文档</span></a></li></ol></div>
-      </section>
-      <!--/noindex-->
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E6%88%98"><span class="nav-number">1.</span> <span class="nav-text">实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%99nginx%E6%89%93%E8%A1%A5%E4%B8%81%E5%8C%85"><span class="nav-number">1.1.</span> <span class="nav-text">给nginx打补丁包</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8consul"><span class="nav-number">2.</span> <span class="nav-text">启动consul</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95"><span class="nav-number">3.</span> <span class="nav-text">测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%9C%8D%E5%8A%A1"><span class="nav-number">4.</span> <span class="nav-text">添加服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%AE%E5%8A%A9%E6%96%87%E6%A1%A3"><span class="nav-number">5.</span> <span class="nav-text">帮助文档</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
 
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">biglittleant</p>
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Big Little Ant</p>
   <div class="site-description" itemprop="description"></div>
 </div>
-<div class="site-state-wrap animated">
+<div class="site-state-wrap site-overview-item animated">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/archives">
-          <span class="site-state-item-count">46</span>
+        <a href="/archives/">
+          <span class="site-state-item-count">55</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-        <span class="site-state-item-count">16</span>
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-        <span class="site-state-item-count">37</span>
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -217,48 +150,41 @@
 
 
 
-      </section>
+        </div>
+      </div>
     </div>
   </aside>
-  <div class="sidebar-dimmer"></div>
 
 
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-
-<noscript>
-  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
-</noscript>
-
+    </div>
 
     <div class="main-inner post posts-expand">
-      
 
-      
 
-    
+  
+
+
+<div class="post-block">
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
     <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2017/01/05/nginx-upsync/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="biglittleant">
-      <meta itemprop="description" content="">
+      <meta itemprop="name" content="Big Little Ant">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="biglittleant">
+      <meta itemprop="name" content="Big Little Ant">
+      <meta itemprop="description" content="">
     </span>
 
-    
-    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="死磕nginx系列--使用upsync模块实现负载均衡 | Big Little Ant">
+      <meta itemprop="description" content="">
+    </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           死磕nginx系列--使用upsync模块实现负载均衡
@@ -274,13 +200,13 @@
 
       <time title="Created: 2017-01-05 08:17:36" itemprop="dateCreated datePublished" datetime="2017-01-05T08:17:36+08:00">2017-01-05</time>
     </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-16 17:36:53" itemprop="dateModified" datetime="2020-09-16T17:36:53+08:00">2020-09-16</time>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
       </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2020-09-16 17:36:53" itemprop="dateModified" datetime="2020-09-16T17:36:53+08:00">2020-09-16</time>
+    </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -296,13 +222,6 @@
     </span>
 
   
-    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="far fa-eye"></i>
-      </span>
-      <span class="post-meta-item-text">Views: </span>
-      <span id="busuanzi_value_page_pv"></span>
-    </span>
 </div>
 
         </div>
@@ -316,7 +235,7 @@
 <p>处理流程<br>它的功能是拉取 consul 的后端 server 的列表，并更新 Nginx 的路由信息。此模块不依赖于任何第三方模块。consul 作为 Nginx 的 db，利用 consul 的 KV 服务，每个 Nginx work 进程独立的去拉取各个 upstream 的配置，并更新各自的路由。</p>
 <p><img src="http://oi3tsepsh.bkt.clouddn.com/14841282377231.jpg"></p>
 <h2 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h2><h3 id="给nginx打补丁包"><a href="#给nginx打补丁包" class="headerlink" title="给nginx打补丁包"></a>给nginx打补丁包</h3><p>这步可以不做，如果不做，编译的时候删除这个模块</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/xiaokai-wang/nginx_upstream_check_module</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 打补丁包</span></span></span><br><span class="line">patch -p0 &lt; /usr/local/src/nginx_upstream_check_module-master/check_1.9.2+.patch</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/xiaokai-wang/nginx_upstream_check_module</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 打补丁包</span></span></span><br><span class="line">patch -p0 &lt; /usr/local/src/nginx_upstream_check_module-master/check_1.9.2+.patch</span><br></pre></td></tr></table></figure>
 
 <p>下载nginx-upsync-module源码</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/weibocom/nginx-upsync-module.git</span><br><span class="line"></span><br></pre></td></tr></table></figure>
@@ -332,7 +251,7 @@
 <h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for i in `seq 3`;do mkdir html$i/test -p &amp;&amp; echo $i &gt;html$i/test/test.html; done;</span><br><span class="line"></span><br><span class="line">docker run -d -p 8001:80 -v /root/html1/:/usr/share/nginx/html nginx</span><br><span class="line">docker run -d -p 8002:80 -v /root/html2/:/usr/share/nginx/html nginx</span><br><span class="line">docker run -d -p 8003:80 -v /root/html3/:/usr/share/nginx/html nginx</span><br></pre></td></tr></table></figure>
 <h2 id="添加服务"><a href="#添加服务" class="headerlink" title="添加服务"></a>添加服务</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">curl -X PUT -d &#x27;&#123;&quot;weight&quot;:1, &quot;max_fails&quot;:2, &quot;fail_timeout&quot;:10&#125;&#x27; http://127.0.0.1:8500/v1/kv/upstreams/test/192.168.56.12:8001</span><br><span class="line">curl -X PUT -d &#x27;&#123;&quot;weight&quot;:1, &quot;max_fails&quot;:2, &quot;fail_timeout&quot;:10&#125;&#x27; http://127.0.0.1:8500/v1/kv/upstreams/test/192.168.56.12:8002</span><br><span class="line">curl -X PUT -d &#x27;&#123;&quot;weight&quot;:1, &quot;max_fails&quot;:2, &quot;fail_timeout&quot;:10&#125;&#x27; http://127.0.0.1:8500/v1/kv/upstreams/test/192.168.56.12:8003</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<p>查看conf/servers/servers_test.conf 文件中是否有内容</p>
+<p>查看conf&#x2F;servers&#x2F;servers_test.conf 文件中是否有内容</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cat conf/servers/servers_test.conf</span><br><span class="line">server 192.168.56.12:8003 weight=1 max_fails=2 fail_timeout=10s;</span><br><span class="line">server 192.168.56.12:8002 weight=1 max_fails=2 fail_timeout=10s;</span><br><span class="line">server 192.168.56.12:8001 weight=1 max_fails=2 fail_timeout=10s;</span><br></pre></td></tr></table></figure>
 
 <p>或者浏览器打开<code>http://192.168.56.11:8080/upstream_show?test</code><br>显示内容如下：</p>
@@ -377,111 +296,65 @@
           </div>
     </footer>
   </article>
-  
-  
-  
+</div>
 
 
 
-      
 
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      const commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
 
-    </div>
+
+</div>
   </main>
 
   <footer class="footer">
     <div class="footer-inner">
-      
 
-      
 
 <div class="copyright">
-  
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">biglittleant</span>
+  <span class="author" itemprop="copyrightHolder">Big Little Ant</span>
 </div>
-<div class="busuanzi-count">
-    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-user"></i>
-      </span>
-      <span class="site-uv" title="Total Visitors">
-        <span id="busuanzi_value_site_uv"></span>
-      </span>
-    </span>
-    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-eye"></i>
-      </span>
-      <span class="site-pv" title="Total Views">
-        <span id="busuanzi_value_site_pv"></span>
-      </span>
-    </span>
-</div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
   </div>
 
     </div>
   </footer>
 
   
-  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
-<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
 
   
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-  
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-
-
-
-
-
-
-
   
 
-  
+
+
+
 
 </body>
 </html>

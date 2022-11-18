@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.biglittleant.cn","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="主机目录配置文件 默认文件 : &#x2F;etc&#x2F;ansible&#x2F;hosts。  修改主机目录的配置文件: &#x2F;etc&#x2F;ansible&#x2F;ansible.cfg, 指定inventory的路径 1inventory      &#x3D; &#x2F;data&#x2F;db&#x2F;playbook&#x2F;inventory   命令行中传递主机目录配置文件。ansible-playbook -i inventory site.yml 或 ansib">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ansible hosts及Inventory文件">
+<meta property="og:url" content="http://www.biglittleant.cn/2018/09/12/ansible-inventory/index.html">
+<meta property="og:site_name" content="Big Little Ant">
+<meta property="og:description" content="主机目录配置文件 默认文件 : &#x2F;etc&#x2F;ansible&#x2F;hosts。  修改主机目录的配置文件: &#x2F;etc&#x2F;ansible&#x2F;ansible.cfg, 指定inventory的路径 1inventory      &#x3D; &#x2F;data&#x2F;db&#x2F;playbook&#x2F;inventory   命令行中传递主机目录配置文件。ansible-playbook -i inventory site.yml 或 ansib">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2018-09-12T12:18:33.000Z">
+<meta property="article:modified_time" content="2020-10-10T03:24:24.385Z">
+<meta property="article:author" content="Big Little Ant">
+<meta property="article:tag" content="死磕ansible系列">
+<meta property="article:tag" content="ansible">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.biglittleant.cn/2018/09/12/ansible-inventory/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://www.biglittleant.cn/2018/09/12/ansible-inventory/","path":"2018/09/12/ansible-inventory/","title":"ansible hosts及Inventory文件"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>ansible hosts及Inventory文件 | Big Little Ant</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Big Little Ant</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">不被嘲笑的梦想，是不值得去实现的</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-文章分类"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a></li><li class="menu-item menu-item-golang"><a href="/categories/go" rel="section"><i class="fa fa-th fa-fw"></i>Golang</a></li><li class="menu-item menu-item-kubernetes"><a href="/categories/kubernetes" rel="section"><i class="fa fa-th fa-fw"></i>Kubernetes</a></li><li class="menu-item menu-item-标签"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-归档"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-关于"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E6%9C%BA%E7%9B%AE%E5%BD%95%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">1.</span> <span class="nav-text">主机目录配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99-Hosts-and-Groups%EF%BC%88%E4%B8%BB%E6%9C%BA%E4%B8%8E%E7%BB%84%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">如何编写 Hosts and Groups（主机与组）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E7%9A%84%E4%B8%BB%E6%9C%BA%E5%92%8C%E7%BB%84"><span class="nav-number">2.1.</span> <span class="nav-text">简单的主机和组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E7%8B%AC%E9%85%8D%E7%BD%AE%E7%AB%AF%E5%8F%A3%E4%B8%8E%E5%88%AB%E5%90%8D"><span class="nav-number">2.2.</span> <span class="nav-text">单独配置端口与别名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%AD%A3%E5%88%99%E6%8C%87%E5%AE%9A%E4%B8%BB%E6%9C%BA%E8%8C%83%E5%9B%B4"><span class="nav-number">2.3.</span> <span class="nav-text">使用正则指定主机范围</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E4%B8%BB%E6%9C%BA%E5%8F%98%E9%87%8F"><span class="nav-number">2.4.</span> <span class="nav-text">使用主机变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%84%E5%86%85%E5%8F%98%E9%87%8F"><span class="nav-number">2.5.</span> <span class="nav-text">组内变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%89%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84%E5%AD%98%E5%82%A8%E5%8F%98%E9%87%8F"><span class="nav-number">2.6.</span> <span class="nav-text">按目录结构存储变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%84%E7%9A%84%E5%8C%85%E5%90%AB%E4%B8%8E%E7%BB%84%E5%86%85%E5%8F%98%E9%87%8F"><span class="nav-number">2.7.</span> <span class="nav-text">组的包含与组内变量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Patterns%EF%BC%88%E4%B8%BB%E6%9C%BA%E4%B8%8E%E7%BB%84%E6%AD%A3%E5%88%99%E5%8C%B9%E9%85%8D%E9%83%A8%E5%88%86%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">Patterns（主机与组正则匹配部分）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E9%9D%9E%E4%B8%8E%E9%80%BB%E8%BE%91and"><span class="nav-number">3.1.</span> <span class="nav-text">逻辑非与逻辑and</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%B7%E5%90%88%E9%AB%98%E7%BA%A7%E7%94%A8%E6%B3%95"><span class="nav-number">3.2.</span> <span class="nav-text">混合高级用法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81-%E5%AE%9A%E4%B9%89%E4%B8%BB%E6%9C%BA%E7%BB%84"><span class="nav-number">4.</span> <span class="nav-text">动态 定义主机组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B8%A9%E5%9D%91"><span class="nav-number">5.</span> <span class="nav-text">踩坑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">6.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Big Little Ant</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">55</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2018/09/12/ansible-inventory/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Big Little Ant">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Big Little Ant">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="ansible hosts及Inventory文件 | Big Little Ant">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ansible hosts及Inventory文件
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2018-09-12 20:18:33" itemprop="dateCreated datePublished" datetime="2018-09-12T20:18:33+08:00">2018-09-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2020-10-10 11:24:24" itemprop="dateModified" datetime="2020-10-10T11:24:24+08:00">2020-10-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/ansible/" itemprop="url" rel="index"><span itemprop="name">ansible</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="主机目录配置文件"><a href="#主机目录配置文件" class="headerlink" title="主机目录配置文件"></a>主机目录配置文件</h2><ul>
+<li>默认文件 : <code>/etc/ansible/hosts</code>。</li>
+</ul>
+<p>修改主机目录的配置文件: <code>/etc/ansible/ansible.cfg</code>, 指定inventory的路径</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">inventory      = /data/db/playbook/inventory</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>命令行中传递主机目录配置文件。<code>ansible-playbook -i inventory site.yml</code> 或 <code>ansible-playbook --inventory-file inventory site.yml</code> 。</li>
+</ul>
+<h2 id="如何编写-Hosts-and-Groups（主机与组）"><a href="#如何编写-Hosts-and-Groups（主机与组）" class="headerlink" title="如何编写 Hosts and Groups（主机与组）"></a>如何编写 Hosts and Groups（主机与组）</h2><h3 id="简单的主机和组"><a href="#简单的主机和组" class="headerlink" title="简单的主机和组"></a>简单的主机和组</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mail.example.com</span><br><span class="line"></span><br><span class="line">[webservers]</span><br><span class="line">foo.example.com</span><br><span class="line">bar.example.com</span><br><span class="line"></span><br><span class="line">[dbservers]</span><br><span class="line">one.example.com</span><br><span class="line">two.example.com</span><br><span class="line">three.example.com</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>中括号中的名字代表组名，可以根据自己的需求将庞大的主机分成具有标识的组，如上面分了两个组webservers和dbservers组。</li>
+<li>主机(hosts)部分可以使用域名、主机名、IP地址表示；当然使用前两者时，也需要主机能反解析到相应的IP地址，一般此类配置中多使用IP地址。</li>
+</ul>
+<h3 id="单独配置端口与别名"><a href="#单独配置端口与别名" class="headerlink" title="单独配置端口与别名"></a>单独配置端口与别名</h3><p>如果某些主机的SSH运行在自定义的端口上，ansible使用Paramiko进行ssh连接时，不会使用你SSH配置文件中列出的端口，但是如果修改ansible使用openssh进行ssh连接时将会使用：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[webservers]</span><br><span class="line">192.168.56.13:52113</span><br></pre></td></tr></table></figure>
+
+<p>假如你想要为某些静态IP设置一些别名，可以这样做：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">test1 ansible_ssh_port = 52113 ansible_ssh_host = 192.168.56.13</span><br></pre></td></tr></table></figure>
+
+<p>上面的 test1别名就指代了IP为192.168.56.13，ssh连接端口为52113的主机。</p>
+<h3 id="使用正则指定主机范围"><a href="#使用正则指定主机范围" class="headerlink" title="使用正则指定主机范围"></a>使用正则指定主机范围</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[webservers]</span><br><span class="line">www[01:50].example.com</span><br><span class="line"></span><br><span class="line">[databases]</span><br><span class="line">db-[a:f].example.com</span><br></pre></td></tr></table></figure>
+
+<p>上面指定了从web1到web50，webservers组共计50台主机；databases组有db-a到db-f共6台主机。</p>
+<h3 id="使用主机变量"><a href="#使用主机变量" class="headerlink" title="使用主机变量"></a>使用主机变量</h3><p>以下是Hosts部分中经常用到的变量部分：</p>
+<ul>
+<li><code>ansible_ssh_host</code>: #用于指定被管理的主机的真实IP。</li>
+<li><code>ansible_ssh_port</code>: #用于指定连接到被管理主机的ssh端口号，默认是22。</li>
+<li><code>ansible_ssh_user</code>: #ssh连接时默认使用的用户名。</li>
+<li><code>ansible_ssh_pass</code>: #ssh连接时的密码。</li>
+<li><code>ansible_sudo_pass</code>: #使用sudo连接用户时的密码。</li>
+<li><code>ansible_sudo_exec</code>: #如果sudo命令不在默认路径，需要指定sudo命令路径。</li>
+<li><code>ansible_ssh_private_key_file</code>: #秘钥文件路径，秘钥文件如果不想使用ssh-agent管理时可以使用此选项。</li>
+<li><code>ansible_shell_type</code>: #目标系统的shell的类型，默认sh。</li>
+<li><code>ansible_connection</code>: #SSH 连接的类型： local , ssh , paramiko，在 ansible 1.2 之前默认是 paramiko ，后来智能选择，优先使用基于 ControlPersist 的 ssh （支持的前提）。</li>
+<li><code>ansible_python_interpreter</code>: #用来指定python解释器的路径，默认为&#x2F;usr&#x2F;bin&#x2F;python 同样可以指定ruby 、perl 的路径。</li>
+<li><code>ansible_*_interpreter</code>: #其他解释器路径，用法与ansible_python_interpreter类似，这里”*”可以是ruby或才perl等其他语言。</li>
+</ul>
+<p>示例如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[test]</span><br><span class="line">192.168.1.1 ansible_ssh_user=root ansible_ssh_pass=&#x27;abcdefg&#x27;</span><br><span class="line">192.168.1.2 ansible_ssh_user=breeze ansible_ssh_pass=&#x27;123456&#x27;</span><br><span class="line">192.168.1.3 ansible_ssh_user=bernie ansible_ssh_port=3055 ansible_ssh_pass=&#x27;456789&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>上面的示例中指定了三台主机，三台主机的用密码分别是abcdefg、123456、45789，指定的ssh连接的用户名分别为root、breeze、bernie，ssh 端口分别为22、22、3055 ，这样在ansible命令执行的时候就不用再指令用户和密码等了。</p>
+<h3 id="组内变量"><a href="#组内变量" class="headerlink" title="组内变量"></a>组内变量</h3><p>变量也可以通过组名，应用到组内的所有成员：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[webserver]</span><br><span class="line">host1</span><br><span class="line">host2</span><br><span class="line"></span><br><span class="line">[webserver:vars]</span><br><span class="line">ntp_server=ntp.atlanta.example.com</span><br><span class="line">proxy=proxy.atlanta.example.com</span><br></pre></td></tr></table></figure>
+
+<p>上面test组中包含两台主机，通过对test组指定vars变更，相应的host1和host2相当于相应的指定了ntp_server和proxy变量参数值 。</p>
+<h3 id="按目录结构存储变量"><a href="#按目录结构存储变量" class="headerlink" title="按目录结构存储变量"></a>按目录结构存储变量</h3><p>假设inventory文件为&#x2F;etc&#x2F;ansible&#x2F;hosts，那么相关的hosts和group变量可以放在下面的目录结构下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/etc/ansible/group_vars/webserver # can optionally end in &#x27;.yml&#x27;, &#x27;.yaml&#x27;, or &#x27;.json&#x27;</span><br><span class="line">/etc/ansible/group_vars/webservers</span><br><span class="line">/etc/ansible/host_vars/foosball</span><br></pre></td></tr></table></figure>
+
+<p><code>/etc/ansible/group_vars/webserver</code>文件内容可以为</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">ntp_server: acme.example.org</span><br><span class="line">database_server: storage.example.org</span><br></pre></td></tr></table></figure>
+
+<p>如果对应的名字为目录名，ansible会读取这个目录下面所有文件的内容</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/etc/ansible/group_vars/raleigh/db_settings</span><br><span class="line">/etc/ansible/group_vars/raleigh/cluster_settings</span><br></pre></td></tr></table></figure>
+
+<p>group_vars&#x2F; 和 host_vars&#x2F; 目录可放在 inventory 目录下,或是 playbook 目录下. 如果两个目录下都存在,那么 playbook 目录下的配置会覆盖 inventory 目录的配置.</p>
+<h3 id="组的包含与组内变量"><a href="#组的包含与组内变量" class="headerlink" title="组的包含与组内变量"></a>组的包含与组内变量</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[atlanta]</span><br><span class="line">host1</span><br><span class="line">host2</span><br><span class="line"></span><br><span class="line">[raleigh]</span><br><span class="line">host2</span><br><span class="line">host3</span><br><span class="line"></span><br><span class="line">[southeast:children]</span><br><span class="line">atlanta</span><br><span class="line">raleigh</span><br><span class="line"></span><br><span class="line">[southeast:vars]</span><br><span class="line">some_server=foo.southeast.example.com</span><br><span class="line">halon_system_timeout=30</span><br><span class="line">self_destruct_countdown=60</span><br><span class="line">escape_pods=2</span><br><span class="line"></span><br><span class="line">[usa:children]</span><br><span class="line">southeast</span><br><span class="line">northeast</span><br><span class="line">southwest</span><br><span class="line">northwest</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>任何属于子组的成员都自动成为父组的成员。</li>
+<li>子组的变量将具有更高的优先级（覆盖）父组的变量。</li>
+<li>组可以有多个父母和孩子，但不是循环关系。</li>
+<li>主机也可以在多个组中，但只有一个主机实例，合并来自多个组的数据。</li>
+</ul>
+<p>注：vars变量在ansible ad-hoc部分中基本用不到，主要用在ansible-playbook中。</p>
+<h2 id="Patterns（主机与组正则匹配部分）"><a href="#Patterns（主机与组正则匹配部分）" class="headerlink" title="Patterns（主机与组正则匹配部分）"></a>Patterns（主机与组正则匹配部分）</h2><p>把Patterns 直接理解为正则实际是不完全准确的，正常的理解为patterns意味着在ansible中管理哪些主机，也可以理解为，要与哪台主机进行通信。在探讨这个问题之前我们先看下ansible的用法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ansible &lt;pattern_goes_here&gt; -m &lt;module_name&gt; -a &lt;arguments&gt;</span><br></pre></td></tr></table></figure>
+
+<p>直接上一个示例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ansible webservers -m service -a &quot;name=httpd state=restarted&quot;</span><br></pre></td></tr></table></figure>
+
+<p>这里是对webservers 组或主机重启httpd服务 ，其中webservers 就是Pattern部分。而之所以上面说Pattern（模式）可以理解为正则，主要针对下面经常用到的用法而言的。</p>
+<ol>
+<li>表示所有的主机可以使用all 或 *</li>
+<li>通配符与逻辑或</li>
+<li>利用通配符还可以指定一组具有规则特征的主机或主机名，冒号表示or－－－逻辑或</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">web1.biglittleant.com</span><br><span class="line">web1.biglittleant.com:web2.biglittleant.com</span><br><span class="line">192.168.1.1</span><br><span class="line">192.168.1.*</span><br></pre></td></tr></table></figure>
+
+<p>当然，这里的*通配符也可以用在前面，如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">*.biglittleant.com</span><br><span class="line">*.com</span><br><span class="line">webservers1[0]     #表示匹配 webservers1 组的第 1 个主机</span><br><span class="line">webservers1[0:25]  #表示匹配 webservers1 组的第 1 个到第 25 个主机（官网文档是&quot;:&quot;表示范围，测试发现应该使用&quot;-&quot;,注意不要和匹配多个主机组混淆）</span><br></pre></td></tr></table></figure>
+
+<p>上面的用法，在多个组之间同样适用 ，如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">webservers</span><br><span class="line">webservers:dbservers  #表示两个组中所有的主机</span><br></pre></td></tr></table></figure>
+
+<h3 id="逻辑非与逻辑and"><a href="#逻辑非与逻辑and" class="headerlink" title="逻辑非与逻辑and"></a>逻辑非与逻辑and</h3><p>非的表达式，如，目标主机必须在组webservers但不在phoenix组中</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">webserver:!phoenix</span><br></pre></td></tr></table></figure>
+
+<p>交集的表达式，如，目标主机必须即在组webservers中又在组staging中</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">webservers:&amp;staging</span><br></pre></td></tr></table></figure>
+
+<p>一个更复杂的示例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">webserver:dbservers:&amp;staging:!phoenix</span><br></pre></td></tr></table></figure>
+
+<p>上面这个复杂的表达式最后表示的目标主机必须满足：在webservers或者dbservers组中，必须还存在于staging组中，但是不在phoenix组中 。</p>
+<h3 id="混合高级用法"><a href="#混合高级用法" class="headerlink" title="混合高级用法"></a>混合高级用法</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*.yanruogu.com:*.org</span><br></pre></td></tr></table></figure>
+<p>还可以在开头的地方使用”~”，用来表示这是一个正则表达式:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~(web|db).*\.yanruogu\.com</span><br></pre></td></tr></table></figure>
+
+<p>给两个ansible-playbook中具体可能用的用法：</p>
+<ol>
+<li>在ansible-palybook命令中，你也可以使用变量来组成这样的表达式，但是你必须使用“-e”的选项来指定这个表达式（通常我们不这样用）：</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ansible-palybook -e webservers:!`excluded`:&amp;`required`</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>在ansible和ansible-playbook中，还可以通过一个参数”–limit”来明确指定排除某些主机或组：</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ansible-playbook site.yml --limit datacenter2</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>从Ansible1.2开始，如果想排除一个文件中的主机可以使用”@”：</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ansible-playbook site.yml --limit @retry_hosts.txt</span><br></pre></td></tr></table></figure>
+
+<h2 id="动态-定义主机组"><a href="#动态-定义主机组" class="headerlink" title="动态 定义主机组"></a>动态 定义主机组</h2><h2 id="踩坑"><a href="#踩坑" class="headerlink" title="踩坑"></a>踩坑</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ansible -i inventory/ other -m ping</span><br></pre></td></tr></table></figure>
+
+<p>当执行如上命令时，other 如果有多个组，他会将所有的other组都执行。而不是报错。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a target="_blank" rel="noopener" href="http://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#hosts-and-groups">Working with Inventory</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%AD%BB%E7%A3%95ansible%E7%B3%BB%E5%88%97/" rel="tag"># 死磕ansible系列</a>
+              <a href="/tags/ansible/" rel="tag"># ansible</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/09/10/ansible-install/" rel="prev" title="ansible 入门安装及配置">
+                  <i class="fa fa-chevron-left"></i> ansible 入门安装及配置
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/09/14/ansible-playbook/" rel="next" title="死磕ansible系列--playbook">
+                  死磕ansible系列--playbook <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Big Little Ant</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

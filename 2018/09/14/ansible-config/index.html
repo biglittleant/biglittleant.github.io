@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.biglittleant.cn","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="ansible 读取文件的顺序  export ANSIBLE_CONFIG：首先，Ansible命令会检查环境变量，及这个环境变量将指向的配置文件 。 .&#x2F;ansible.cfg：其次，将会检查当前目录下的ansible.cfg配置文件。 ~&#x2F;.ansible.cfg：再次，将会检查当前用户home目录下的.ansible.cfg配置文件。 &#x2F;etc&#x2F;ansible&#x2F;ansible.cfg：最后">
+<meta property="og:type" content="article">
+<meta property="og:title" content="死磕ansible系列--修改cfg配置文件">
+<meta property="og:url" content="http://www.biglittleant.cn/2018/09/14/ansible-config/index.html">
+<meta property="og:site_name" content="Big Little Ant">
+<meta property="og:description" content="ansible 读取文件的顺序  export ANSIBLE_CONFIG：首先，Ansible命令会检查环境变量，及这个环境变量将指向的配置文件 。 .&#x2F;ansible.cfg：其次，将会检查当前目录下的ansible.cfg配置文件。 ~&#x2F;.ansible.cfg：再次，将会检查当前用户home目录下的.ansible.cfg配置文件。 &#x2F;etc&#x2F;ansible&#x2F;ansible.cfg：最后">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2018-09-14T12:18:33.000Z">
+<meta property="article:modified_time" content="2020-10-10T03:24:12.354Z">
+<meta property="article:author" content="Big Little Ant">
+<meta property="article:tag" content="死磕ansible系列">
+<meta property="article:tag" content="ansible">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://www.biglittleant.cn/2018/09/14/ansible-config/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://www.biglittleant.cn/2018/09/14/ansible-config/","path":"2018/09/14/ansible-config/","title":"死磕ansible系列--修改cfg配置文件"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>死磕ansible系列--修改cfg配置文件 | Big Little Ant</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Big Little Ant</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">不被嘲笑的梦想，是不值得去实现的</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-文章分类"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a></li><li class="menu-item menu-item-golang"><a href="/categories/go" rel="section"><i class="fa fa-th fa-fw"></i>Golang</a></li><li class="menu-item menu-item-kubernetes"><a href="/categories/kubernetes" rel="section"><i class="fa fa-th fa-fw"></i>Kubernetes</a></li><li class="menu-item menu-item-标签"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-归档"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-关于"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E5%8F%82%E6%95%B0"><span class="nav-number">1.</span> <span class="nav-text">其他参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DEFAULT-ROLES-PATH"><span class="nav-number">2.</span> <span class="nav-text">DEFAULT_ROLES_PATH</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E6%B1%87%E6%80%BB"><span class="nav-number">3.</span> <span class="nav-text">报错汇总</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E6%9E%9C%E5%9C%A8%E5%AF%B9%E4%B9%8B%E5%89%8D%E6%9C%AA%E8%BF%9E%E6%8E%A5%E7%9A%84%E4%B8%BB%E6%9C%BA%E8%BF%9B%E8%A1%8C%E8%BF%9E%E7%BB%93%E6%97%B6%E6%8A%A5%E9%94%99"><span class="nav-number">3.1.</span> <span class="nav-text">如果在对之前未连接的主机进行连结时报错</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">4.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Big Little Ant</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">55</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2018/09/14/ansible-config/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Big Little Ant">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Big Little Ant">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="死磕ansible系列--修改cfg配置文件 | Big Little Ant">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          死磕ansible系列--修改cfg配置文件
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2018-09-14 20:18:33" itemprop="dateCreated datePublished" datetime="2018-09-14T20:18:33+08:00">2018-09-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2020-10-10 11:24:12" itemprop="dateModified" datetime="2020-10-10T11:24:12+08:00">2020-10-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/ansible/" itemprop="url" rel="index"><span itemprop="name">ansible</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>ansible 读取文件的顺序</p>
+<ol>
+<li><code>export ANSIBLE_CONFIG</code>：首先，Ansible命令会检查环境变量，及这个环境变量将指向的配置文件 。</li>
+<li><code>./ansible.cfg</code>：其次，将会检查当前目录下的ansible.cfg配置文件。</li>
+<li><code>~/.ansible.cfg</code>：再次，将会检查当前用户home目录下的.ansible.cfg配置文件。</li>
+<li><code>/etc/ansible/ansible.cfg</code>：最后，将会检查在用软件包管理工具安装Ansible时自动产生的配置文件。</li>
+</ol>
+<blockquote>
+<p>Ansible默认安装好后有一个配置文件<code>/etc/ansible/ansible.cfg</code>，该配置文件中定义了ansible的主机的默认配置部分，如默认是否需要输入密码、是否开启sudo认证、action_plugins插件的位置、hosts主机组的位置、是否开启log功能、默认端口、key文件位置等等。</p>
+</blockquote>
+<p>具体如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">[defaults]</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">some basic default values...</span></span><br><span class="line">hostfile       = /etc/ansible/hosts   \\指定默认hosts配置的位置</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">library_path = /usr/share/my_modules/</span></span><br><span class="line">remote_tmp     = $HOME/.ansible/tmp</span><br><span class="line">pattern        = *</span><br><span class="line">forks          = 5</span><br><span class="line">poll_interval  = 15</span><br><span class="line">sudo_user      = root  \\远程sudo用户</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">ask_sudo_pass = True  \\每次执行ansible命令是否询问ssh密码</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">ask_pass      = True  \\每次执行ansible命令时是否询问sudo密码</span></span><br><span class="line">transport      = smart</span><br><span class="line">remote_port    = 22</span><br><span class="line">module_lang    = C</span><br><span class="line">gathering = implicit</span><br><span class="line">host_key_checking = False    \\关闭第一次使用ansible连接客户端是输入命令提示</span><br><span class="line">log_path    = /var/log/ansible.log \\需要时可以自行添加。chown -R root:root ansible.log</span><br><span class="line">system_warnings = False    \\关闭运行ansible时系统的提示信息，一般为提示升级</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">set</span> plugin path directories here, separate with colons</span></span><br><span class="line">action_plugins     = /usr/share/ansible_plugins/action_plugins</span><br><span class="line">callback_plugins   = /usr/share/ansible_plugins/callback_plugins</span><br><span class="line">connection_plugins = /usr/share/ansible_plugins/connection_plugins</span><br><span class="line">lookup_plugins     = /usr/share/ansible_plugins/lookup_plugins</span><br><span class="line">vars_plugins       = /usr/share/ansible_plugins/vars_plugins</span><br><span class="line">filter_plugins     = /usr/share/ansible_plugins/filter_plugins</span><br><span class="line">fact_caching = memory</span><br><span class="line">[accelerate]</span><br><span class="line">accelerate_port = 5099</span><br><span class="line">accelerate_timeout = 30</span><br><span class="line">accelerate_connect_timeout = 5.0</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">The daemon <span class="built_in">timeout</span> is measured <span class="keyword">in</span> minutes. This time is measured</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">from the last activity to the accelerate daemon.</span></span><br><span class="line">accelerate_daemon_timeout = 30</span><br></pre></td></tr></table></figure>
+
+<h2 id="其他参数"><a href="#其他参数" class="headerlink" title="其他参数"></a>其他参数</h2><p>默认ansible 执行的时候，并不会输出日志到文件，不过在ansible.cfg 配置文件中有如下行：</p>
+<p>log_path &#x3D; &#x2F;var&#x2F;log&#x2F;ansible.log<br>默认log_path这行是注释的，打开该行的注释，所有的命令执行后，都会将日志输出到&#x2F;var&#x2F;log&#x2F;ansible.log文件。</p>
+<h2 id="DEFAULT-ROLES-PATH"><a href="#DEFAULT-ROLES-PATH" class="headerlink" title="DEFAULT_ROLES_PATH"></a>DEFAULT_ROLES_PATH</h2><p>roles 查找路径<br>Description:	Colon separated paths in which Ansible will search for Roles.<br>Type:	pathspec<br>Default:	~&#x2F;.ansible&#x2F;roles:&#x2F;usr&#x2F;share&#x2F;ansible&#x2F;roles:&#x2F;etc&#x2F;ansible&#x2F;roles<br>Ini Section:	defaults<br>Ini Key:	roles_path<br>Environment:	ANSIBLE_ROLES_PATH</p>
+<p>我们可以在自己的仓库中自定义<br><code>DEFAULT_ROLES_PATH： roles:roles/www/</code></p>
+<h2 id="报错汇总"><a href="#报错汇总" class="headerlink" title="报错汇总"></a>报错汇总</h2><h3 id="如果在对之前未连接的主机进行连结时报错"><a href="#如果在对之前未连接的主机进行连结时报错" class="headerlink" title="如果在对之前未连接的主机进行连结时报错"></a>如果在对之前未连接的主机进行连结时报错</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ansible test -a &#x27;uptime&#x27;</span><br><span class="line">    192.168.56.12| FAILED =&gt;Using a SSH password instead of a key is not possible because HostKey checking is enabled and sshpass does not support this.Please add this host&#x27;s fingerprint to your known_hosts file to manage this host.</span><br></pre></td></tr></table></figure>
+
+<p>是由于在本机的<code>~/.ssh/known_hosts</code>文件中并有fingerprint key串，ssh第一次连接的时候一般会提示输入yes 进行确认为将key字符串加入到<code>~/.ssh/known_hosts </code>文件中。</p>
+<p>解决办法：<br>方法一：<br>在进行ssh连接时，可以使用-o参数将StrictHostKeyChecking设置为no，使用ssh连接时避免首次连接时让输入yes&#x2F;no部分的提示。通过查看ansible.cfg配置文件，发现如下行：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[ssh_connection]</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">ssh arguments to use</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Leaving off ControlPersist will result <span class="keyword">in</span> poor performance, so use</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">paramiko on older platforms rather than removing it</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">ssh_args = -o ControlMaster=auto -o ControlPersist=60s</span></span><br><span class="line">可以启用ssh_args 部分，使用下面的配置，避免上面出现的错误：</span><br><span class="line"></span><br><span class="line">ssh_args = -o ControlMaster=auto -o ControlPersist=60s -o StrictHostKeyChecking＝no</span><br></pre></td></tr></table></figure>
+
+<p>方法2：<br>在ansible.cfg配置文件中，也会找到如下配置：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">uncomment this to <span class="built_in">disable</span> SSH key host checking</span></span><br><span class="line">host_key_checking = False</span><br></pre></td></tr></table></figure>
+
+<p>默认host_key_checking部分是注释的，通过找开该行的注释，同样也可以实现跳过ssh 首次连接提示验证部分。但在实际测试中，似乎并没有效果，建议使用方法1.</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a target="_blank" rel="noopener" href="https://docs.ansible.com/ansible/latest/reference_appendices/config.html">ansible config</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%AD%BB%E7%A3%95ansible%E7%B3%BB%E5%88%97/" rel="tag"># 死磕ansible系列</a>
+              <a href="/tags/ansible/" rel="tag"># ansible</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/09/14/ansible-playbook/" rel="prev" title="死磕ansible系列--playbook">
+                  <i class="fa fa-chevron-left"></i> 死磕ansible系列--playbook
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/09/16/ansible-ad-hoc/" rel="next" title="死磕ansible系列--Ad-hoc模块">
+                  死磕ansible系列--Ad-hoc模块 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Big Little Ant</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.biglittleant.cn","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="ansible 简介ansible整体软件架构图Ansible 在管理节点将 Ansible 模块通过 SSH 协议（或者 Kerberos、LDAP）推送到被管理端执行，执行完之后自动删除，可以使用 SVN 等来管理自定义模块及编排   管理端支持local 、ssh、zeromq 三种方式连接被管理端，默认使用基于ssh的连接。 可以按应用类型等方式进行Host Inventory（主机群）分">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ansible 入门安装及配置">
+<meta property="og:url" content="http://www.biglittleant.cn/2018/09/10/ansible-install/index.html">
+<meta property="og:site_name" content="Big Little Ant">
+<meta property="og:description" content="ansible 简介ansible整体软件架构图Ansible 在管理节点将 Ansible 模块通过 SSH 协议（或者 Kerberos、LDAP）推送到被管理端执行，执行完之后自动删除，可以使用 SVN 等来管理自定义模块及编排   管理端支持local 、ssh、zeromq 三种方式连接被管理端，默认使用基于ssh的连接。 可以按应用类型等方式进行Host Inventory（主机群）分">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.biglittleant.cn/media/ansible-%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84%E5%9B%BE.png">
+<meta property="og:image" content="http://www.biglittleant.cn/media/ansible-%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E5%9B%BE.png">
+<meta property="article:published_time" content="2018-09-10T12:18:33.000Z">
+<meta property="article:modified_time" content="2020-10-10T03:24:19.103Z">
+<meta property="article:author" content="Big Little Ant">
+<meta property="article:tag" content="死磕ansible系列">
+<meta property="article:tag" content="ansible">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.biglittleant.cn/media/ansible-%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84%E5%9B%BE.png">
+
+
+<link rel="canonical" href="http://www.biglittleant.cn/2018/09/10/ansible-install/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://www.biglittleant.cn/2018/09/10/ansible-install/","path":"2018/09/10/ansible-install/","title":"ansible 入门安装及配置"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>ansible 入门安装及配置 | Big Little Ant</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Big Little Ant</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">不被嘲笑的梦想，是不值得去实现的</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-文章分类"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a></li><li class="menu-item menu-item-golang"><a href="/categories/go" rel="section"><i class="fa fa-th fa-fw"></i>Golang</a></li><li class="menu-item menu-item-kubernetes"><a href="/categories/kubernetes" rel="section"><i class="fa fa-th fa-fw"></i>Kubernetes</a></li><li class="menu-item menu-item-标签"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-归档"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-关于"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ansible-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">ansible 简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ansible%E6%95%B4%E4%BD%93%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="nav-number">1.1.</span> <span class="nav-text">ansible整体软件架构图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ansible-%E8%BD%AF%E4%BB%B6%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84"><span class="nav-number">1.2.</span> <span class="nav-text">ansible 软件基本架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ansible%E7%89%B9%E6%80%A7"><span class="nav-number">1.3.</span> <span class="nav-text">ansible特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ansible%E7%9A%84%E4%BB%BB%E5%8A%A1%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="nav-number">1.4.</span> <span class="nav-text">ansible的任务执行流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E6%88%98%E5%AE%89%E8%A3%85ansible"><span class="nav-number">2.</span> <span class="nav-text">实战安装ansible</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E5%86%99%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">编写配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">4.</span> <span class="nav-text">参考文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E6%B1%87%E6%80%BB"><span class="nav-number">5.</span> <span class="nav-text">报错汇总</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F%E9%94%99%E8%AF%AF"><span class="nav-number">5.1.</span> <span class="nav-text">格式错误</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E6%8F%90%E7%A4%BA%E5%AD%97%E7%AC%A6%E7%BC%96%E7%A0%81%E4%B8%8D%E5%AF%B9"><span class="nav-number">5.2.</span> <span class="nav-text">执行提示字符编码不对</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Big Little Ant</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">55</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2018/09/10/ansible-install/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Big Little Ant">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Big Little Ant">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="ansible 入门安装及配置 | Big Little Ant">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ansible 入门安装及配置
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2018-09-10 20:18:33" itemprop="dateCreated datePublished" datetime="2018-09-10T20:18:33+08:00">2018-09-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2020-10-10 11:24:19" itemprop="dateModified" datetime="2020-10-10T11:24:19+08:00">2020-10-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/ansible/" itemprop="url" rel="index"><span itemprop="name">ansible</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="ansible-简介"><a href="#ansible-简介" class="headerlink" title="ansible 简介"></a>ansible 简介</h2><h3 id="ansible整体软件架构图"><a href="#ansible整体软件架构图" class="headerlink" title="ansible整体软件架构图"></a>ansible整体软件架构图</h3><p>Ansible 在管理节点将 Ansible 模块通过 SSH 协议（或者 Kerberos、LDAP）推送到被管理端执行，执行完之后自动删除，可以使用 SVN 等来管理自定义模块及编排</p>
+<p><img src="/media/ansible-%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84%E5%9B%BE.png" alt="ansible-整体架构图"></p>
+<ol>
+<li>管理端支持local 、ssh、zeromq 三种方式连接被管理端，默认使用基于ssh的连接。</li>
+<li>可以按应用类型等方式进行Host Inventory（主机群）分类，管理节点通过各类模块实现相应的操作。单个模块，单条命令的批量执行，我们可以称之为ad-hoc；</li>
+<li>管理节点可以通过playbooks 实现多个task的集合实现一类功能，如web服务的安装部署、数据库服务器的批量备份等。playbooks我们可以简单的理解为，系统通过组合多条ad-hoc操作的配置文件。</li>
+</ol>
+<h3 id="ansible-软件基本架构"><a href="#ansible-软件基本架构" class="headerlink" title="ansible 软件基本架构"></a>ansible 软件基本架构</h3><p><img src="/media/ansible-%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E5%9B%BE.png" alt="ansible-软件架构图"></p>
+<p>远程调用管理模块，从Inventory里调用主机名字, ssh远端服务器执行命令，执行完成返回结果。</p>
+<h3 id="ansible特性"><a href="#ansible特性" class="headerlink" title="ansible特性"></a>ansible特性</h3><ol>
+<li><p>基于python语言实现， 模块化设计 ，调用特定的模块来完成特定任务 ，本身是核心组件，短小精悍 。</p>
+</li>
+<li><p>由Paramiko来实现创建ssh连接，基于ssh协议连接每一个被管理主机。</p>
+</li>
+<li><p>YAML格式是基于PyYAML模块来实现功能的，因为这个模块还支持模板语言，所以还需要jinjia2模板语言。</p>
+</li>
+<li><p>由Paramiko，PyYAML和Jinjia2三个关键模块。</p>
+</li>
+<li><p>no agents：部署简单，不需要在被管控主机上安装任何客户端；</p>
+</li>
+<li><p>no server：无服务器端，使用时直接运行命令即可；</p>
+</li>
+<li><p>modules in any languages：支持自定义模块，基于“模块”完成各种“任务”，支持各种可使用任意语言开发模块；</p>
+</li>
+<li><p>yaml，not code：使用yaml语言定制剧本playbook；</p>
+</li>
+<li><p>ssh by default：，使用SSH协议并基于SSH工作（基于密钥认证或在inventory文件中指定账号和密码）；</p>
+</li>
+<li><p>strong multi-tier solution：可实现多级指挥。</p>
+</li>
+</ol>
+<h3 id="ansible的任务执行流程"><a href="#ansible的任务执行流程" class="headerlink" title="ansible的任务执行流程"></a>ansible的任务执行流程</h3><ol>
+<li>读取配置。</li>
+<li>抓取全量机器&amp;分组列表 – 可从多个静态文件、文件夹、脚本中读取机器，分组及其变关联量信息。</li>
+<li>使用host-pattern过滤机器列表。</li>
+<li>根据参数确定执行模块和配置–从modules目录动态读取，用户可以自行开发模块。</li>
+<li>Runner执行返回。<ul>
+<li>Connection环节定义连接方式 &#x3D;&gt; Action阶段机器列表（Lookup plugin Action变量&#x2F;文件等资源的获取）。</li>
+<li>Callback plugin各阶段的钩子调用。</li>
+</ul>
+</li>
+<li>输出结束。<ul>
+<li>Filter plugin过滤算子。</li>
+<li>Callback plugin各阶段的钩子调用。</li>
+</ul>
+</li>
+</ol>
+<h2 id="实战安装ansible"><a href="#实战安装ansible" class="headerlink" title="实战安装ansible"></a>实战安装ansible</h2><p>master端 配置免密钥登录</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t dsa  ## 生成密钥</span><br><span class="line">ls .ssh/</span><br><span class="line">authorized_keys  id_dsa  id_dsa.pub</span><br></pre></td></tr></table></figure>
+
+<p>拷贝<code>id_dsa.pub</code>文件到远程主机的authorized_keys中。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp -P 52113 niu@192.168.56.13:~</span><br></pre></td></tr></table></figure>
+
+<p>在slave端配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mkdir .ssh</span><br><span class="line">mv id_dsa.pub .ssh/</span><br><span class="line">cd .ssh/</span><br><span class="line">cat id_dsa.pub &gt;&gt; authorized_keys</span><br><span class="line">chmod 600 authorized_keys</span><br><span class="line">chmod 700 ~/.ssh</span><br></pre></td></tr></table></figure>
+
+<p>测试本机是否可以正常执行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ssh -p 52113 niu@192.168.56.13</span><br><span class="line">Last login: Mon Jun  4 14:50:09 2018 from 192.168.56.12</span><br><span class="line">[niu@linux-node3 ~18:14:49]$</span><br></pre></td></tr></table></figure>
+
+<p>开始安装ansible服务器端，需要配置epel源</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo</span><br><span class="line">yum install ansible -y</span><br></pre></td></tr></table></figure>
+
+<p>开始编辑hosts文件，默认存放在<code>/etc/ansible</code>目录中 <code>vim /etc/ansible/hosts</code>。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[test]</span><br><span class="line">192.168.56.13</span><br><span class="line">[test:vars]</span><br><span class="line">ansible_ssh_user=&quot;niu&quot;</span><br><span class="line">ansible_ssh_port=52113</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>由于我修改了ssh端口，并禁止了root登录，所以我们需要定义登录用户，及ssh端口号。</p>
+</blockquote>
+<p>测试主机是否能够ping通。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> ansible test -m ping</span><br><span class="line">192.168.56.13 | SUCCESS =&gt; &#123;</span><br><span class="line">    &quot;changed&quot;: false,</span><br><span class="line">    &quot;ping&quot;: &quot;pong&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="编写配置文件"><a href="#编写配置文件" class="headerlink" title="编写配置文件"></a>编写配置文件</h2><p>ansible config文件查找路径</p>
+<p>ANSIBLE_CONFIG (环境变量中的设置)<br>ansible.cfg (当前目录下的ansiblee.cfg)<br>~&#x2F;.ansible.cfg (家目录下)<br>&#x2F;etc&#x2F;ansible&#x2F;ansible.cfg (全局目录)</p>
+<p>常用配置参数</p>
+<ul>
+<li>transport 默认参数：smart，可选参数 ssh,paramiko ,如果使用smart ansible则会自动选择。</li>
+<li>remote_user 设置目标计算机的登录用户。如果为空白，它将使用连接插件的默认值，通常是当前正在执行Ansible的用户。</li>
+<li>remote_port 在远程连接中使用的端口，空白时将使用默认的连接插件。</li>
+<li>forks 连接远程主机的时候最大开启进程数。</li>
+<li>stdout_callback 设置默认回调是使用的stdout</li>
+<li>jinja2_extensions jinja2的扩展参数</li>
+<li>library 自定义扩展模块地址</li>
+<li>roles_path ansible role文件的搜索路径使用:隔开。默认配置 ~&#x2F;.ansible&#x2F;roles:&#x2F;usr&#x2F;share&#x2F;ansible&#x2F;roles:&#x2F;etc&#x2F;ansible&#x2F;roles</li>
+</ul>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a target="_blank" rel="noopener" href="http://docs.ansible.com/ansible/latest/index.html">ansible 官方文档</a><br><a target="_blank" rel="noopener" href="http://getansible.com/begin/play_vs_playbook">Ansible入门</a><br><a target="_blank" rel="noopener" href="http://ansible-tran.readthedocs.io/en/latest/index.html">Ansible中文权威指南</a><br><a target="_blank" rel="noopener" href="http://blog.51cto.com/breezey/1555530">Ansible5：常用模块</a><br><a target="_blank" rel="noopener" href="https://www.kancloud.cn/shusheng/ansiblebook/235863#53_playbook_409">ansible超详细使用指南</a><br><a target="_blank" rel="noopener" href="https://frank6866.gitbooks.io/ansible/content/chapters/tricks/ansible-tricks-file-existed.html">ansible实践</a><br><a target="_blank" rel="noopener" href="https://ansible-book.gitbooks.io/ansible-first-book/advance/playbook/tiao_jian_xuan_ze.html">ansible-first-book</a></p>
+<h2 id="报错汇总"><a href="#报错汇总" class="headerlink" title="报错汇总"></a>报错汇总</h2><p>报错一：提示sudo命令将要被停止。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[DEPRECATION WARNING]: The sudo command line option has been deprecated in favor of the &quot;become&quot; command line arguments. This</span><br><span class="line">feature will be removed in version 2.6. Deprecation warnings can be disabled by setting deprecation_warnings=False in ansible.cfg.</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node2 ~14:12:01]#ansible -s test -m file -a &#x27;path=/tmp/test-niu state=touch&#x27;</span><br><span class="line">192.168.56.13 | SUCCESS =&gt; &#123;</span><br><span class="line">    &quot;changed&quot;: true,</span><br><span class="line">    &quot;dest&quot;: &quot;/tmp/test-niu&quot;,</span><br><span class="line">    &quot;gid&quot;: 0,</span><br><span class="line">    &quot;group&quot;: &quot;root&quot;,</span><br><span class="line">    &quot;mode&quot;: &quot;0644&quot;,</span><br><span class="line">    &quot;owner&quot;: &quot;root&quot;,</span><br><span class="line">    &quot;size&quot;: 0,</span><br><span class="line">    &quot;state&quot;: &quot;file&quot;,</span><br><span class="line">    &quot;uid&quot;: 0</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>解决办法: -s 替换成–become</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">ansible test -m file -a &#x27;path=/data/app/1.txt state=touch&#x27; --become</span><br><span class="line">192.168.56.13 | SUCCESS =&gt; &#123;</span><br><span class="line">    &quot;changed&quot;: true,</span><br><span class="line">    &quot;dest&quot;: &quot;/data/app/1.txt&quot;,</span><br><span class="line">    &quot;gid&quot;: 0,</span><br><span class="line">    &quot;group&quot;: &quot;root&quot;,</span><br><span class="line">    &quot;mode&quot;: &quot;0644&quot;,</span><br><span class="line">    &quot;owner&quot;: &quot;root&quot;,</span><br><span class="line">    &quot;size&quot;: 0,</span><br><span class="line">    &quot;state&quot;: &quot;file&quot;,</span><br><span class="line">    &quot;uid&quot;: 0</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="格式错误"><a href="#格式错误" class="headerlink" title="格式错误"></a>格式错误</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fatal: [linux-node2]: FAILED! =&gt; &#123;&quot;changed&quot;: false, &quot;checksum&quot;: &quot;823af87241d8f906a4c23d6e0f90aebf9620ccc3&quot;, &quot;msg&quot;: &quot;Unsupported parameters for (copy) module: user Supported parameters include: attributes, backup, checksum, content, delimiter, dest, directory_mode, follow, force, group, local_follow, mode, original_basename, owner, regexp, remote_src, selevel, serole, setype, seuser, src, unsafe_writes, validate&quot;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>原始文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">- name: config dns server</span><br><span class="line">  template: src=resolv.conf dest=/etc/resolv.conf mode=644 user=root group=root</span><br></pre></td></tr></table></figure>
+
+<p>解决办法</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">- name: config dns server</span><br><span class="line">  template: src=resolv.conf dest=/etc/resolv.conf mode=644 owner=root group=root</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="执行提示字符编码不对"><a href="#执行提示字符编码不对" class="headerlink" title="执行提示字符编码不对"></a>执行提示字符编码不对</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ERROR! Unexpected Exception, this is probably a bug: &#x27;ascii&#x27; codec can&#x27;t decode byte 0xe6 in position 8: ordinal not in range(128)</span><br></pre></td></tr></table></figure>
+
+<p>因为inventory 里面编写了一个中文的md文档，导致的报错。<br>将中文文档移除，问题解决。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%AD%BB%E7%A3%95ansible%E7%B3%BB%E5%88%97/" rel="tag"># 死磕ansible系列</a>
+              <a href="/tags/ansible/" rel="tag"># ansible</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/02/26/pstree-%E7%9B%AE%E5%BD%95%E6%A0%91%E5%8A%9F%E8%83%BD/" rel="prev" title="pstree 命令更优雅的树状显示">
+                  <i class="fa fa-chevron-left"></i> pstree 命令更优雅的树状显示
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/09/12/ansible-inventory/" rel="next" title="ansible hosts及Inventory文件">
+                  ansible hosts及Inventory文件 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Big Little Ant</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

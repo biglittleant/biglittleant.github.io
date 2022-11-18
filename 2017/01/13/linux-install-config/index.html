@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.1.1">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -14,24 +14,21 @@
 
 
 
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"www.biglittleant.cn","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
-  </script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.biglittleant.cn","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-  <meta name="description" content="更新yum源1234mv &#x2F;etc&#x2F;yum.repos.d&#x2F;CentOS-Base.repo &#x2F;etc&#x2F;yum.repos.d&#x2F;CentOS-Base.repo.backupwget -O &#x2F;etc&#x2F;yum.repos.d&#x2F;epel.repo http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;repo&#x2F;epel-7.repowget -O &#x2F;etc&#x2F;yum.repos.d&#x2F;CentOS-Base">
+    <meta name="description" content="更新yum源1234mv &#x2F;etc&#x2F;yum.repos.d&#x2F;CentOS-Base.repo &#x2F;etc&#x2F;yum.repos.d&#x2F;CentOS-Base.repo.backupwget -O &#x2F;etc&#x2F;yum.repos.d&#x2F;epel.repo http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;repo&#x2F;epel-7.repowget -O &#x2F;etc&#x2F;yum.repos.d&#x2F;CentOS-Base">
 <meta property="og:type" content="article">
 <meta property="og:title" content="linux系统初始化配置">
 <meta property="og:url" content="http://www.biglittleant.cn/2017/01/13/linux-install-config/index.html">
-<meta property="og:site_name" content="biglittleant">
+<meta property="og:site_name" content="Big Little Ant">
 <meta property="og:description" content="更新yum源1234mv &#x2F;etc&#x2F;yum.repos.d&#x2F;CentOS-Base.repo &#x2F;etc&#x2F;yum.repos.d&#x2F;CentOS-Base.repo.backupwget -O &#x2F;etc&#x2F;yum.repos.d&#x2F;epel.repo http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;repo&#x2F;epel-7.repowget -O &#x2F;etc&#x2F;yum.repos.d&#x2F;CentOS-Base">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2017-01-13T12:11:23.000Z">
 <meta property="article:modified_time" content="2020-09-16T09:33:13.273Z">
-<meta property="article:author" content="biglittleant">
+<meta property="article:author" content="Big Little Ant">
 <meta property="article:tag" content="linux">
 <meta name="twitter:card" content="summary">
 
@@ -39,17 +36,11 @@
 <link rel="canonical" href="http://www.biglittleant.cn/2017/01/13/linux-install-config/">
 
 
-<script class="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'en'
-  };
-</script>
 
-  <title>linux系统初始化配置 | biglittleant</title>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://www.biglittleant.cn/2017/01/13/linux-install-config/","path":"2017/01/13/linux-install-config/","title":"linux系统初始化配置"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>linux系统初始化配置 | Big Little Ant</title>
   
 
 
@@ -57,51 +48,23 @@
 
 
 
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
   <noscript>
-  <style>
-  body { margin-top: 2rem; }
-
-  .use-motion .menu-item,
-  .use-motion .sidebar,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header {
-    visibility: visible;
-  }
-
-  .use-motion .header,
-  .use-motion .site-brand-container .toggle,
-  .use-motion .footer { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle,
-  .use-motion .custom-logo-image {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line {
-    transform: scaleX(1);
-  }
-
-  .search-pop-overlay, .sidebar-nav { display: none; }
-  .sidebar-panel { display: block; }
-  </style>
-</noscript>
-
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
   <div class="headband"></div>
 
   <main class="main">
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Toggle navigation bar">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
         <span class="toggle-line"></span>
         <span class="toggle-line"></span>
         <span class="toggle-line"></span>
@@ -112,7 +75,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">biglittleant</h1>
+      <p class="site-title">Big Little Ant</p>
       <i class="logo-line"></i>
     </a>
       <p class="site-subtitle" itemprop="description">不被嘲笑的梦想，是不值得去实现的</p>
@@ -127,47 +90,16 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
-
-  </li>
-        <li class="menu-item menu-item-标签">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-文章分类">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a>
-
-  </li>
-        <li class="menu-item menu-item-归档">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-        <li class="menu-item menu-item-关于">
-
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
-
-  </li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-文章分类"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a></li><li class="menu-item menu-item-golang"><a href="/categories/go" rel="section"><i class="fa fa-th fa-fw"></i>Golang</a></li><li class="menu-item menu-item-kubernetes"><a href="/categories/kubernetes" rel="section"><i class="fa fa-th fa-fw"></i>Kubernetes</a></li><li class="menu-item menu-item-标签"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-归档"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-关于"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
   </ul>
 </nav>
 
 
 
 
-</div>
+</header>
         
   
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-  </div>
-
   <aside class="sidebar">
 
     <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
@@ -180,33 +112,34 @@
         </li>
       </ul>
 
-      <!--noindex-->
-      <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0yum%E6%BA%90"><span class="nav-number">1.</span> <span class="nav-text">更新yum源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%9F%BA%E7%A1%80%E8%BD%AF%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">安装基础软件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E5%BC%80%E6%9C%BA%E5%90%AF%E5%8A%A8%E9%A1%B9"><span class="nav-number">3.</span> <span class="nav-text">优化开机启动项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%97%ADselinux%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">关闭selinux配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%8C%96SSH%E9%85%8D%E7%BD%AE"><span class="nav-number">5.</span> <span class="nav-text">优化SSH配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%99%AE%E9%80%9A%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95"><span class="nav-number">6.</span> <span class="nav-text">配置普通用户登录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%97%B6%E9%97%B4%E6%9B%B4%E6%96%B0"><span class="nav-number">7.</span> <span class="nav-text">配置时间更新</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6"><span class="nav-number">8.</span> <span class="nav-text">修改文件描述符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%97%AD%E7%99%BB%E5%BD%95%E6%98%BE%E7%A4%BA%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%BF%A1%E6%81%AF"><span class="nav-number">9.</span> <span class="nav-text">关闭登录显示服务器信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%97%AD%E9%98%B2%E7%81%AB%E5%A2%99"><span class="nav-number">10.</span> <span class="nav-text">关闭防火墙</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A5%E5%85%85%E7%9F%A5%E8%AF%86"><span class="nav-number"></span> <span class="nav-text">补充知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#vmware%E5%85%8B%E9%9A%86%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%90%8E%E7%BD%91%E5%8D%A1%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">vmware克隆虚拟机后网卡无法启动问题</span></a></li></ol></div>
-      </section>
-      <!--/noindex-->
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0yum%E6%BA%90"><span class="nav-number">1.</span> <span class="nav-text">更新yum源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%9F%BA%E7%A1%80%E8%BD%AF%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">安装基础软件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E5%BC%80%E6%9C%BA%E5%90%AF%E5%8A%A8%E9%A1%B9"><span class="nav-number">3.</span> <span class="nav-text">优化开机启动项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%97%ADselinux%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">关闭selinux配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%8C%96SSH%E9%85%8D%E7%BD%AE"><span class="nav-number">5.</span> <span class="nav-text">优化SSH配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%99%AE%E9%80%9A%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95"><span class="nav-number">6.</span> <span class="nav-text">配置普通用户登录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%97%B6%E9%97%B4%E6%9B%B4%E6%96%B0"><span class="nav-number">7.</span> <span class="nav-text">配置时间更新</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6"><span class="nav-number">8.</span> <span class="nav-text">修改文件描述符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%97%AD%E7%99%BB%E5%BD%95%E6%98%BE%E7%A4%BA%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%BF%A1%E6%81%AF"><span class="nav-number">9.</span> <span class="nav-text">关闭登录显示服务器信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%97%AD%E9%98%B2%E7%81%AB%E5%A2%99"><span class="nav-number">10.</span> <span class="nav-text">关闭防火墙</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A5%E5%85%85%E7%9F%A5%E8%AF%86"><span class="nav-number"></span> <span class="nav-text">补充知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#vmware%E5%85%8B%E9%9A%86%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%90%8E%E7%BD%91%E5%8D%A1%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">vmware克隆虚拟机后网卡无法启动问题</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
 
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">biglittleant</p>
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Big Little Ant</p>
   <div class="site-description" itemprop="description"></div>
 </div>
-<div class="site-state-wrap animated">
+<div class="site-state-wrap site-overview-item animated">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/archives">
-          <span class="site-state-item-count">46</span>
+        <a href="/archives/">
+          <span class="site-state-item-count">55</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-        <span class="site-state-item-count">16</span>
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-        <span class="site-state-item-count">37</span>
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -214,48 +147,41 @@
 
 
 
-      </section>
+        </div>
+      </div>
     </div>
   </aside>
-  <div class="sidebar-dimmer"></div>
 
 
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-
-<noscript>
-  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
-</noscript>
-
+    </div>
 
     <div class="main-inner post posts-expand">
-      
 
-      
 
-    
+  
+
+
+<div class="post-block">
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
     <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2017/01/13/linux-install-config/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="biglittleant">
-      <meta itemprop="description" content="">
+      <meta itemprop="name" content="Big Little Ant">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="biglittleant">
+      <meta itemprop="name" content="Big Little Ant">
+      <meta itemprop="description" content="">
     </span>
 
-    
-    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="linux系统初始化配置 | Big Little Ant">
+      <meta itemprop="description" content="">
+    </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           linux系统初始化配置
@@ -271,13 +197,13 @@
 
       <time title="Created: 2017-01-13 20:11:23" itemprop="dateCreated datePublished" datetime="2017-01-13T20:11:23+08:00">2017-01-13</time>
     </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-16 17:33:13" itemprop="dateModified" datetime="2020-09-16T17:33:13+08:00">2020-09-16</time>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
       </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2020-09-16 17:33:13" itemprop="dateModified" datetime="2020-09-16T17:33:13+08:00">2020-09-16</time>
+    </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -289,13 +215,6 @@
     </span>
 
   
-    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="far fa-eye"></i>
-      </span>
-      <span class="post-meta-item-text">Views: </span>
-      <span id="busuanzi_value_page_pv"></span>
-    </span>
 </div>
 
         </div>
@@ -305,7 +224,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h3 id="更新yum源"><a href="#更新yum源" class="headerlink" title="更新yum源"></a>更新yum源</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup</span><br><span class="line">wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo</span><br><span class="line">wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo&amp;&amp; \</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;set aliyun OK .....&quot;</span> ||<span class="built_in">echo</span> <span class="string">&quot;yum update error .....&quot;</span></span><br></pre></td></tr></table></figure>
+        <h3 id="更新yum源"><a href="#更新yum源" class="headerlink" title="更新yum源"></a>更新yum源</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mv</span> /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup</span><br><span class="line">wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo</span><br><span class="line">wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo&amp;&amp; \</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;set aliyun OK .....&quot;</span> ||<span class="built_in">echo</span> <span class="string">&quot;yum update error .....&quot;</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="安装基础软件"><a href="#安装基础软件" class="headerlink" title="安装基础软件"></a>安装基础软件</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y tree nmap sysstat lrzsz dos2unix wget vim lsof ntpdate iotop iftop screen zabbix-agent salt-minion</span><br></pre></td></tr></table></figure>
 
@@ -316,9 +235,9 @@
 <p>centos7 优化开机启动项</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl list-unit-files |grep enabled |awk <span class="string">&#x27;&#123;print $1&#125;&#x27;</span> |egrep -v <span class="string">&quot;sshd.service|rsyslog.service|crond.service&quot;</span>| sed -rn <span class="string">&#x27;s#(.*)#systemctl disable \1 #gp&#x27;</span> |bash</span><br><span class="line"><span class="comment"># 如果使用rc.local 需要坚持rc-local启动项</span></span><br><span class="line">systemctl list-unit-files |grep rc-local.service</span><br></pre></td></tr></table></figure>
 
-<h3 id="关闭selinux配置"><a href="#关闭selinux配置" class="headerlink" title="关闭selinux配置"></a>关闭selinux配置</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cp /etc/selinux/config /etc/selinux/config.bak</span><br><span class="line">sed <span class="string">&#x27;s#SELINUX=enforcing#SELINUX=disabled#g&#x27;</span> /etc/selinux/config.bak &gt;/etc/selinux/config</span><br></pre></td></tr></table></figure>
+<h3 id="关闭selinux配置"><a href="#关闭selinux配置" class="headerlink" title="关闭selinux配置"></a>关闭selinux配置</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cp</span> /etc/selinux/config /etc/selinux/config.bak</span><br><span class="line">sed <span class="string">&#x27;s#SELINUX=enforcing#SELINUX=disabled#g&#x27;</span> /etc/selinux/config.bak &gt;/etc/selinux/config</span><br></pre></td></tr></table></figure>
 
-<h3 id="优化SSH配置"><a href="#优化SSH配置" class="headerlink" title="优化SSH配置"></a>优化SSH配置</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">sed -i <span class="string">&#x27;s/GSSAPIAuthentication yes/#GSSAPIAuthentication yes/g&#x27;</span> /etc/ssh/ssh_config</span><br><span class="line">sed  -i <span class="string">&quot;s/Port 22/#Port 22/g&quot;</span> /etc/ssh/sshd_config</span><br><span class="line">cat &gt;&gt;/etc/ssh/sshd_config&lt;&lt;EOF</span><br><span class="line">Port 52113</span><br><span class="line">PermitRootLogin no</span><br><span class="line">PermitEmptyPasswords no</span><br><span class="line">UseDNS no</span><br><span class="line">GSSAPIAuthentication no</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+<h3 id="优化SSH配置"><a href="#优化SSH配置" class="headerlink" title="优化SSH配置"></a>优化SSH配置</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">sed -i <span class="string">&#x27;s/GSSAPIAuthentication yes/#GSSAPIAuthentication yes/g&#x27;</span> /etc/ssh/ssh_config</span><br><span class="line">sed  -i <span class="string">&quot;s/Port 22/#Port 22/g&quot;</span> /etc/ssh/sshd_config</span><br><span class="line"><span class="built_in">cat</span> &gt;&gt;/etc/ssh/sshd_config&lt;&lt;<span class="string">EOF</span></span><br><span class="line"><span class="string">Port 52113</span></span><br><span class="line"><span class="string">PermitRootLogin no</span></span><br><span class="line"><span class="string">PermitEmptyPasswords no</span></span><br><span class="line"><span class="string">UseDNS no</span></span><br><span class="line"><span class="string">GSSAPIAuthentication no</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>修改SSH的默认端口。</li>
@@ -326,9 +245,9 @@
 <li>优化SSH连接速度。</li>
 </ul>
 <h3 id="配置普通用户登录"><a href="#配置普通用户登录" class="headerlink" title="配置普通用户登录"></a>配置普通用户登录</h3><p>创建普通用户，并加入到sudo中。</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">id niu || useradd niu</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;123456&quot;</span> |passwd niu --stdin</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;niu        ALL=(ALL)       ALL&quot;</span> &gt;&gt;/etc/sudoers</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">id</span> niu || useradd niu</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;123456&quot;</span> |passwd niu --stdin</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;niu        ALL=(ALL)       ALL&quot;</span> &gt;&gt;/etc/sudoers</span><br></pre></td></tr></table></figure>
 
-<h3 id="配置时间更新"><a href="#配置时间更新" class="headerlink" title="配置时间更新"></a>配置时间更新</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cat &gt;&gt;/var/spool/cron/root&lt;&lt;EOF</span><br><span class="line">time sync by niu  at 2010-2-1</span><br><span class="line">*/10 * * * * /usr/sbin/ntpdate pool.ntp.org &gt;/dev/null 2&gt;&amp;1</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+<h3 id="配置时间更新"><a href="#配置时间更新" class="headerlink" title="配置时间更新"></a>配置时间更新</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> &gt;&gt;/var/spool/cron/root&lt;&lt;<span class="string">EOF</span></span><br><span class="line"><span class="string">time sync by niu  at 2010-2-1</span></span><br><span class="line"><span class="string">*/10 * * * * /usr/sbin/ntpdate pool.ntp.org &gt;/dev/null 2&gt;&amp;1</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></figure>
 
 
 <h3 id="修改文件描述符"><a href="#修改文件描述符" class="headerlink" title="修改文件描述符"></a>修改文件描述符</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;*  -  nofile  65535&#x27;</span> &gt;&gt; /etc/security/limits.conf</span><br></pre></td></tr></table></figure>
@@ -344,7 +263,7 @@
 
 
 <h2 id="补充知识"><a href="#补充知识" class="headerlink" title="补充知识"></a>补充知识</h2><h3 id="vmware克隆虚拟机后网卡无法启动问题"><a href="#vmware克隆虚拟机后网卡无法启动问题" class="headerlink" title="vmware克隆虚拟机后网卡无法启动问题"></a>vmware克隆虚拟机后网卡无法启动问题</h3><p>第一步：修改克隆后虚拟机的网卡mac地址<br>第二步：执行如下脚本</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/sysconfig/network-scripts/ifcfg-eth0</span><br><span class="line">sed -i <span class="string">&#x27;/UUID/d&#x27;</span> /etc/sysconfig/network-scripts/ifcfg-eth0</span><br><span class="line">sed -i <span class="string">&#x27;/HWADDR/d&#x27;</span> /etc/sysconfig/network-scripts/ifcfg-eth0</span><br><span class="line">&gt;/etc/udev/rules.d/70-persistent-net.rules</span><br><span class="line">reboot</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> /etc/sysconfig/network-scripts/ifcfg-eth0</span><br><span class="line">sed -i <span class="string">&#x27;/UUID/d&#x27;</span> /etc/sysconfig/network-scripts/ifcfg-eth0</span><br><span class="line">sed -i <span class="string">&#x27;/HWADDR/d&#x27;</span> /etc/sysconfig/network-scripts/ifcfg-eth0</span><br><span class="line">&gt;/etc/udev/rules.d/70-persistent-net.rules</span><br><span class="line">reboot</span><br></pre></td></tr></table></figure>
 
 
     </div>
@@ -374,111 +293,65 @@
           </div>
     </footer>
   </article>
-  
-  
-  
+</div>
 
 
 
-      
 
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      const commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
 
-    </div>
+
+</div>
   </main>
 
   <footer class="footer">
     <div class="footer-inner">
-      
 
-      
 
 <div class="copyright">
-  
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">biglittleant</span>
+  <span class="author" itemprop="copyrightHolder">Big Little Ant</span>
 </div>
-<div class="busuanzi-count">
-    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-user"></i>
-      </span>
-      <span class="site-uv" title="Total Visitors">
-        <span id="busuanzi_value_site_uv"></span>
-      </span>
-    </span>
-    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-eye"></i>
-      </span>
-      <span class="site-pv" title="Total Views">
-        <span id="busuanzi_value_site_pv"></span>
-      </span>
-    </span>
-</div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
   </div>
 
     </div>
   </footer>
 
   
-  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
-<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
 
   
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-  
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-
-
-
-
-
-
-
   
 
-  
+
+
+
 
 </body>
 </html>

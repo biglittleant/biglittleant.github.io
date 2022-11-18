@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.1.1">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -14,19 +14,16 @@
 
 
 
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"www.biglittleant.cn","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
-  </script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.biglittleant.cn","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-  <meta name="description" content="Mesos+marathon+Docker实战12**本篇博文参考赵班长发布在unixhot上的一篇文章**[Mesos + marathon + Docker实战](http:&#x2F;&#x2F;www.unixhot.com&#x2F;article&#x2F;32)  环境架构图 上图显示了 Mesos 的主要组成部分。 Mesos 由一个 master daemon 来管理 slave daemon 在每个集群节点上的运行,">
+    <meta name="description" content="Mesos+marathon+Docker实战12**本篇博文参考赵班长发布在unixhot上的一篇文章**[Mesos + marathon + Docker实战](http:&#x2F;&#x2F;www.unixhot.com&#x2F;article&#x2F;32)  环境架构图 上图显示了 Mesos 的主要组成部分。 Mesos 由一个 master daemon 来管理 slave daemon 在每个集群节点上的运行,">
 <meta property="og:type" content="article">
 <meta property="og:title" content="mesos-marathon-docker 实战">
 <meta property="og:url" content="http://www.biglittleant.cn/2016/12/18/mesos-marathon-docker/index.html">
-<meta property="og:site_name" content="biglittleant">
+<meta property="og:site_name" content="Big Little Ant">
 <meta property="og:description" content="Mesos+marathon+Docker实战12**本篇博文参考赵班长发布在unixhot上的一篇文章**[Mesos + marathon + Docker实战](http:&#x2F;&#x2F;www.unixhot.com&#x2F;article&#x2F;32)  环境架构图 上图显示了 Mesos 的主要组成部分。 Mesos 由一个 master daemon 来管理 slave daemon 在每个集群节点上的运行,">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://oi3tsepsh.bkt.clouddn.com/14660477180386.jpg">
@@ -37,7 +34,7 @@
 <meta property="og:image" content="http://oi3tsepsh.bkt.clouddn.com/14660478347758.jpg">
 <meta property="article:published_time" content="2016-12-18T02:40:36.000Z">
 <meta property="article:modified_time" content="2020-09-16T09:34:33.747Z">
-<meta property="article:author" content="biglittleant">
+<meta property="article:author" content="Big Little Ant">
 <meta property="article:tag" content="docker">
 <meta property="article:tag" content="mesos">
 <meta property="article:tag" content="marathon">
@@ -48,17 +45,11 @@
 <link rel="canonical" href="http://www.biglittleant.cn/2016/12/18/mesos-marathon-docker/">
 
 
-<script class="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'en'
-  };
-</script>
 
-  <title>mesos-marathon-docker 实战 | biglittleant</title>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://www.biglittleant.cn/2016/12/18/mesos-marathon-docker/","path":"2016/12/18/mesos-marathon-docker/","title":"mesos-marathon-docker 实战"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>mesos-marathon-docker 实战 | Big Little Ant</title>
   
 
 
@@ -66,51 +57,23 @@
 
 
 
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
   <noscript>
-  <style>
-  body { margin-top: 2rem; }
-
-  .use-motion .menu-item,
-  .use-motion .sidebar,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header {
-    visibility: visible;
-  }
-
-  .use-motion .header,
-  .use-motion .site-brand-container .toggle,
-  .use-motion .footer { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle,
-  .use-motion .custom-logo-image {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line {
-    transform: scaleX(1);
-  }
-
-  .search-pop-overlay, .sidebar-nav { display: none; }
-  .sidebar-panel { display: block; }
-  </style>
-</noscript>
-
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
   <div class="headband"></div>
 
   <main class="main">
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Toggle navigation bar">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
         <span class="toggle-line"></span>
         <span class="toggle-line"></span>
         <span class="toggle-line"></span>
@@ -121,7 +84,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">biglittleant</h1>
+      <p class="site-title">Big Little Ant</p>
       <i class="logo-line"></i>
     </a>
       <p class="site-subtitle" itemprop="description">不被嘲笑的梦想，是不值得去实现的</p>
@@ -136,47 +99,16 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
-
-  </li>
-        <li class="menu-item menu-item-标签">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-文章分类">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a>
-
-  </li>
-        <li class="menu-item menu-item-归档">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-        <li class="menu-item menu-item-关于">
-
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
-
-  </li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-文章分类"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a></li><li class="menu-item menu-item-golang"><a href="/categories/go" rel="section"><i class="fa fa-th fa-fw"></i>Golang</a></li><li class="menu-item menu-item-kubernetes"><a href="/categories/kubernetes" rel="section"><i class="fa fa-th fa-fw"></i>Kubernetes</a></li><li class="menu-item menu-item-标签"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-归档"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-关于"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
   </ul>
 </nav>
 
 
 
 
-</div>
+</header>
         
   
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-  </div>
-
   <aside class="sidebar">
 
     <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
@@ -189,33 +121,34 @@
         </li>
       </ul>
 
-      <!--noindex-->
-      <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Mesos-marathon-Docker%E5%AE%9E%E6%88%98"><span class="nav-number">1.</span> <span class="nav-text">Mesos+marathon+Docker实战</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="nav-number">1.1.</span> <span class="nav-text">环境架构图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="nav-number">1.2.</span> <span class="nav-text">实验环境准备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="nav-number">1.2.1.</span> <span class="nav-text">基础环境准备</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#linux-node1"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">linux-node1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#linux-node2"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">linux-node2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E7%89%88%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="nav-number">1.2.1.3.</span> <span class="nav-text">系统版本信息</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Zookeeper%E4%BC%AA%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2"><span class="nav-number">1.3.</span> <span class="nav-text">Zookeeper伪集群部署</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85java%E7%8E%AF%E5%A2%83"><span class="nav-number">1.3.1.</span> <span class="nav-text">安装java环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#linux-node1-%E5%AE%89%E8%A3%85zookeeper"><span class="nav-number">1.3.2.</span> <span class="nav-text">linux-node1 安装zookeeper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%89%E4%B8%AA%E7%9B%AE%E5%BD%95%E7%94%A8%E6%9D%A5%E5%AD%98%E6%94%BEzookeeper%E6%95%B0%E6%8D%AE"><span class="nav-number">1.3.3.</span> <span class="nav-text">创建三个目录用来存放zookeeper数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E4%B8%89%E4%BB%BDzookeeper%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">1.3.4.</span> <span class="nav-text">生成三份zookeeper配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9zk2%E5%92%8Czk3%E7%9A%84%E9%85%8D%E7%BD%AE%EF%BC%8C%E4%BD%BF%E7%94%A8%E5%AF%B9%E5%BA%94%E7%9A%84%E6%95%B0%E6%8D%AE%E7%9B%AE%E5%BD%95%E5%92%8C%E7%AB%AF%E5%8F%A3%E3%80%82"><span class="nav-number">1.3.5.</span> <span class="nav-text">修改zk2和zk3的配置，使用对应的数据目录和端口。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8Zookeeper"><span class="nav-number">1.3.6.</span> <span class="nav-text">启动Zookeeper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8BZookeeper%E8%A7%92%E8%89%B2"><span class="nav-number">1.3.7.</span> <span class="nav-text">查看Zookeeper角色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5Zookeeper"><span class="nav-number">1.3.8.</span> <span class="nav-text">连接Zookeeper</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mesos-%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2"><span class="nav-number">1.4.</span> <span class="nav-text">Mesos 集群部署</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85mesosphere%E4%BB%93%E5%BA%93"><span class="nav-number">1.4.1.</span> <span class="nav-text">安装mesosphere仓库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mesos-Master%E9%83%A8%E7%BD%B2-node1"><span class="nav-number">1.4.2.</span> <span class="nav-text">Mesos Master部署(node1)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mesos-Slave%E9%83%A8%E7%BD%B2-node2"><span class="nav-number">1.4.3.</span> <span class="nav-text">Mesos Slave部署(node2)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mesos%E7%9A%84Web%E7%AE%A1%E7%90%86%E7%95%8C%E9%9D%A2"><span class="nav-number">1.4.4.</span> <span class="nav-text">Mesos的Web管理界面</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8Marathon%E8%B0%83%E7%94%A8Mesos-%E8%BF%90%E8%A1%8CDocker%E5%AE%B9%E5%99%A8"><span class="nav-number">1.5.</span> <span class="nav-text">使用Marathon调用Mesos 运行Docker容器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEMesos%E8%BF%90%E8%A1%8CDocker%E5%AE%B9%E5%99%A8-node1"><span class="nav-number">1.5.1.</span> <span class="nav-text">配置Mesos运行Docker容器(node1)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%8D%E6%89%80%E6%9C%89mesos-slave%E4%B8%8A%E5%A2%9E%E5%8A%A0%E9%85%8D%E7%BD%AE%E5%8F%82%E6%95%B0%EF%BC%8C%E5%B9%B6%E9%87%8D%E5%90%AF"><span class="nav-number">1.5.2.</span> <span class="nav-text">再所有mesos-slave上增加配置参数，并重启</span></a></li></ol></li></ol></li></ol></div>
-      </section>
-      <!--/noindex-->
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Mesos-marathon-Docker%E5%AE%9E%E6%88%98"><span class="nav-number">1.</span> <span class="nav-text">Mesos+marathon+Docker实战</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="nav-number">1.1.</span> <span class="nav-text">环境架构图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="nav-number">1.2.</span> <span class="nav-text">实验环境准备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="nav-number">1.2.1.</span> <span class="nav-text">基础环境准备</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#linux-node1"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">linux-node1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#linux-node2"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">linux-node2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E7%89%88%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="nav-number">1.2.1.3.</span> <span class="nav-text">系统版本信息</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Zookeeper%E4%BC%AA%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2"><span class="nav-number">1.3.</span> <span class="nav-text">Zookeeper伪集群部署</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85java%E7%8E%AF%E5%A2%83"><span class="nav-number">1.3.1.</span> <span class="nav-text">安装java环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#linux-node1-%E5%AE%89%E8%A3%85zookeeper"><span class="nav-number">1.3.2.</span> <span class="nav-text">linux-node1 安装zookeeper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%89%E4%B8%AA%E7%9B%AE%E5%BD%95%E7%94%A8%E6%9D%A5%E5%AD%98%E6%94%BEzookeeper%E6%95%B0%E6%8D%AE"><span class="nav-number">1.3.3.</span> <span class="nav-text">创建三个目录用来存放zookeeper数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E4%B8%89%E4%BB%BDzookeeper%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">1.3.4.</span> <span class="nav-text">生成三份zookeeper配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9zk2%E5%92%8Czk3%E7%9A%84%E9%85%8D%E7%BD%AE%EF%BC%8C%E4%BD%BF%E7%94%A8%E5%AF%B9%E5%BA%94%E7%9A%84%E6%95%B0%E6%8D%AE%E7%9B%AE%E5%BD%95%E5%92%8C%E7%AB%AF%E5%8F%A3%E3%80%82"><span class="nav-number">1.3.5.</span> <span class="nav-text">修改zk2和zk3的配置，使用对应的数据目录和端口。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8Zookeeper"><span class="nav-number">1.3.6.</span> <span class="nav-text">启动Zookeeper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8BZookeeper%E8%A7%92%E8%89%B2"><span class="nav-number">1.3.7.</span> <span class="nav-text">查看Zookeeper角色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5Zookeeper"><span class="nav-number">1.3.8.</span> <span class="nav-text">连接Zookeeper</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mesos-%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2"><span class="nav-number">1.4.</span> <span class="nav-text">Mesos 集群部署</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85mesosphere%E4%BB%93%E5%BA%93"><span class="nav-number">1.4.1.</span> <span class="nav-text">安装mesosphere仓库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mesos-Master%E9%83%A8%E7%BD%B2-node1"><span class="nav-number">1.4.2.</span> <span class="nav-text">Mesos Master部署(node1)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mesos-Slave%E9%83%A8%E7%BD%B2-node2"><span class="nav-number">1.4.3.</span> <span class="nav-text">Mesos Slave部署(node2)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mesos%E7%9A%84Web%E7%AE%A1%E7%90%86%E7%95%8C%E9%9D%A2"><span class="nav-number">1.4.4.</span> <span class="nav-text">Mesos的Web管理界面</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8Marathon%E8%B0%83%E7%94%A8Mesos-%E8%BF%90%E8%A1%8CDocker%E5%AE%B9%E5%99%A8"><span class="nav-number">1.5.</span> <span class="nav-text">使用Marathon调用Mesos 运行Docker容器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEMesos%E8%BF%90%E8%A1%8CDocker%E5%AE%B9%E5%99%A8-node1"><span class="nav-number">1.5.1.</span> <span class="nav-text">配置Mesos运行Docker容器(node1)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%8D%E6%89%80%E6%9C%89mesos-slave%E4%B8%8A%E5%A2%9E%E5%8A%A0%E9%85%8D%E7%BD%AE%E5%8F%82%E6%95%B0%EF%BC%8C%E5%B9%B6%E9%87%8D%E5%90%AF"><span class="nav-number">1.5.2.</span> <span class="nav-text">再所有mesos-slave上增加配置参数，并重启</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
 
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">biglittleant</p>
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Big Little Ant</p>
   <div class="site-description" itemprop="description"></div>
 </div>
-<div class="site-state-wrap animated">
+<div class="site-state-wrap site-overview-item animated">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/archives">
-          <span class="site-state-item-count">46</span>
+        <a href="/archives/">
+          <span class="site-state-item-count">55</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-        <span class="site-state-item-count">16</span>
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-        <span class="site-state-item-count">37</span>
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -223,48 +156,41 @@
 
 
 
-      </section>
+        </div>
+      </div>
     </div>
   </aside>
-  <div class="sidebar-dimmer"></div>
 
 
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-
-<noscript>
-  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
-</noscript>
-
+    </div>
 
     <div class="main-inner post posts-expand">
-      
 
-      
 
-    
+  
+
+
+<div class="post-block">
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
     <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2016/12/18/mesos-marathon-docker/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="biglittleant">
-      <meta itemprop="description" content="">
+      <meta itemprop="name" content="Big Little Ant">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="biglittleant">
+      <meta itemprop="name" content="Big Little Ant">
+      <meta itemprop="description" content="">
     </span>
 
-    
-    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="mesos-marathon-docker 实战 | Big Little Ant">
+      <meta itemprop="description" content="">
+    </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           mesos-marathon-docker 实战
@@ -280,13 +206,13 @@
 
       <time title="Created: 2016-12-18 10:40:36" itemprop="dateCreated datePublished" datetime="2016-12-18T10:40:36+08:00">2016-12-18</time>
     </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-16 17:34:33" itemprop="dateModified" datetime="2020-09-16T17:34:33+08:00">2020-09-16</time>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
       </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2020-09-16 17:34:33" itemprop="dateModified" datetime="2020-09-16T17:34:33+08:00">2020-09-16</time>
+    </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -302,13 +228,6 @@
     </span>
 
   
-    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="far fa-eye"></i>
-      </span>
-      <span class="post-meta-item-text">Views: </span>
-      <span id="busuanzi_value_page_pv"></span>
-    </span>
 </div>
 
         </div>
@@ -354,8 +273,8 @@
 <h3 id="创建三个目录用来存放zookeeper数据"><a href="#创建三个目录用来存放zookeeper数据" class="headerlink" title="创建三个目录用来存放zookeeper数据"></a>创建三个目录用来存放zookeeper数据</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir /data/&#123;zk1,zk2,zk3&#125; -p</span><br><span class="line">echo &quot;1&quot; &gt;/data/zk1/myid</span><br><span class="line">echo &quot;2&quot; &gt;/data/zk2/myid</span><br><span class="line">echo &quot;3&quot; &gt;/data/zk3/myid</span><br></pre></td></tr></table></figure>
 <h3 id="生成三份zookeeper配置文件"><a href="#生成三份zookeeper配置文件" class="headerlink" title="生成三份zookeeper配置文件"></a>生成三份zookeeper配置文件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cp zoo.cfg zk1.cfg</span><br><span class="line">cp zoo.cfg zk2.cfg</span><br><span class="line">cp zoo.cfg zk3.cfg</span><br></pre></td></tr></table></figure>
 <h3 id="修改zk2和zk3的配置，使用对应的数据目录和端口。"><a href="#修改zk2和zk3的配置，使用对应的数据目录和端口。" class="headerlink" title="修改zk2和zk3的配置，使用对应的数据目录和端口。"></a>修改zk2和zk3的配置，使用对应的数据目录和端口。</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sed -i &#x27;s/zk1/zk2/g&#x27; zk2.cfg</span><br><span class="line">sed -i &#x27;s/2181/2182/g&#x27; zk2.cfg</span><br><span class="line">sed -i &#x27;s/zk1/zk3/g&#x27; zk3.cfg</span><br><span class="line">sed -i &#x27;s/2181/2183/g&#x27; zk3.cfg</span><br></pre></td></tr></table></figure>
-<h3 id="启动Zookeeper"><a href="#启动Zookeeper" class="headerlink" title="启动Zookeeper"></a>启动Zookeeper</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/zookeeper/bin/zkServer.sh start /usr/local/zookeeper/conf/zk1.cfg</span><br><span class="line">/usr/local/zookeeper/bin/zkServer.sh start /usr/local/zookeeper/conf/zk2.cfg</span><br><span class="line">/usr/local/zookeeper/bin/zkServer.sh start /usr/local/zookeeper/conf/zk3.cfg</span><br><span class="line"><span class="meta">#</span><span class="bash">JMX enabled by default</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Using config: /usr/<span class="built_in">local</span>/zookeeper/conf/zk3.cfg</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Starting zookeeper ... STARTED</span></span><br></pre></td></tr></table></figure>
-<h3 id="查看Zookeeper角色"><a href="#查看Zookeeper角色" class="headerlink" title="查看Zookeeper角色"></a>查看Zookeeper角色</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/zookeeper/bin/zkServer.sh status /usr/local/zookeeper/conf/zk1.cfg</span><br><span class="line"><span class="meta">#</span><span class="bash">JMX enabled by default</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Using config: /usr/<span class="built_in">local</span>/zookeeper/conf/zk1.cfg</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Mode: follower</span></span><br><span class="line">/usr/local/zookeeper/bin/zkServer.sh status /usr/local/zookeeper/conf/zk2.cfg</span><br><span class="line"><span class="meta">#</span><span class="bash">JMX enabled by default</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Using config: /usr/<span class="built_in">local</span>/zookeeper/conf/zk2.cfg</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Mode: leader</span></span><br><span class="line">/usr/local/zookeeper/bin/zkServer.sh status /usr/local/zookeeper/conf/zk3.cfg</span><br><span class="line"><span class="meta">#</span><span class="bash">JMX enabled by default</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Using config: /usr/<span class="built_in">local</span>/zookeeper/conf/zk3.cfg</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Mode: follower</span></span><br></pre></td></tr></table></figure>
+<h3 id="启动Zookeeper"><a href="#启动Zookeeper" class="headerlink" title="启动Zookeeper"></a>启动Zookeeper</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/zookeeper/bin/zkServer.sh start /usr/local/zookeeper/conf/zk1.cfg</span><br><span class="line">/usr/local/zookeeper/bin/zkServer.sh start /usr/local/zookeeper/conf/zk2.cfg</span><br><span class="line">/usr/local/zookeeper/bin/zkServer.sh start /usr/local/zookeeper/conf/zk3.cfg</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">JMX enabled by default</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">Using config: /usr/local/zookeeper/conf/zk3.cfg</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">Starting zookeeper ... STARTED</span></span><br></pre></td></tr></table></figure>
+<h3 id="查看Zookeeper角色"><a href="#查看Zookeeper角色" class="headerlink" title="查看Zookeeper角色"></a>查看Zookeeper角色</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/zookeeper/bin/zkServer.sh status /usr/local/zookeeper/conf/zk1.cfg</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">JMX enabled by default</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">Using config: /usr/local/zookeeper/conf/zk1.cfg</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">Mode: follower</span></span><br><span class="line">/usr/local/zookeeper/bin/zkServer.sh status /usr/local/zookeeper/conf/zk2.cfg</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">JMX enabled by default</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">Using config: /usr/local/zookeeper/conf/zk2.cfg</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">Mode: leader</span></span><br><span class="line">/usr/local/zookeeper/bin/zkServer.sh status /usr/local/zookeeper/conf/zk3.cfg</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">JMX enabled by default</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">Using config: /usr/local/zookeeper/conf/zk3.cfg</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">Mode: follower</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="连接Zookeeper"><a href="#连接Zookeeper" class="headerlink" title="连接Zookeeper"></a>连接Zookeeper</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/zookeeper/bin/zkCli.sh -server192.168.56.22:2181</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <blockquote>
@@ -383,16 +302,16 @@
 <p>首先先测试下，保证手动创建Docker容器没问题。</p>
 </blockquote>
 <h3 id="再所有mesos-slave上增加配置参数，并重启"><a href="#再所有mesos-slave上增加配置参数，并重启" class="headerlink" title="再所有mesos-slave上增加配置参数，并重启"></a>再<code>所有</code>mesos-slave上增加配置参数，并重启</h3><p><em>linux-node1:</em></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">echo &#x27;docker,mesos&#x27; | tee /etc/mesos-slave/containerizers</span><br><span class="line"><span class="meta">#</span><span class="bash">docker,mesos</span></span><br><span class="line">systemctl restart mesos-slave</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">echo &#x27;docker,mesos&#x27; | tee /etc/mesos-slave/containerizers</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">docker,mesos</span></span><br><span class="line">systemctl restart mesos-slave</span><br></pre></td></tr></table></figure>
 
 <p><em>linux-node2:</em></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">echo &#x27;docker,mesos&#x27; | tee /etc/mesos-slave/containerizers</span><br><span class="line"><span class="meta">#</span><span class="bash">docker,mesos</span></span><br><span class="line">systemctl restart mesos-slave</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">echo &#x27;docker,mesos&#x27; | tee /etc/mesos-slave/containerizers</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">docker,mesos</span></span><br><span class="line">systemctl restart mesos-slave</span><br></pre></td></tr></table></figure>
 
 
 <p>接下来，我们要使用我们marathon来创建一个nginx的Docker容器，通过Mesos进行调度。   我们上面安装mesos-master的时候，已经安装了marathon。默认监听在8080端口，通过使用 <a target="_blank" rel="noopener" href="http://192.168.56.22:8080/%E6%9D%A5%E6%89%93%E5%BC%80marathon%E3%80%82%E5%A6%82%E4%B8%8B%E5%9B%BE%E6%89%80%E7%A4%BA%EF%BC%9A">http://192.168.56.22:8080/来打开marathon。如下图所示：</a></p>
 <p><img src="http://oi3tsepsh.bkt.clouddn.com/14660477966229.jpg"></p>
-<p>marathon启动的时候会读取/etc/mesos/zk配置文件，通过Zookeeper来找到Mesos Master。<br>marathon有自己的REST API，我们通过API的方式来创建一个nginx的docker容器：<br>首先创建如下的配置文件nginx.json：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~10:57:59]#cat nginx.json</span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;id&quot;</span>:<span class="string">&quot;nginx&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;cpus&quot;</span>:<span class="number">0.2</span>,</span><br><span class="line">  <span class="attr">&quot;mem&quot;</span>:<span class="number">20.0</span>,</span><br><span class="line"> <span class="attr">&quot;instances&quot;</span>: <span class="number">1</span>,</span><br><span class="line"> <span class="attr">&quot;constraints&quot;</span>: [[<span class="string">&quot;hostname&quot;</span>, <span class="string">&quot;UNIQUE&quot;</span>,<span class="string">&quot;&quot;</span>]],</span><br><span class="line"> <span class="attr">&quot;container&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;type&quot;</span>:<span class="string">&quot;DOCKER&quot;</span>,</span><br><span class="line">   <span class="attr">&quot;docker&quot;</span>: &#123;</span><br><span class="line">     <span class="attr">&quot;image&quot;</span>: <span class="string">&quot;nginx&quot;</span>,</span><br><span class="line">     <span class="attr">&quot;network&quot;</span>: <span class="string">&quot;BRIDGE&quot;</span>,</span><br><span class="line">     <span class="attr">&quot;portMappings&quot;</span>: [</span><br><span class="line">        &#123;<span class="attr">&quot;containerPort&quot;</span>: <span class="number">80</span>, <span class="attr">&quot;hostPort&quot;</span>: <span class="number">0</span>,<span class="attr">&quot;servicePort&quot;</span>: <span class="number">0</span>, <span class="attr">&quot;protocol&quot;</span>: <span class="string">&quot;tcp&quot;</span> &#125;</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>marathon启动的时候会读取&#x2F;etc&#x2F;mesos&#x2F;zk配置文件，通过Zookeeper来找到Mesos Master。<br>marathon有自己的REST API，我们通过API的方式来创建一个nginx的docker容器：<br>首先创建如下的配置文件nginx.json：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">[</span>root@localhost ~<span class="number">10</span><span class="punctuation">:</span><span class="number">57</span><span class="punctuation">:</span><span class="number">59</span><span class="punctuation">]</span>#cat nginx.json</span><br><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span><span class="string">&quot;nginx&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;cpus&quot;</span><span class="punctuation">:</span><span class="number">0.2</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;mem&quot;</span><span class="punctuation">:</span><span class="number">20.0</span><span class="punctuation">,</span></span><br><span class="line"> <span class="attr">&quot;instances&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line"> <span class="attr">&quot;constraints&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">[</span><span class="string">&quot;hostname&quot;</span><span class="punctuation">,</span> <span class="string">&quot;UNIQUE&quot;</span><span class="punctuation">,</span><span class="string">&quot;&quot;</span><span class="punctuation">]</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line"> <span class="attr">&quot;container&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span><span class="string">&quot;DOCKER&quot;</span><span class="punctuation">,</span></span><br><span class="line">   <span class="attr">&quot;docker&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">     <span class="attr">&quot;image&quot;</span><span class="punctuation">:</span> <span class="string">&quot;nginx&quot;</span><span class="punctuation">,</span></span><br><span class="line">     <span class="attr">&quot;network&quot;</span><span class="punctuation">:</span> <span class="string">&quot;BRIDGE&quot;</span><span class="punctuation">,</span></span><br><span class="line">     <span class="attr">&quot;portMappings&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span><span class="attr">&quot;containerPort&quot;</span><span class="punctuation">:</span> <span class="number">80</span><span class="punctuation">,</span> <span class="attr">&quot;hostPort&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span><span class="attr">&quot;servicePort&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span> <span class="attr">&quot;protocol&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tcp&quot;</span> <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p>然后调用</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl -X POST http://192.168.56.22:8080/v2/apps -d @nginx.json \</span><br><span class="line">-H &quot;Content-type: application/json&quot;</span><br></pre></td></tr></table></figure>
@@ -435,111 +354,65 @@
           </div>
     </footer>
   </article>
-  
-  
-  
+</div>
 
 
 
-      
 
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      const commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
 
-    </div>
+
+</div>
   </main>
 
   <footer class="footer">
     <div class="footer-inner">
-      
 
-      
 
 <div class="copyright">
-  
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">biglittleant</span>
+  <span class="author" itemprop="copyrightHolder">Big Little Ant</span>
 </div>
-<div class="busuanzi-count">
-    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-user"></i>
-      </span>
-      <span class="site-uv" title="Total Visitors">
-        <span id="busuanzi_value_site_uv"></span>
-      </span>
-    </span>
-    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-eye"></i>
-      </span>
-      <span class="site-pv" title="Total Views">
-        <span id="busuanzi_value_site_pv"></span>
-      </span>
-    </span>
-</div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
   </div>
 
     </div>
   </footer>
 
   
-  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
-<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
 
   
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-  
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-
-
-
-
-
-
-
   
 
-  
+
+
+
 
 </body>
 </html>

@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.1.1">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -14,24 +14,21 @@
 
 
 
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"www.biglittleant.cn","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
-  </script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.biglittleant.cn","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-  <meta name="description" content="vagrant+virtualbox 构建mac虚拟机环境vagrant 简介什么是vagrantVagrant是一个基于Ruby的工具，用于创建和部署虚拟化开发环境。它使用Oracle的开源VirtualBox虚拟化系统，使用 Chef创建自动化虚拟环境。 Vagrant的运行是需要依赖某个虚拟化平台的，如上面安装的virtualBox 它可以实现的功能有：  建立和删除虚拟机 配置虚拟机运行参">
+    <meta name="description" content="vagrant+virtualbox 构建mac虚拟机环境vagrant 简介什么是vagrantVagrant是一个基于Ruby的工具，用于创建和部署虚拟化开发环境。它使用Oracle的开源VirtualBox虚拟化系统，使用 Chef创建自动化虚拟环境。 Vagrant的运行是需要依赖某个虚拟化平台的，如上面安装的virtualBox 它可以实现的功能有：  建立和删除虚拟机 配置虚拟机运行参">
 <meta property="og:type" content="article">
 <meta property="og:title" content="vagrant+virtualbox 构建mac虚拟机环境">
 <meta property="og:url" content="http://www.biglittleant.cn/2020/09/11/vagrant+virtualbox%E6%9E%84%E5%BB%BAmac%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%8E%AF%E5%A2%83/index.html">
-<meta property="og:site_name" content="biglittleant">
+<meta property="og:site_name" content="Big Little Ant">
 <meta property="og:description" content="vagrant+virtualbox 构建mac虚拟机环境vagrant 简介什么是vagrantVagrant是一个基于Ruby的工具，用于创建和部署虚拟化开发环境。它使用Oracle的开源VirtualBox虚拟化系统，使用 Chef创建自动化虚拟环境。 Vagrant的运行是需要依赖某个虚拟化平台的，如上面安装的virtualBox 它可以实现的功能有：  建立和删除虚拟机 配置虚拟机运行参">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-09-11T07:56:56.737Z">
 <meta property="article:modified_time" content="2020-09-16T09:42:23.747Z">
-<meta property="article:author" content="biglittleant">
+<meta property="article:author" content="Big Little Ant">
 <meta property="article:tag" content="vagrant">
 <meta property="article:tag" content="virtualbox">
 <meta name="twitter:card" content="summary">
@@ -40,17 +37,11 @@
 <link rel="canonical" href="http://www.biglittleant.cn/2020/09/11/vagrant+virtualbox%E6%9E%84%E5%BB%BAmac%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%8E%AF%E5%A2%83/">
 
 
-<script class="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'en'
-  };
-</script>
 
-  <title>vagrant+virtualbox 构建mac虚拟机环境 | biglittleant</title>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://www.biglittleant.cn/2020/09/11/vagrant+virtualbox%E6%9E%84%E5%BB%BAmac%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%8E%AF%E5%A2%83/","path":"2020/09/11/vagrant+virtualbox构建mac虚拟机环境/","title":"vagrant+virtualbox 构建mac虚拟机环境"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>vagrant+virtualbox 构建mac虚拟机环境 | Big Little Ant</title>
   
 
 
@@ -58,51 +49,23 @@
 
 
 
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
   <noscript>
-  <style>
-  body { margin-top: 2rem; }
-
-  .use-motion .menu-item,
-  .use-motion .sidebar,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header {
-    visibility: visible;
-  }
-
-  .use-motion .header,
-  .use-motion .site-brand-container .toggle,
-  .use-motion .footer { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle,
-  .use-motion .custom-logo-image {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line {
-    transform: scaleX(1);
-  }
-
-  .search-pop-overlay, .sidebar-nav { display: none; }
-  .sidebar-panel { display: block; }
-  </style>
-</noscript>
-
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
   <div class="headband"></div>
 
   <main class="main">
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Toggle navigation bar">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
         <span class="toggle-line"></span>
         <span class="toggle-line"></span>
         <span class="toggle-line"></span>
@@ -113,7 +76,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">biglittleant</h1>
+      <p class="site-title">Big Little Ant</p>
       <i class="logo-line"></i>
     </a>
       <p class="site-subtitle" itemprop="description">不被嘲笑的梦想，是不值得去实现的</p>
@@ -128,47 +91,16 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
-
-  </li>
-        <li class="menu-item menu-item-标签">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-文章分类">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a>
-
-  </li>
-        <li class="menu-item menu-item-归档">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-        <li class="menu-item menu-item-关于">
-
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
-
-  </li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-文章分类"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a></li><li class="menu-item menu-item-golang"><a href="/categories/go" rel="section"><i class="fa fa-th fa-fw"></i>Golang</a></li><li class="menu-item menu-item-kubernetes"><a href="/categories/kubernetes" rel="section"><i class="fa fa-th fa-fw"></i>Kubernetes</a></li><li class="menu-item menu-item-标签"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-归档"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-关于"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
   </ul>
 </nav>
 
 
 
 
-</div>
+</header>
         
   
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-  </div>
-
   <aside class="sidebar">
 
     <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
@@ -181,33 +113,34 @@
         </li>
       </ul>
 
-      <!--noindex-->
-      <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#vagrant-virtualbox-%E6%9E%84%E5%BB%BAmac%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%8E%AF%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">vagrant+virtualbox 构建mac虚拟机环境</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#vagrant-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">vagrant 简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFvagrant"><span class="nav-number">1.1.1.</span> <span class="nav-text">什么是vagrant</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E5%AE%89%E8%A3%85%E5%9F%BA%E7%A1%80%E8%BD%AF%E4%BB%B6"><span class="nav-number">1.1.2.</span> <span class="nav-text">开始安装基础软件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%B7%B1%E5%88%B6%E4%BD%9Ccento7%E7%9A%84%E9%95%9C%E5%83%8F"><span class="nav-number">1.2.</span> <span class="nav-text">自己制作cento7的镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E6%A8%A1%E6%9D%BF%E7%9A%84-package-tar-box%EF%BC%8C%E5%AE%89%E8%A3%85nginx-%E9%85%8D%E7%BD%AE"><span class="nav-number">1.3.</span> <span class="nav-text">基于模板的(package.tar)box，安装nginx 配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8EVBoxManage-%E6%89%93%E5%8C%85box%E9%95%9C%E5%83%8F"><span class="nav-number">1.4.</span> <span class="nav-text">基于VBoxManage 打包box镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E8%BF%87vm-define-%E7%AE%A1%E7%90%86%E5%A4%9A%E4%B8%AA%E8%99%9A%E6%8B%9F%E6%9C%BA"><span class="nav-number">1.5.</span> <span class="nav-text">通过vm.define 管理多个虚拟机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A5%E5%85%85-vagrant-%E5%B8%B8%E8%A7%81%E5%91%BD%E4%BB%A4"><span class="nav-number">1.6.</span> <span class="nav-text">补充 vagrant 常见命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E6%B1%87%E6%80%BB"><span class="nav-number">1.7.</span> <span class="nav-text">报错汇总</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">1.8.</span> <span class="nav-text">参考文档</span></a></li></ol></li></ol></div>
-      </section>
-      <!--/noindex-->
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#vagrant-virtualbox-%E6%9E%84%E5%BB%BAmac%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%8E%AF%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">vagrant+virtualbox 构建mac虚拟机环境</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#vagrant-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">vagrant 简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFvagrant"><span class="nav-number">1.1.1.</span> <span class="nav-text">什么是vagrant</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E5%AE%89%E8%A3%85%E5%9F%BA%E7%A1%80%E8%BD%AF%E4%BB%B6"><span class="nav-number">1.1.2.</span> <span class="nav-text">开始安装基础软件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%B7%B1%E5%88%B6%E4%BD%9Ccento7%E7%9A%84%E9%95%9C%E5%83%8F"><span class="nav-number">1.2.</span> <span class="nav-text">自己制作cento7的镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E6%A8%A1%E6%9D%BF%E7%9A%84-package-tar-box%EF%BC%8C%E5%AE%89%E8%A3%85nginx-%E9%85%8D%E7%BD%AE"><span class="nav-number">1.3.</span> <span class="nav-text">基于模板的(package.tar)box，安装nginx 配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8EVBoxManage-%E6%89%93%E5%8C%85box%E9%95%9C%E5%83%8F"><span class="nav-number">1.4.</span> <span class="nav-text">基于VBoxManage 打包box镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E8%BF%87vm-define-%E7%AE%A1%E7%90%86%E5%A4%9A%E4%B8%AA%E8%99%9A%E6%8B%9F%E6%9C%BA"><span class="nav-number">1.5.</span> <span class="nav-text">通过vm.define 管理多个虚拟机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A5%E5%85%85-vagrant-%E5%B8%B8%E8%A7%81%E5%91%BD%E4%BB%A4"><span class="nav-number">1.6.</span> <span class="nav-text">补充 vagrant 常见命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E6%B1%87%E6%80%BB"><span class="nav-number">1.7.</span> <span class="nav-text">报错汇总</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">1.8.</span> <span class="nav-text">参考文档</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
 
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">biglittleant</p>
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Big Little Ant</p>
   <div class="site-description" itemprop="description"></div>
 </div>
-<div class="site-state-wrap animated">
+<div class="site-state-wrap site-overview-item animated">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/archives">
-          <span class="site-state-item-count">46</span>
+        <a href="/archives/">
+          <span class="site-state-item-count">55</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-        <span class="site-state-item-count">16</span>
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-        <span class="site-state-item-count">37</span>
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -215,48 +148,41 @@
 
 
 
-      </section>
+        </div>
+      </div>
     </div>
   </aside>
-  <div class="sidebar-dimmer"></div>
 
 
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-
-<noscript>
-  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
-</noscript>
-
+    </div>
 
     <div class="main-inner post posts-expand">
-      
 
-      
 
-    
+  
+
+
+<div class="post-block">
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
     <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2020/09/11/vagrant+virtualbox%E6%9E%84%E5%BB%BAmac%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%8E%AF%E5%A2%83/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="biglittleant">
-      <meta itemprop="description" content="">
+      <meta itemprop="name" content="Big Little Ant">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="biglittleant">
+      <meta itemprop="name" content="Big Little Ant">
+      <meta itemprop="description" content="">
     </span>
 
-    
-    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="vagrant+virtualbox 构建mac虚拟机环境 | Big Little Ant">
+      <meta itemprop="description" content="">
+    </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           vagrant+virtualbox 构建mac虚拟机环境
@@ -272,13 +198,13 @@
 
       <time title="Created: 2020-09-11 15:56:56" itemprop="dateCreated datePublished" datetime="2020-09-11T15:56:56+08:00">2020-09-11</time>
     </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-16 17:42:23" itemprop="dateModified" datetime="2020-09-16T17:42:23+08:00">2020-09-16</time>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
       </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2020-09-16 17:42:23" itemprop="dateModified" datetime="2020-09-16T17:42:23+08:00">2020-09-16</time>
+    </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -294,13 +220,6 @@
     </span>
 
   
-    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="far fa-eye"></i>
-      </span>
-      <span class="post-meta-item-text">Views: </span>
-      <span id="busuanzi_value_page_pv"></span>
-    </span>
 </div>
 
         </div>
@@ -336,13 +255,13 @@
 <p>centos 镜像下载页面: <a target="_blank" rel="noopener" href="https://cloud.centos.org/centos/7/vagrant/x86_64/images/">https://cloud.centos.org/centos/7/vagrant/x86_64/images/</a></p>
 </blockquote>
 <p>下载完成后开始导入到vagrant中，导入完成后会有一个centos7-2004的box可以使用。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vagrant box add centos7-2004  CentOS-7-x86_64-Vagrant-2004_01.VirtualBox.box</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 查看导入的镜像</span></span></span><br><span class="line">vagrant box list</span><br><span class="line">centos7-2004 (virtualbox, 0)</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vagrant box add centos7-2004  CentOS-7-x86_64-Vagrant-2004_01.VirtualBox.box</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 查看导入的镜像</span></span></span><br><span class="line">vagrant box list</span><br><span class="line">centos7-2004 (virtualbox, 0)</span><br></pre></td></tr></table></figure>
 
 <p>init创建Vagrantfile 文件</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vagrant init centos7-2004</span><br></pre></td></tr></table></figure>
 
-<p>编辑 Vagrantfile，执行base/common 的role来初始化系统。</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Vagrant.configure(<span class="string">&quot;2&quot;</span>) <span class="keyword">do</span> <span class="params">|config|</span></span><br><span class="line">  config.vm.box = <span class="string">&quot;centos7-2004&quot;</span></span><br><span class="line">  config.vm.network <span class="string">&quot;private_network&quot;</span>, <span class="symbol">type:</span> <span class="string">&quot;dhcp&quot;</span></span><br><span class="line">  config.vm.synced_folder <span class="string">&quot;.&quot;</span>, <span class="string">&quot;/vagrant&quot;</span></span><br><span class="line">    config.vm.provision <span class="string">&quot;ansible_local&quot;</span> <span class="keyword">do</span> <span class="params">|ansible|</span></span><br><span class="line">    ansible.playbook = <span class="string">&quot;playbook.yml&quot;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>编辑 Vagrantfile，执行base&#x2F;common 的role来初始化系统。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Vagrant.configure(<span class="string">&quot;2&quot;</span>) <span class="keyword">do</span> |<span class="params">config</span>|</span><br><span class="line">  config.vm.box = <span class="string">&quot;centos7-2004&quot;</span></span><br><span class="line">  config.vm.network <span class="string">&quot;private_network&quot;</span>, <span class="symbol">type:</span> <span class="string">&quot;dhcp&quot;</span></span><br><span class="line">  config.vm.synced_folder <span class="string">&quot;.&quot;</span>, <span class="string">&quot;/vagrant&quot;</span></span><br><span class="line">    config.vm.provision <span class="string">&quot;ansible_local&quot;</span> <span class="keyword">do</span> |<span class="params">ansible</span>|</span><br><span class="line">    ansible.playbook = <span class="string">&quot;playbook.yml&quot;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
 
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">cat</span> <span class="string">playbook.yml</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">hosts:</span> <span class="string">all</span>  <span class="comment"># All Vagrant VMs</span></span><br><span class="line">  <span class="attr">vars:</span></span><br><span class="line">    <span class="attr">become:</span> <span class="literal">yes</span></span><br><span class="line">    <span class="attr">become_user:</span> <span class="string">&#x27;root&#x27;</span></span><br><span class="line">  <span class="attr">roles:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">base/common</span></span><br></pre></td></tr></table></figure>
 
@@ -358,7 +277,7 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vagrant init centos7-init</span><br></pre></td></tr></table></figure>
 
 <p>编辑Vagrantfile，执行nginx 的role来安装nginx。</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Vagrant.configure(<span class="string">&quot;2&quot;</span>) <span class="keyword">do</span> <span class="params">|config|</span></span><br><span class="line">  config.vm.box = <span class="string">&quot;centos7-init&quot;</span></span><br><span class="line">  config.vm.network <span class="string">&quot;private_network&quot;</span>, <span class="symbol">type:</span> <span class="string">&quot;dhcp&quot;</span></span><br><span class="line">    config.vm.provision <span class="string">&quot;ansible_local&quot;</span> <span class="keyword">do</span> <span class="params">|ansible|</span></span><br><span class="line">    ansible.playbook = <span class="string">&quot;playbook.yml&quot;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Vagrant.configure(<span class="string">&quot;2&quot;</span>) <span class="keyword">do</span> |<span class="params">config</span>|</span><br><span class="line">  config.vm.box = <span class="string">&quot;centos7-init&quot;</span></span><br><span class="line">  config.vm.network <span class="string">&quot;private_network&quot;</span>, <span class="symbol">type:</span> <span class="string">&quot;dhcp&quot;</span></span><br><span class="line">    config.vm.provision <span class="string">&quot;ansible_local&quot;</span> <span class="keyword">do</span> |<span class="params">ansible</span>|</span><br><span class="line">    ansible.playbook = <span class="string">&quot;playbook.yml&quot;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
 
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">cat</span> <span class="string">playbook.yml</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">hosts:</span> <span class="string">all</span>  <span class="comment"># All Vagrant VMs</span></span><br><span class="line">  <span class="attr">roles:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">nginx</span></span><br></pre></td></tr></table></figure>
 
@@ -378,10 +297,10 @@
 <li>初始化运行环境并设置Vagrantfile: vagrant init centos7</li>
 <li>使用Vagrant运行虚拟机，vagrant up</li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> VBoxManage list vms</span></span><br><span class="line">&quot;centos7&quot; &#123;28ec4326-eb24-4fa6-b867-e49955e18c1d&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> vagrant package --base centos7 --output centos7.box</span></span><br><span class="line">==&gt; centos7: Exporting VM...</span><br><span class="line">==&gt; centos7: Compressing package to: /Users/niu/centos7.box</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> vagrant box add centos7 centos7.box</span></span><br><span class="line">==&gt; box: Box file was not detected as metadata. Adding it directly...</span><br><span class="line">==&gt; box: Adding box &#x27;centos7&#x27; (v0) for provider:</span><br><span class="line">    box: Unpacking necessary files from: file:///Users/niu/centos7.box</span><br><span class="line">==&gt; box: Successfully added box &#x27;centos7&#x27; (v0) for &#x27;virtualbox&#x27;!</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">VBoxManage list vms</span></span><br><span class="line">&quot;centos7&quot; &#123;28ec4326-eb24-4fa6-b867-e49955e18c1d&#125;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">vagrant package --base centos7 --output centos7.box</span></span><br><span class="line">==&gt; centos7: Exporting VM...</span><br><span class="line">==&gt; centos7: Compressing package to: /Users/niu/centos7.box</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">vagrant box add centos7 centos7.box</span></span><br><span class="line">==&gt; box: Box file was not detected as metadata. Adding it directly...</span><br><span class="line">==&gt; box: Adding box &#x27;centos7&#x27; (v0) for provider:</span><br><span class="line">    box: Unpacking necessary files from: file:///Users/niu/centos7.box</span><br><span class="line">==&gt; box: Successfully added box &#x27;centos7&#x27; (v0) for &#x27;virtualbox&#x27;!</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <h2 id="通过vm-define-管理多个虚拟机"><a href="#通过vm-define-管理多个虚拟机" class="headerlink" title="通过vm.define 管理多个虚拟机"></a>通过vm.define 管理多个虚拟机</h2><p>编辑Vagrantfile配置文件。增加 <code>vm.define</code> 的配置</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Vagrant.configure(<span class="string">&quot;2&quot;</span>) <span class="keyword">do</span> <span class="params">|config|</span></span><br><span class="line">  config.vm.box = <span class="string">&quot;centos7-init&quot;</span></span><br><span class="line"></span><br><span class="line">  config.vm.define <span class="string">&quot;nginx&quot;</span> <span class="keyword">do</span> <span class="params">|nginx|</span></span><br><span class="line">      nginx.vm.hostname = <span class="string">&quot;nginx-01&quot;</span></span><br><span class="line">      nginx.vm.network <span class="string">&quot;private_network&quot;</span>, <span class="symbol">type:</span> <span class="string">&quot;dhcp&quot;</span></span><br><span class="line">      nginx.vm.provision <span class="string">&quot;ansible_local&quot;</span> <span class="keyword">do</span> <span class="params">|ansible|</span></span><br><span class="line">        ansible.playbook = <span class="string">&quot;playbooks/nginx.yml&quot;</span></span><br><span class="line">      <span class="keyword">end</span></span><br><span class="line">      nginx.vm.provider <span class="string">&quot;virtualbox&quot;</span> <span class="keyword">do</span> <span class="params">|v|</span></span><br><span class="line">        v.name = <span class="string">&quot;v-nginx-01&quot;</span> <span class="comment">##用来在virtualbox 定义标识名称，默认是随机名称</span></span><br><span class="line">        v.memory = <span class="number">512</span></span><br><span class="line">        v.cpus = <span class="number">1</span></span><br><span class="line">      <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Vagrant.configure(<span class="string">&quot;2&quot;</span>) <span class="keyword">do</span> |<span class="params">config</span>|</span><br><span class="line">  config.vm.box = <span class="string">&quot;centos7-init&quot;</span></span><br><span class="line"></span><br><span class="line">  config.vm.define <span class="string">&quot;nginx&quot;</span> <span class="keyword">do</span> |<span class="params">nginx</span>|</span><br><span class="line">      nginx.vm.hostname = <span class="string">&quot;nginx-01&quot;</span></span><br><span class="line">      nginx.vm.network <span class="string">&quot;private_network&quot;</span>, <span class="symbol">type:</span> <span class="string">&quot;dhcp&quot;</span></span><br><span class="line">      nginx.vm.provision <span class="string">&quot;ansible_local&quot;</span> <span class="keyword">do</span> |<span class="params">ansible</span>|</span><br><span class="line">        ansible.playbook = <span class="string">&quot;playbooks/nginx.yml&quot;</span></span><br><span class="line">      <span class="keyword">end</span></span><br><span class="line">      nginx.vm.provider <span class="string">&quot;virtualbox&quot;</span> <span class="keyword">do</span> |<span class="params">v</span>|</span><br><span class="line">        v.name = <span class="string">&quot;v-nginx-01&quot;</span> <span class="comment">##用来在virtualbox 定义标识名称，默认是随机名称</span></span><br><span class="line">        v.memory = <span class="number">512</span></span><br><span class="line">        v.cpus = <span class="number">1</span></span><br><span class="line">      <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
 
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line">vagrant up nginx</span><br><span class="line">Bringing machine &#x27;nginx&#x27; up with &#x27;virtualbox&#x27; provider...</span><br><span class="line">==&gt; nginx: Importing base box &#x27;centos7-init&#x27;...</span><br><span class="line">==&gt; nginx: Matching MAC address for NAT networking...</span><br><span class="line">==&gt; nginx: Setting the name of the VM: jenkins-master</span><br><span class="line">==&gt; nginx: Clearing any previously set network interfaces...</span><br><span class="line">==&gt; nginx: Preparing network interfaces based on configuration...</span><br><span class="line">    nginx: Adapter 1: nat</span><br><span class="line">    nginx: Adapter 2: hostonly</span><br><span class="line">==&gt; nginx: Forwarding ports...</span><br><span class="line">    nginx: 22 (guest) =&gt; 2222 (host) (adapter 1)</span><br><span class="line">==&gt; nginx: Running &#x27;pre-boot&#x27; VM customizations...</span><br><span class="line">==&gt; nginx: Booting VM...</span><br><span class="line">==&gt; nginx: Waiting for machine to boot. This may take a few minutes...</span><br><span class="line">    nginx: SSH address: 127.0.0.1:2222</span><br><span class="line">    nginx: SSH username: vagrant</span><br><span class="line">    nginx: SSH auth method: private key</span><br><span class="line">==&gt; nginx: Machine booted and ready!</span><br><span class="line">[nginx] GuestAdditions 6.1.6 running --- OK.</span><br><span class="line">==&gt; nginx: Checking for guest additions in VM...</span><br><span class="line">==&gt; nginx: Setting hostname...</span><br><span class="line">==&gt; nginx: Configuring and enabling network interfaces...</span><br><span class="line">==&gt; nginx: Mounting shared folders...</span><br><span class="line">    nginx: /vagrant =&gt; /Users/niu/git/oschina/playbooks</span><br><span class="line">==&gt; nginx: Running provisioner: ansible_local...</span><br><span class="line">    nginx: Running ansible-playbook...</span><br><span class="line"></span><br><span class="line">PLAY [all] *********************************************************************</span><br><span class="line"></span><br><span class="line">TASK [Gathering Facts] *********************************************************</span><br><span class="line">ok: [nginx]</span><br><span class="line"></span><br><span class="line">TASK [nginx : add nginx group] *************************************************</span><br><span class="line">ok: [nginx]</span><br><span class="line"></span><br><span class="line">TASK [nginx : add nginx user] **************************************************</span><br><span class="line">ok: [nginx]</span><br><span class="line"></span><br><span class="line">TASK [nginx : install lib] *****************************************************</span><br><span class="line">ok: [nginx]</span><br><span class="line"></span><br><span class="line">TASK [nginx : add nginx tar file to /usr/local/src] ****************************</span><br><span class="line">changed: [nginx]</span><br><span class="line"></span><br><span class="line">TASK [nginx : Extract nginx.tar.gz  into /usr/local/src/] **********************</span><br><span class="line">changed: [nginx]</span><br><span class="line"></span><br><span class="line">TASK [nginx : install nginx] ***************************************************</span><br><span class="line">changed: [nginx]</span><br><span class="line"></span><br><span class="line">TASK [nginx : change nginx directory mode] *************************************</span><br><span class="line">changed: [nginx]</span><br><span class="line"></span><br><span class="line">TASK [nginx : link nginx] ******************************************************</span><br><span class="line">changed: [nginx]</span><br><span class="line"></span><br><span class="line">TASK [nginx : add nginx path] **************************************************</span><br><span class="line">changed: [nginx]</span><br><span class="line"></span><br><span class="line">TASK [nginx : create nginx configure directory] ********************************</span><br><span class="line">changed: [nginx]</span><br><span class="line"></span><br><span class="line">TASK [nginx : copy nginx z-default.conf configure file] ************************</span><br><span class="line">changed: [nginx]</span><br><span class="line"></span><br><span class="line">TASK [nginx : copy nginx gzip.conf configure file] *****************************</span><br><span class="line">changed: [nginx]</span><br><span class="line"></span><br><span class="line">TASK [nginx : copy nginx 1-logformat configure file] ***************************</span><br><span class="line">changed: [nginx]</span><br><span class="line"></span><br><span class="line">TASK [nginx : copy nginx z-default.conf configure file] ************************</span><br><span class="line">changed: [nginx]</span><br><span class="line"></span><br><span class="line">TASK [nginx : copy nginx service file] *****************************************</span><br><span class="line">changed: [nginx]</span><br><span class="line"></span><br><span class="line">TASK [nginx : nginx service state] *********************************************</span><br><span class="line">changed: [nginx]</span><br><span class="line"></span><br><span class="line">RUNNING HANDLER [nginx : reload nginx] *****************************************</span><br><span class="line">changed: [nginx]</span><br><span class="line"></span><br><span class="line">RUNNING HANDLER [nginx : reload systemd] ***************************************</span><br><span class="line">ok: [nginx]</span><br><span class="line"></span><br><span class="line">PLAY RECAP *********************************************************************</span><br><span class="line">nginx                      : ok=19   changed=14   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0</span><br></pre></td></tr></table></figure>
 
@@ -473,7 +392,7 @@
 <p>timed out (<a target="_blank" rel="noopener" href="https://rubygems.org/specs.4.8.gz">https://rubygems.org/specs.4.8.gz</a>)</p>
 <p>Source: <a target="_blank" rel="noopener" href="https://rubygems.org/">https://rubygems.org/</a></p>
 <p>解决办法:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> gem update --system <span class="comment"># 这里请翻墙一下</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> gem -v</span></span><br><span class="line">2.6.3</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> gem sources --add https://gems.ruby-china.com/ --remove https://rubygems.org/</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> gem sources -l</span></span><br><span class="line">https://gems.ruby-china.com</span><br><span class="line"><span class="meta">#</span><span class="bash"> 确保只有 gems.ruby-china.com</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">gem update --system <span class="comment"># 这里请翻墙一下</span></span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">gem -v</span></span><br><span class="line">2.6.3</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">gem sources --add https://gems.ruby-china.com/ --remove https://rubygems.org/</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">gem sources -l</span></span><br><span class="line">https://gems.ruby-china.com</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">确保只有 gems.ruby-china.com</span></span><br></pre></td></tr></table></figure>
 
 <p>vagrant plugin install vagrant-vbguest –plugin-clean-sources –plugin-source <a target="_blank" rel="noopener" href="https://gems.ruby-china.com/">https://gems.ruby-china.com/</a></p>
 <h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a target="_blank" rel="noopener" href="https://app.vagrantup.com/centos/boxes/7">官方镜像站</a><br><a target="_blank" rel="noopener" href="http://www.vagrantbox.es/">如果你要其他系统的镜像，可以来这里下载</a><br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/wanghui-garcia/p/10139258.html">virtualbox+vagrant学习-1-环境安装及vagrantfile的简单配置-Mac系统</a><br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/davenkin/p/vagrant-virtualbox.html">Vagrant入门</a><br><a target="_blank" rel="noopener" href="http://ylzheng.com/2014/08/08/vagrant-with-ansible/">利用Ansible将开发环境纳入版本管理</a><br><a target="_blank" rel="noopener" href="https://cloud.centos.org/centos/7/vagrant/x86_64/images/">centos7 virtualbox 镜像下载</a><br><a target="_blank" rel="noopener" href="https://mirror.tuna.tsinghua.edu.cn/help/virtualbox/">国内开源镜像站</a><br><a target="_blank" rel="noopener" href="http://flygopher.top/post/vagrant-setup-virtual-machine-cluster/">Vagrant搭建虚拟机集群</a><br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/9ff636064ab7">制作 Vagrant Box</a><br><a target="_blank" rel="noopener" href="https://zhuyasen.com/post/vv_evn.html">使用vagrant和vitrualBox搭建虚拟开发环境</a><br><a target="_blank" rel="noopener" href="https://www.ityoudao.cn/posts/vagrant-quickstart/">Vagrant快速入门</a></p>
@@ -506,111 +425,65 @@
           </div>
     </footer>
   </article>
-  
-  
-  
+</div>
 
 
 
-      
 
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      const commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
 
-    </div>
+
+</div>
   </main>
 
   <footer class="footer">
     <div class="footer-inner">
-      
 
-      
 
 <div class="copyright">
-  
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">biglittleant</span>
+  <span class="author" itemprop="copyrightHolder">Big Little Ant</span>
 </div>
-<div class="busuanzi-count">
-    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-user"></i>
-      </span>
-      <span class="site-uv" title="Total Visitors">
-        <span id="busuanzi_value_site_uv"></span>
-      </span>
-    </span>
-    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-eye"></i>
-      </span>
-      <span class="site-pv" title="Total Views">
-        <span id="busuanzi_value_site_pv"></span>
-      </span>
-    </span>
-</div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
   </div>
 
     </div>
   </footer>
 
   
-  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
-<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
 
   
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-  
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-
-
-
-
-
-
-
   
 
-  
+
+
+
 
 </body>
 </html>

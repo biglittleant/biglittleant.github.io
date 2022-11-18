@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.1.1">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -14,24 +14,21 @@
 
 
 
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"www.biglittleant.cn","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
-  </script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.biglittleant.cn","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-  <meta name="description" content="Apache介绍Apache是世界使用排名第一的Web服务器软件。它可以运行在几乎所有广泛使用的计算机平台上，由于其跨平台和安全性被广泛使用，是最流行的Web服务器端软件之一。它快速、可靠并且可通过简单的API扩充，将Perl&#x2F;Python等解释器编译到服务器中。 特点： Apache模块分为静态模块与动态模块，静态模块是Apache最基本的模块，是无法随时添加与卸载的模块，静态模块在编译软件时设">
+    <meta name="description" content="Apache介绍Apache是世界使用排名第一的Web服务器软件。它可以运行在几乎所有广泛使用的计算机平台上，由于其跨平台和安全性被广泛使用，是最流行的Web服务器端软件之一。它快速、可靠并且可通过简单的API扩充，将Perl&#x2F;Python等解释器编译到服务器中。 特点： Apache模块分为静态模块与动态模块，静态模块是Apache最基本的模块，是无法随时添加与卸载的模块，静态模块在编">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Apache学习-Apache入门">
 <meta property="og:url" content="http://www.biglittleant.cn/2017/01/10/apache-install/index.html">
-<meta property="og:site_name" content="biglittleant">
-<meta property="og:description" content="Apache介绍Apache是世界使用排名第一的Web服务器软件。它可以运行在几乎所有广泛使用的计算机平台上，由于其跨平台和安全性被广泛使用，是最流行的Web服务器端软件之一。它快速、可靠并且可通过简单的API扩充，将Perl&#x2F;Python等解释器编译到服务器中。 特点： Apache模块分为静态模块与动态模块，静态模块是Apache最基本的模块，是无法随时添加与卸载的模块，静态模块在编译软件时设">
+<meta property="og:site_name" content="Big Little Ant">
+<meta property="og:description" content="Apache介绍Apache是世界使用排名第一的Web服务器软件。它可以运行在几乎所有广泛使用的计算机平台上，由于其跨平台和安全性被广泛使用，是最流行的Web服务器端软件之一。它快速、可靠并且可通过简单的API扩充，将Perl&#x2F;Python等解释器编译到服务器中。 特点： Apache模块分为静态模块与动态模块，静态模块是Apache最基本的模块，是无法随时添加与卸载的模块，静态模块在编">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2017-01-10T12:18:33.000Z">
 <meta property="article:modified_time" content="2020-09-18T10:19:28.251Z">
-<meta property="article:author" content="biglittleant">
+<meta property="article:author" content="Big Little Ant">
 <meta property="article:tag" content="apache">
 <meta name="twitter:card" content="summary">
 
@@ -39,17 +36,11 @@
 <link rel="canonical" href="http://www.biglittleant.cn/2017/01/10/apache-install/">
 
 
-<script class="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'en'
-  };
-</script>
 
-  <title>Apache学习-Apache入门 | biglittleant</title>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://www.biglittleant.cn/2017/01/10/apache-install/","path":"2017/01/10/apache-install/","title":"Apache学习-Apache入门"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Apache学习-Apache入门 | Big Little Ant</title>
   
 
 
@@ -57,51 +48,23 @@
 
 
 
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
   <noscript>
-  <style>
-  body { margin-top: 2rem; }
-
-  .use-motion .menu-item,
-  .use-motion .sidebar,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header {
-    visibility: visible;
-  }
-
-  .use-motion .header,
-  .use-motion .site-brand-container .toggle,
-  .use-motion .footer { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle,
-  .use-motion .custom-logo-image {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line {
-    transform: scaleX(1);
-  }
-
-  .search-pop-overlay, .sidebar-nav { display: none; }
-  .sidebar-panel { display: block; }
-  </style>
-</noscript>
-
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
   <div class="headband"></div>
 
   <main class="main">
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Toggle navigation bar">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
         <span class="toggle-line"></span>
         <span class="toggle-line"></span>
         <span class="toggle-line"></span>
@@ -112,7 +75,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">biglittleant</h1>
+      <p class="site-title">Big Little Ant</p>
       <i class="logo-line"></i>
     </a>
       <p class="site-subtitle" itemprop="description">不被嘲笑的梦想，是不值得去实现的</p>
@@ -127,47 +90,16 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
-
-  </li>
-        <li class="menu-item menu-item-标签">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-文章分类">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a>
-
-  </li>
-        <li class="menu-item menu-item-归档">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-        <li class="menu-item menu-item-关于">
-
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
-
-  </li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-文章分类"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a></li><li class="menu-item menu-item-golang"><a href="/categories/go" rel="section"><i class="fa fa-th fa-fw"></i>Golang</a></li><li class="menu-item menu-item-kubernetes"><a href="/categories/kubernetes" rel="section"><i class="fa fa-th fa-fw"></i>Kubernetes</a></li><li class="menu-item menu-item-标签"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-归档"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-关于"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
   </ul>
 </nav>
 
 
 
 
-</div>
+</header>
         
   
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-  </div>
-
   <aside class="sidebar">
 
     <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
@@ -180,33 +112,34 @@
         </li>
       </ul>
 
-      <!--noindex-->
-      <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Apache%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">Apache介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E7%82%B9%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">特点：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E5%90%88%EF%BC%9A"><span class="nav-number">1.2.</span> <span class="nav-text">应用场合：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E6%88%98"><span class="nav-number">2.</span> <span class="nav-text">实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96%E5%8C%85"><span class="nav-number">2.1.</span> <span class="nav-text">安装依赖包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Apache%E8%BD%AF%E4%BB%B6"><span class="nav-number">2.2.</span> <span class="nav-text">安装Apache软件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bin%E7%9B%AE%E5%BD%95%E4%B8%8B%E5%91%BD%E4%BB%A4%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.3.</span> <span class="nav-text">bin目录下命令介绍</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">配置文件解析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Order-%E6%8C%87%E4%BB%A4"><span class="nav-number">3.0.1.</span> <span class="nav-text">Order 指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Require%E6%8C%87%E4%BB%A4"><span class="nav-number">3.0.2.</span> <span class="nav-text">Require指令</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A5%E5%85%85%E8%AF%B4%E6%98%8E"><span class="nav-number">3.1.</span> <span class="nav-text">补充说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#httpd-vhosts-conf-%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%BB%E6%9C%BA%E9%85%8D%E7%BD%AE"><span class="nav-number">3.2.</span> <span class="nav-text">httpd-vhosts.conf 虚拟机主机配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MPM-%E5%A4%9A%E8%B7%AF%E5%A4%84%E7%90%86%E6%A8%A1%E5%9D%97"><span class="nav-number">4.</span> <span class="nav-text">MPM 多路处理模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E4%BD%BF%E7%94%A8%E7%9A%84%E6%98%AF%E9%82%A3%E7%A7%8DMPM%E6%A8%A1%E5%9D%97"><span class="nav-number">4.1.</span> <span class="nav-text">查看当前使用的是那种MPM模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%8C%87%E5%AE%9AMPM"><span class="nav-number">4.2.</span> <span class="nav-text">如何指定MPM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MPM%E9%85%8D%E7%BD%AE%E8%A7%A3%E9%87%8A"><span class="nav-number">4.3.</span> <span class="nav-text">MPM配置解释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#prefork%E6%A8%A1%E5%9D%97"><span class="nav-number">4.4.</span> <span class="nav-text">prefork模块</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#prefork-%E7%BA%BF%E7%A8%8B%E4%BC%98%E5%8C%96%E8%AE%BE%E7%BD%AE"><span class="nav-number">4.4.1.</span> <span class="nav-text">prefork 线程优化设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MaxRequestWorkers-%E4%BC%98%E5%8C%96"><span class="nav-number">4.4.2.</span> <span class="nav-text">MaxRequestWorkers 优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MaxRequestsPerChild-%E4%BC%98%E5%8C%96"><span class="nav-number">4.4.3.</span> <span class="nav-text">MaxRequestsPerChild 优化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#worker%E6%A8%A1%E5%9D%97"><span class="nav-number">4.5.</span> <span class="nav-text">worker模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A5%E5%85%85%E7%9F%A5%E8%AF%86"><span class="nav-number">4.6.</span> <span class="nav-text">补充知识</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#apache-%E7%BD%91%E7%BB%9C%E7%8A%B6%E6%80%81%E6%8F%8F%E8%BF%B0"><span class="nav-number">4.6.1.</span> <span class="nav-text">apache 网络状态描述</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number"></span> <span class="nav-text">It works!</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E9%98%85%E8%AF%BB"><span class="nav-number">1.</span> <span class="nav-text">扩展阅读</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Apache%E5%B9%B6%E8%A1%8C%E5%A4%84%E7%90%86%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.1.</span> <span class="nav-text">Apache并行处理模块介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#prefork%E6%A8%A1%E5%9D%97-1"><span class="nav-number">1.1.1.</span> <span class="nav-text">prefork模块</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#worker-%E6%A8%A1%E5%9D%97"><span class="nav-number">1.1.2.</span> <span class="nav-text">worker 模块</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Event-%E6%A8%A1%E5%9D%97"><span class="nav-number">1.1.3.</span> <span class="nav-text">Event 模块</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mime-type-%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.2.</span> <span class="nav-text">mime type 类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">2.</span> <span class="nav-text">参考资料</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E6%B1%87%E6%80%BB"><span class="nav-number">3.</span> <span class="nav-text">报错汇总</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E4%B8%80%EF%BC%9A%E7%BC%96%E8%AF%91%E6%8A%A5%E9%94%99"><span class="nav-number">3.1.</span> <span class="nav-text">报错一：编译报错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E4%BA%8C%EF%BC%9A%E7%BC%96%E8%AF%91%E6%8A%A5%E9%94%99"><span class="nav-number">3.2.</span> <span class="nav-text">报错二：编译报错</span></a></li></ol></li></ol></div>
-      </section>
-      <!--/noindex-->
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Apache%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">Apache介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E7%82%B9%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">特点：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E5%90%88%EF%BC%9A"><span class="nav-number">1.2.</span> <span class="nav-text">应用场合：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E6%88%98"><span class="nav-number">2.</span> <span class="nav-text">实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96%E5%8C%85"><span class="nav-number">2.1.</span> <span class="nav-text">安装依赖包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Apache%E8%BD%AF%E4%BB%B6"><span class="nav-number">2.2.</span> <span class="nav-text">安装Apache软件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bin%E7%9B%AE%E5%BD%95%E4%B8%8B%E5%91%BD%E4%BB%A4%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.3.</span> <span class="nav-text">bin目录下命令介绍</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%A7%A3%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">配置文件解析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Order-%E6%8C%87%E4%BB%A4"><span class="nav-number">3.0.1.</span> <span class="nav-text">Order 指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Require%E6%8C%87%E4%BB%A4"><span class="nav-number">3.0.2.</span> <span class="nav-text">Require指令</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A5%E5%85%85%E8%AF%B4%E6%98%8E"><span class="nav-number">3.1.</span> <span class="nav-text">补充说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#httpd-vhosts-conf-%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%BB%E6%9C%BA%E9%85%8D%E7%BD%AE"><span class="nav-number">3.2.</span> <span class="nav-text">httpd-vhosts.conf 虚拟机主机配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MPM-%E5%A4%9A%E8%B7%AF%E5%A4%84%E7%90%86%E6%A8%A1%E5%9D%97"><span class="nav-number">4.</span> <span class="nav-text">MPM 多路处理模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E4%BD%BF%E7%94%A8%E7%9A%84%E6%98%AF%E9%82%A3%E7%A7%8DMPM%E6%A8%A1%E5%9D%97"><span class="nav-number">4.1.</span> <span class="nav-text">查看当前使用的是那种MPM模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%8C%87%E5%AE%9AMPM"><span class="nav-number">4.2.</span> <span class="nav-text">如何指定MPM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MPM%E9%85%8D%E7%BD%AE%E8%A7%A3%E9%87%8A"><span class="nav-number">4.3.</span> <span class="nav-text">MPM配置解释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#prefork%E6%A8%A1%E5%9D%97"><span class="nav-number">4.4.</span> <span class="nav-text">prefork模块</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#prefork-%E7%BA%BF%E7%A8%8B%E4%BC%98%E5%8C%96%E8%AE%BE%E7%BD%AE"><span class="nav-number">4.4.1.</span> <span class="nav-text">prefork 线程优化设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MaxRequestWorkers-%E4%BC%98%E5%8C%96"><span class="nav-number">4.4.2.</span> <span class="nav-text">MaxRequestWorkers 优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MaxRequestsPerChild-%E4%BC%98%E5%8C%96"><span class="nav-number">4.4.3.</span> <span class="nav-text">MaxRequestsPerChild 优化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#worker%E6%A8%A1%E5%9D%97"><span class="nav-number">4.5.</span> <span class="nav-text">worker模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A5%E5%85%85%E7%9F%A5%E8%AF%86"><span class="nav-number">4.6.</span> <span class="nav-text">补充知识</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#apache-%E7%BD%91%E7%BB%9C%E7%8A%B6%E6%80%81%E6%8F%8F%E8%BF%B0"><span class="nav-number">4.6.1.</span> <span class="nav-text">apache 网络状态描述</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number"></span> <span class="nav-text">It works!</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E9%98%85%E8%AF%BB"><span class="nav-number">1.</span> <span class="nav-text">扩展阅读</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Apache%E5%B9%B6%E8%A1%8C%E5%A4%84%E7%90%86%E6%A8%A1%E5%9D%97%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.1.</span> <span class="nav-text">Apache并行处理模块介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#prefork%E6%A8%A1%E5%9D%97-1"><span class="nav-number">1.1.1.</span> <span class="nav-text">prefork模块</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#worker-%E6%A8%A1%E5%9D%97"><span class="nav-number">1.1.2.</span> <span class="nav-text">worker 模块</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Event-%E6%A8%A1%E5%9D%97"><span class="nav-number">1.1.3.</span> <span class="nav-text">Event 模块</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mime-type-%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.2.</span> <span class="nav-text">mime type 类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">2.</span> <span class="nav-text">参考资料</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E6%B1%87%E6%80%BB"><span class="nav-number">3.</span> <span class="nav-text">报错汇总</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E4%B8%80%EF%BC%9A%E7%BC%96%E8%AF%91%E6%8A%A5%E9%94%99"><span class="nav-number">3.1.</span> <span class="nav-text">报错一：编译报错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E4%BA%8C%EF%BC%9A%E7%BC%96%E8%AF%91%E6%8A%A5%E9%94%99"><span class="nav-number">3.2.</span> <span class="nav-text">报错二：编译报错</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
 
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">biglittleant</p>
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Big Little Ant</p>
   <div class="site-description" itemprop="description"></div>
 </div>
-<div class="site-state-wrap animated">
+<div class="site-state-wrap site-overview-item animated">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/archives">
-          <span class="site-state-item-count">46</span>
+        <a href="/archives/">
+          <span class="site-state-item-count">55</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-        <span class="site-state-item-count">16</span>
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-        <span class="site-state-item-count">37</span>
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -214,48 +147,41 @@
 
 
 
-      </section>
+        </div>
+      </div>
     </div>
   </aside>
-  <div class="sidebar-dimmer"></div>
 
 
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-
-<noscript>
-  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
-</noscript>
-
+    </div>
 
     <div class="main-inner post posts-expand">
-      
 
-      
 
-    
+  
+
+
+<div class="post-block">
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
     <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2017/01/10/apache-install/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="biglittleant">
-      <meta itemprop="description" content="">
+      <meta itemprop="name" content="Big Little Ant">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="biglittleant">
+      <meta itemprop="name" content="Big Little Ant">
+      <meta itemprop="description" content="">
     </span>
 
-    
-    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Apache学习-Apache入门 | Big Little Ant">
+      <meta itemprop="description" content="">
+    </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           Apache学习-Apache入门
@@ -271,13 +197,13 @@
 
       <time title="Created: 2017-01-10 20:18:33" itemprop="dateCreated datePublished" datetime="2017-01-10T20:18:33+08:00">2017-01-10</time>
     </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-18 18:19:28" itemprop="dateModified" datetime="2020-09-18T18:19:28+08:00">2020-09-18</time>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
       </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2020-09-18 18:19:28" itemprop="dateModified" datetime="2020-09-18T18:19:28+08:00">2020-09-18</time>
+    </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -289,13 +215,6 @@
     </span>
 
   
-    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="far fa-eye"></i>
-      </span>
-      <span class="post-meta-item-text">Views: </span>
-      <span id="busuanzi_value_page_pv"></span>
-    </span>
 </div>
 
         </div>
@@ -305,7 +224,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h2 id="Apache介绍"><a href="#Apache介绍" class="headerlink" title="Apache介绍"></a>Apache介绍</h2><p>Apache是世界使用排名第一的Web服务器软件。它可以运行在几乎所有广泛使用的计算机平台上，由于其跨平台和安全性被广泛使用，是最流行的Web服务器端软件之一。它快速、可靠并且可通过简单的API扩充，将Perl/Python等解释器编译到服务器中。</p>
+        <h2 id="Apache介绍"><a href="#Apache介绍" class="headerlink" title="Apache介绍"></a>Apache介绍</h2><p>Apache是世界使用排名第一的Web服务器软件。它可以运行在几乎所有广泛使用的计算机平台上，由于其跨平台和安全性被广泛使用，是最流行的Web服务器端软件之一。它快速、可靠并且可通过简单的API扩充，将Perl&#x2F;Python等解释器编译到服务器中。</p>
 <h3 id="特点："><a href="#特点：" class="headerlink" title="特点："></a>特点：</h3><ul>
 <li>Apache模块分为静态模块与动态模块，静态模块是Apache最基本的模块，是无法随时添加与卸载的模块，静态模块在编译软件时设定的。动态模块是可以随时添加和删除的模块。</li>
 <li>Apache模块将被编译为动态共享对象(DSO),这些动态共享对象独立于httpd程序，DSO模块可以在编译Apache时添加，也可以在后期随时通过Apache extension Tool（apxs）工具编译添加模块。</li>
@@ -322,10 +241,10 @@
 <h3 id="安装Apache软件"><a href="#安装Apache软件" class="headerlink" title="安装Apache软件"></a>安装Apache软件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/src</span><br><span class="line">wget http://apache.mirror.iweb.ca//httpd/httpd-2.4.25.tar.gz</span><br><span class="line">tar -zxf httpd-2.4.25.tar.gz</span><br><span class="line">cd httpd-2.4.25</span><br><span class="line">./configure --prefix=/data/app/apache-2.4.25 --enable-deflate --enable-expires --enable-headers --enable-modules=most --enable-so --with-mpm=worker --enable-rewrite</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line">ln -s /data/app/apache-2.4.25/ /data/app/apache</span><br></pre></td></tr></table></figure>
 
 <p>编译参数解释</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">./configure --prefix=/application/apache-2.4.25 \</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> --<span class="built_in">enable</span>-deflate \  <span class="comment">#启用压缩模式 对文件压缩</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> --<span class="built_in">enable</span>-expires \  <span class="comment">#过期时间</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> --<span class="built_in">enable</span>-headers \  <span class="comment">#激活HTTP头</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> --<span class="built_in">enable</span>-modules=most \ 激活大多数模块</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> --<span class="built_in">enable</span>-so \  <span class="comment"># 开启模块化功能，支持DSO（动态共享对象）</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> --with-mpm=worker \ <span class="comment">#两种模式：worker，prefork。</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> --<span class="built_in">enable</span>-rewrite    <span class="comment">#开启地址重写</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">./configure --prefix=/application/apache-2.4.25 \</span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">--enable-deflate \  <span class="comment">#启用压缩模式 对文件压缩</span></span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">--enable-expires \  <span class="comment">#过期时间</span></span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">--enable-headers \  <span class="comment">#激活HTTP头</span></span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">--enable-modules=most \ 激活大多数模块</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">--enable-so \  <span class="comment"># 开启模块化功能，支持DSO（动态共享对象）</span></span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">--with-mpm=worker \ <span class="comment">#两种模式：worker，prefork。</span></span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">--enable-rewrite    <span class="comment">#开启地址重写</span></span></span><br></pre></td></tr></table></figure>
 
 <p>启动Apache服务：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/data/app/apache/bin/apachectl -t</span><br><span class="line"><span class="meta">#</span><span class="bash">httpd: Could not reliably determine the server<span class="string">&#x27;s fully qualified domain name, using 61.50.248.117 for #ServerName</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">Syntax OK</span></span><br><span class="line">/data/app/apache/bin/apachectl start</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/data/app/apache/bin/apachectl -t</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">httpd: Could not reliably determine the server<span class="string">&#x27;s fully qualified domain name, using 61.50.248.117 for #ServerName</span></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="string">Syntax OK</span></span></span><br><span class="line">/data/app/apache/bin/apachectl start</span><br></pre></td></tr></table></figure>
 
 
 <p>常见的启动命令</p>
@@ -353,7 +272,7 @@
 <li><code>httpd</code>:  httpd 为Apache的控制命令程序，apachectl 执行时会调用httpd。</li>
 <li><code>rotatelogs</code>: Apache 自带的日志轮询明白，工作中习惯用由cronolog 代替。</li>
 </ul>
-<h2 id="配置文件解析"><a href="#配置文件解析" class="headerlink" title="配置文件解析"></a>配置文件解析</h2><p>Apache主要配置文件主要有指令及容器组成，容器使用&lt;容器名称&gt;开始，以&lt;/容器名称&gt;结尾，容器的指令一般仅在容器内有效。</p>
+<h2 id="配置文件解析"><a href="#配置文件解析" class="headerlink" title="配置文件解析"></a>配置文件解析</h2><p>Apache主要配置文件主要有指令及容器组成，容器使用&lt;容器名称&gt;开始，以&lt;&#x2F;容器名称&gt;结尾，容器的指令一般仅在容器内有效。</p>
 <p><code>/data/app/apache/conf/extra</code> #这是额外的Apache配置文件目录，这个目录里的文件我们会经常访问修改。</p>
 <p><code>/data/app/apache/conf/httpd.conf </code>#Apache的主配置文件，这个文件我们会经常访问修改，其中的每一行的参数做用都应该弄清楚明白。</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line">ServerRoot <span class="string">&quot;/data/app/apache-2.4.25&quot;</span></span><br><span class="line">Listen 80</span><br><span class="line">LoadModule authn_file_module modules/mod_authn_file.so</span><br><span class="line">LoadModule authn_core_module modules/mod_authn_core.so</span><br><span class="line">LoadModule authz_host_module modules/mod_authz_host.so</span><br><span class="line">LoadModule authz_groupfile_module modules/mod_authz_groupfile.so</span><br><span class="line">LoadModule authz_user_module modules/mod_authz_user.so</span><br><span class="line">LoadModule authz_core_module modules/mod_authz_core.so</span><br><span class="line">LoadModule access_compat_module modules/mod_access_compat.so</span><br><span class="line">LoadModule auth_basic_module modules/mod_auth_basic.so</span><br><span class="line">LoadModule reqtimeout_module modules/mod_reqtimeout.so</span><br><span class="line">LoadModule filter_module modules/mod_filter.so</span><br><span class="line">LoadModule mime_module modules/mod_mime.so</span><br><span class="line">LoadModule log_config_module modules/mod_log_config.so</span><br><span class="line">LoadModule env_module modules/mod_env.so</span><br><span class="line">LoadModule headers_module modules/mod_headers.so</span><br><span class="line">LoadModule setenvif_module modules/mod_setenvif.so</span><br><span class="line">LoadModule version_module modules/mod_version.so</span><br><span class="line">LoadModule unixd_module modules/mod_unixd.so</span><br><span class="line">LoadModule status_module modules/mod_status.so</span><br><span class="line">LoadModule autoindex_module modules/mod_autoindex.so</span><br><span class="line">LoadModule dir_module modules/mod_dir.so</span><br><span class="line">LoadModule alias_module modules/mod_alias.so</span><br><span class="line">&lt;IfModule unixd_module&gt;</span><br><span class="line">User daemon</span><br><span class="line">Group daemon</span><br><span class="line">&lt;/IfModule&gt;</span><br><span class="line">ServerAdmin you@example.com</span><br><span class="line">&lt;Directory /&gt;</span><br><span class="line">    AllowOverride none</span><br><span class="line">    Require all denied</span><br><span class="line">&lt;/Directory&gt;</span><br><span class="line">DocumentRoot <span class="string">&quot;/data/app/apache-2.4.25/htdocs&quot;</span></span><br><span class="line">&lt;Directory <span class="string">&quot;/data/app/apache-2.4.25/htdocs&quot;</span>&gt;</span><br><span class="line">    Options Indexes FollowSymLinks</span><br><span class="line">    AllowOverride None</span><br><span class="line">    Require all granted</span><br><span class="line">&lt;/Directory&gt;</span><br><span class="line">&lt;IfModule dir_module&gt;</span><br><span class="line">    DirectoryIndex index.html</span><br><span class="line">&lt;/IfModule&gt;</span><br><span class="line">&lt;Files <span class="string">&quot;.ht*&quot;</span>&gt;</span><br><span class="line">    Require all denied</span><br><span class="line">&lt;/Files&gt;</span><br><span class="line">ErrorLog <span class="string">&quot;logs/error_log&quot;</span></span><br><span class="line">LogLevel warn</span><br><span class="line">&lt;IfModule log_config_module&gt;</span><br><span class="line">    LogFormat <span class="string">&quot;%h %l %u %t \&quot;%r\&quot; %&gt;s %b \&quot;%&#123;Referer&#125;i\&quot; \&quot;%&#123;User-Agent&#125;i\&quot;&quot;</span> combined</span><br><span class="line">    LogFormat <span class="string">&quot;%h %l %u %t \&quot;%r\&quot; %&gt;s %b&quot;</span> common</span><br><span class="line">    &lt;IfModule logio_module&gt;</span><br><span class="line">      LogFormat <span class="string">&quot;%h %l %u %t \&quot;%r\&quot; %&gt;s %b \&quot;%&#123;Referer&#125;i\&quot; \&quot;%&#123;User-Agent&#125;i\&quot; %I %O&quot;</span> combinedio</span><br><span class="line">    &lt;/IfModule&gt;</span><br><span class="line">    CustomLog <span class="string">&quot;logs/access_log&quot;</span> common</span><br><span class="line">&lt;/IfModule&gt;</span><br><span class="line">&lt;IfModule alias_module&gt;</span><br><span class="line">    ScriptAlias /cgi-bin/ <span class="string">&quot;/data/app/apache-2.4.25/cgi-bin/&quot;</span></span><br><span class="line">&lt;/IfModule&gt;</span><br><span class="line">&lt;IfModule cgid_module&gt;</span><br><span class="line">&lt;/IfModule&gt;</span><br><span class="line">&lt;Directory <span class="string">&quot;/data/app/apache-2.4.25/cgi-bin&quot;</span>&gt;</span><br><span class="line">    AllowOverride None</span><br><span class="line">    Options None</span><br><span class="line">    Require all granted</span><br><span class="line">&lt;/Directory&gt;</span><br><span class="line">&lt;IfModule headers_module&gt;</span><br><span class="line">    RequestHeader <span class="built_in">unset</span> Proxy early</span><br><span class="line">&lt;/IfModule&gt;</span><br><span class="line">&lt;IfModule mime_module&gt;</span><br><span class="line">    TypesConfig conf/mime.types</span><br><span class="line">    AddType application/x-compress .Z</span><br><span class="line">    AddType application/x-gzip .gz .tgz</span><br><span class="line">&lt;/IfModule&gt;</span><br><span class="line">&lt;IfModule proxy_html_module&gt;</span><br><span class="line">Include conf/extra/proxy-html.conf</span><br><span class="line">&lt;/IfModule&gt;</span><br><span class="line">&lt;IfModule ssl_module&gt;</span><br><span class="line">SSLRandomSeed startup <span class="built_in">builtin</span></span><br><span class="line">SSLRandomSeed connect <span class="built_in">builtin</span></span><br><span class="line">&lt;/IfModule&gt;</span><br></pre></td></tr></table></figure>
@@ -408,13 +327,13 @@
 <p>通常利用Apache的rewrite模块对 URL 进行重写的时候， rewrite规则会写在 .htaccess 文件里。但要使 apache 能够正常的读取.htaccess 文件的内容，就必须对.htaccess 所在目录进行配置。从安全性考虑，根目录的AllowOverride属性一般都配置成不允许任何Override 。</p>
 </blockquote>
 <ul>
-<li><code>Options None</code>：为特定目录设置选项。None表示不启用额外选项。<ul>
+<li><code>Options None</code>：为特定目录设置选项。None表示不启用额外选项。</li>
+</ul>
+<ul>
 <li>All：开启除MultiViews之外的所有选项。</li>
 <li>ExecCGI：允许执行Options指定目录下的所有CGI脚本。</li>
 <li>FollowSymlinks：允许Options指定目录下的文件链接到目录外的文件或目录。</li>
 <li>Indexes：如果与URL对应的Options 目录下找不到DirectoryIndex指定的首页文档，则Apache会将当前目录下的所有文件索引出来。</li>
-</ul>
-</li>
 </ul>
 <ul>
 <li><code>RequestHeader unset Proxy early</code>：</li>
@@ -439,7 +358,7 @@
 <h4 id="Require指令"><a href="#Require指令" class="headerlink" title="Require指令"></a>Require指令</h4><p>Apache 2.2 使用order命令限制访问，Apache 2.4 使用require命令限制访问。</p>
 <p>Some of the allowed syntaxes provided by mod_authz_user, mod_authz_host, and mod_authz_groupfile are:</p>
 <p>Require valid-user<br>All valid users can access the resource.<br>Require ip 10 172.20 192.168.2<br>Clients in the specified IP address ranges can access the resource.<br>Other authorization modules that implement require options include mod_authnz_ldap, mod_authz_dbm, mod_authz_dbd, mod_authz_owner and mod_ssl.</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">Require all denied <span class="comment"># 拒绝所有请求</span></span><br><span class="line"></span><br><span class="line">Require all granted <span class="comment"># 允许所有请求</span></span><br><span class="line"></span><br><span class="line">Require host example.org <span class="comment"># 允许局域网访问指定域名，外网拒绝</span></span><br><span class="line"></span><br><span class="line">Require env env-var [env-var] <span class="comment"># 只有在设置了给定的环境变量之一才能通过。</span></span><br><span class="line"></span><br><span class="line">Require method http-method [http-method] <span class="comment">#只允许指定的请求头，才允许通过。</span></span><br><span class="line"></span><br><span class="line">Require expr expression <span class="comment">#只允许满足正则表达式的通过。</span></span><br><span class="line"></span><br><span class="line">Require user userid [userid] <span class="comment">##只有指定的用户ID能访问</span></span><br><span class="line"></span><br><span class="line">Require group group-name [group-name] <span class="comment">##只有指定的组ID能访问。</span></span><br><span class="line"></span><br><span class="line">Require valid-user <span class="comment">##所有的有效用户都可以访问资源。</span></span><br><span class="line"></span><br><span class="line">Require <span class="built_in">local</span> <span class="comment"># 仅允许本地访问</span></span><br><span class="line"></span><br><span class="line">Require ip 192.168.0.1 <span class="comment"># 仅允许IP：192.168.0.1 访问</span></span><br><span class="line"></span><br><span class="line">Require ip 192.168.0.1 192.168.0.2 <span class="comment"># 仅允许IP：192.168.0.1 和 192.168.0.2 访问</span></span><br><span class="line"></span><br><span class="line">Require all granted</span><br><span class="line">Require not ip 192.168.0.1  <span class="comment"># 仅禁止IP：192.168.0.1 访问</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">Require all denied <span class="comment"># 拒绝所有请求</span></span><br><span class="line"></span><br><span class="line">Require all granted <span class="comment"># 允许所有请求</span></span><br><span class="line"></span><br><span class="line">Require host example.org <span class="comment"># 允许局域网访问指定域名，外网拒绝</span></span><br><span class="line"></span><br><span class="line">Require <span class="built_in">env</span> env-var [env-var] <span class="comment"># 只有在设置了给定的环境变量之一才能通过。</span></span><br><span class="line"></span><br><span class="line">Require method http-method [http-method] <span class="comment">#只允许指定的请求头，才允许通过。</span></span><br><span class="line"></span><br><span class="line">Require <span class="built_in">expr</span> expression <span class="comment">#只允许满足正则表达式的通过。</span></span><br><span class="line"></span><br><span class="line">Require user userid [userid] <span class="comment">##只有指定的用户ID能访问</span></span><br><span class="line"></span><br><span class="line">Require group group-name [group-name] <span class="comment">##只有指定的组ID能访问。</span></span><br><span class="line"></span><br><span class="line">Require valid-user <span class="comment">##所有的有效用户都可以访问资源。</span></span><br><span class="line"></span><br><span class="line">Require <span class="built_in">local</span> <span class="comment"># 仅允许本地访问</span></span><br><span class="line"></span><br><span class="line">Require ip 192.168.0.1 <span class="comment"># 仅允许IP：192.168.0.1 访问</span></span><br><span class="line"></span><br><span class="line">Require ip 192.168.0.1 192.168.0.2 <span class="comment"># 仅允许IP：192.168.0.1 和 192.168.0.2 访问</span></span><br><span class="line"></span><br><span class="line">Require all granted</span><br><span class="line">Require not ip 192.168.0.1  <span class="comment"># 仅禁止IP：192.168.0.1 访问</span></span><br></pre></td></tr></table></figure>
 
 <p>TypesConfig 指定mime type的配置文件。<br>AddType 添加服务器支持的的mime type 类型。</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;IfModule mime_module&gt;</span><br><span class="line">    TypesConfig conf/mime.types</span><br><span class="line">    AddType application/x-compress .Z</span><br><span class="line">    AddType application/x-gzip .gz .tgz</span><br><span class="line">&lt;/IfModule&gt;</span><br></pre></td></tr></table></figure>
@@ -500,7 +419,7 @@
 
 <p>所以MaxClients可以设置为464</p>
 <h4 id="MaxRequestsPerChild-优化"><a href="#MaxRequestsPerChild-优化" class="headerlink" title="MaxRequestsPerChild 优化"></a>MaxRequestsPerChild 优化</h4><p>这个值大了影响资源的释放，小了apache不断的fork新的进程，增加CPU资源的开销。有时其影响不限于apache本身的资源，还有相关外部资源的释放。比如网站大多采用apache pool管理数据库连接，MaxRequestsPerChild过大就会造成数据库连接的资源迟迟不释放，给数据库带来不寻常的压力。<br>关于这一点，最典型的就是数据库出现tomieout等超时连接错误，重启Apache以后，即使访问量恢复到峰值，数据库仍然表现毫无压力，但是持续较长时间后，又出现同样的超时异常。</p>
-<p>我采取一分钟pv/MaxRequestWorkers得到这个值。</p>
+<p>我采取一分钟pv&#x2F;MaxRequestWorkers得到这个值。</p>
 <h3 id="worker模块"><a href="#worker模块" class="headerlink" title="worker模块"></a>worker模块</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;IfModule mpm_worker_module&gt;</span><br><span class="line">    StartServers             3</span><br><span class="line">    MinSpareThreads         75</span><br><span class="line">    MaxSpareThreads        250</span><br><span class="line">    ThreadsPerChild         25</span><br><span class="line">    MaxRequestWorkers      400</span><br><span class="line">    MaxConnectionsPerChild   0</span><br><span class="line">&lt;/IfModule&gt;</span><br></pre></td></tr></table></figure>
 
 <ul>
@@ -517,13 +436,13 @@
 <blockquote>
 <p>ThreadsPerChild是worker MPM中与性能相关最密切的指令。<br>ThreadsPerChild的最大缺省值是64，如果负载较大，64也是不够的。这时要显式使用 ThreadLimit指令，它的最大缺省值是20000。</p>
 </blockquote>
-<p>上述两个值位于源码树server/mpm/worker/worker.c中的以下两行：</p>
+<p>上述两个值位于源码树server&#x2F;mpm&#x2F;worker&#x2F;worker.c中的以下两行：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#define DEFAULT_THREAD_LIMIT 64</span></span><br><span class="line">define MAX_THREAD_LIMIT 20000</span><br></pre></td></tr></table></figure>
 
 <blockquote>
 <p>这两行对应着ThreadsPerChild和ThreadLimit的限制数。最好在configure之前就把64改成所希望的值。注意，不要把这两个值设得太高，超过系统的处理能力，从而因Apache不起动使系统很不稳定。</p>
 </blockquote>
-<p>Worker模式下所能同时处理的请求总数是由子进程总数乘以ThreadsPerChild值决定的，应该大于等于MaxClients。如果负载很大，现有的子进程数不能满足时，控制进程会派生新的子进程。默认最大的子进程总数是16，加大时也需要显式声明ServerLimit（最大值是20000）。这两个值位于源码树server/mpm/worker/worker.c中的以下两行：</p>
+<p>Worker模式下所能同时处理的请求总数是由子进程总数乘以ThreadsPerChild值决定的，应该大于等于MaxClients。如果负载很大，现有的子进程数不能满足时，控制进程会派生新的子进程。默认最大的子进程总数是16，加大时也需要显式声明ServerLimit（最大值是20000）。这两个值位于源码树server&#x2F;mpm&#x2F;worker&#x2F;worker.c中的以下两行：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#define DEFAULT_SERVER_LIMIT 16</span></span><br><span class="line">define MAX_SERVER_LIMIT 20000</span><br></pre></td></tr></table></figure>
 
 
@@ -570,9 +489,9 @@
 
 
 <p>2：curl 查看<br>[root@nfs-client apache]# curl 192.168.1.106<br>    <html><body><h1>It works!</h1></body></html></p>
-<p>[root@nfs-client apache]# bin/apachectl -l |egrep “_so|_rewrite|header|expire|deflate”<br>  mod_deflate.c<br>  mod_expires.c<br>  mod_headers.c<br>  mod_rewrite.c<br>  mod_so.c</p>
-<p>定时任务-日志轮询：<br>cd /application/apache/logs<br>mv www-access_log www-access_$(date +%F).log<br>/application/apache/bin/apachectl graceful</p>
-<p>Apache 优化：<br>1：不对外展示目录结构<br>&lt;Directory “/application/apache2.2.27/htdocs”&gt;  #自己的站点目录<br>    Options -Indexes FollowSymLinks #indexes 不对外展示目录结构<br>或<br>&lt;Directory “/application/apache2.2.27/htdocs”&gt;  #自己的站点目录<br>    Options FollowSymLinks #indexes 不对外展示目录结构</p>
+<p>[root@nfs-client apache]# bin&#x2F;apachectl -l |egrep “_so|_rewrite|header|expire|deflate”<br>  mod_deflate.c<br>  mod_expires.c<br>  mod_headers.c<br>  mod_rewrite.c<br>  mod_so.c</p>
+<p>定时任务-日志轮询：<br>cd &#x2F;application&#x2F;apache&#x2F;logs<br>mv www-access_log www-access_$(date +%F).log<br>&#x2F;application&#x2F;apache&#x2F;bin&#x2F;apachectl graceful</p>
+<p>Apache 优化：<br>1：不对外展示目录结构<br>&lt;Directory “&#x2F;application&#x2F;apache2.2.27&#x2F;htdocs”&gt;  #自己的站点目录<br>    Options -Indexes FollowSymLinks #indexes 不对外展示目录结构<br>或<br>&lt;Directory “&#x2F;application&#x2F;apache2.2.27&#x2F;htdocs”&gt;  #自己的站点目录<br>    Options FollowSymLinks #indexes 不对外展示目录结构</p>
 <h2 id="扩展阅读"><a href="#扩展阅读" class="headerlink" title="扩展阅读"></a>扩展阅读</h2><h3 id="Apache并行处理模块介绍"><a href="#Apache并行处理模块介绍" class="headerlink" title="Apache并行处理模块介绍"></a>Apache并行处理模块介绍</h3><p>Apache 2.X  支持插入式并行处理模块，称为多路处理模块（MPM）。在编译apache时必须选择也只能选择一个MPM，对类UNIX系统，有几个不同的MPM可供选择，它们会影响到apache的速度和可伸缩性。</p>
 <h4 id="prefork模块-1"><a href="#prefork模块-1" class="headerlink" title="prefork模块"></a>prefork模块</h4><p>　　Prefork MPM : 这个多路处理模块(MPM)实现了一个非线程型的、预派生的web服务器，它的工作方式类似于Apache 1.3。它适合于没有线程安全库，需要避免线程兼容性问题的系统。它是要求将每个请求相互独立的情况下最好的MPM，这样若一个请求出现问题就不会影响到其他请求。</p>
 <p>　　这个MPM具有很强的自我调节能力，只需要很少的配置指令调整。最重要的是将MaxClients设置为一个足够大的数值以处理潜在的请求高峰，同时又不能太大，以致需要使用的内存超出物理内存的大小。</p>
@@ -624,111 +543,65 @@
           </div>
     </footer>
   </article>
-  
-  
-  
+</div>
 
 
 
-      
 
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      const commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
 
-    </div>
+
+</div>
   </main>
 
   <footer class="footer">
     <div class="footer-inner">
-      
 
-      
 
 <div class="copyright">
-  
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">biglittleant</span>
+  <span class="author" itemprop="copyrightHolder">Big Little Ant</span>
 </div>
-<div class="busuanzi-count">
-    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-user"></i>
-      </span>
-      <span class="site-uv" title="Total Visitors">
-        <span id="busuanzi_value_site_uv"></span>
-      </span>
-    </span>
-    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-eye"></i>
-      </span>
-      <span class="site-pv" title="Total Views">
-        <span id="busuanzi_value_site_pv"></span>
-      </span>
-    </span>
-</div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
   </div>
 
     </div>
   </footer>
 
   
-  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
-<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
 
   
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-  
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-
-
-
-
-
-
-
   
 
-  
+
+
+
 
 </body>
 </html>

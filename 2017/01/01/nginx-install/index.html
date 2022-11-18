@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.1.1">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -14,25 +14,22 @@
 
 
 
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"www.biglittleant.cn","root":"/","scheme":"Mist","version":"8.0.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
-  </script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.biglittleant.cn","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-  <meta name="description" content="nginx 功能介绍简介Nginx因为它的稳定性、丰富的模块库、灵活的配置和低系统资源的消耗而闻名．业界一致认为它是Apache2.2＋mod_proxy_balancer的轻量级代替者，不仅是因为响应静态页面的速度非常快，而且它的模块数量达到Apache的近2&#x2F;3。对proxy和rewrite模块的支持很彻底，还支持mod_fcgi、ssl、vhosts ，适合用来做mongrel cluste">
+    <meta name="description" content="nginx 功能介绍简介Nginx因为它的稳定性、丰富的模块库、灵活的配置和低系统资源的消耗而闻名．业界一致认为它是Apache2.2＋mod_proxy_balancer的轻量级代替者，不仅是因为响应静态页面的速度非常快，而且它的模块数量达到Apache的近2&#x2F;3。对proxy和rewrite模块的支持很彻底，还支持mod_fcgi、ssl、vhosts ，适合用来做mongrel c">
 <meta property="og:type" content="article">
 <meta property="og:title" content="死磕nginx系列--nginx入门">
 <meta property="og:url" content="http://www.biglittleant.cn/2017/01/01/nginx-install/index.html">
-<meta property="og:site_name" content="biglittleant">
-<meta property="og:description" content="nginx 功能介绍简介Nginx因为它的稳定性、丰富的模块库、灵活的配置和低系统资源的消耗而闻名．业界一致认为它是Apache2.2＋mod_proxy_balancer的轻量级代替者，不仅是因为响应静态页面的速度非常快，而且它的模块数量达到Apache的近2&#x2F;3。对proxy和rewrite模块的支持很彻底，还支持mod_fcgi、ssl、vhosts ，适合用来做mongrel cluste">
+<meta property="og:site_name" content="Big Little Ant">
+<meta property="og:description" content="nginx 功能介绍简介Nginx因为它的稳定性、丰富的模块库、灵活的配置和低系统资源的消耗而闻名．业界一致认为它是Apache2.2＋mod_proxy_balancer的轻量级代替者，不仅是因为响应静态页面的速度非常快，而且它的模块数量达到Apache的近2&#x2F;3。对proxy和rewrite模块的支持很彻底，还支持mod_fcgi、ssl、vhosts ，适合用来做mongrel c">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://oi3tsepsh.bkt.clouddn.com/Nginx%E6%A8%A1%E5%9D%97%E7%9A%84HTTP%E8%AF%B7%E6%B1%82%E5%92%8C%E5%93%8D%E5%BA%94%E8%BF%87%E7%A8%8B.jpg">
 <meta property="article:published_time" content="2017-01-01T06:49:50.000Z">
 <meta property="article:modified_time" content="2020-09-16T09:35:31.968Z">
-<meta property="article:author" content="biglittleant">
+<meta property="article:author" content="Big Little Ant">
 <meta property="article:tag" content="死磕nginx系列">
 <meta property="article:tag" content="nginx">
 <meta name="twitter:card" content="summary">
@@ -42,17 +39,11 @@
 <link rel="canonical" href="http://www.biglittleant.cn/2017/01/01/nginx-install/">
 
 
-<script class="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'en'
-  };
-</script>
 
-  <title>死磕nginx系列--nginx入门 | biglittleant</title>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://www.biglittleant.cn/2017/01/01/nginx-install/","path":"2017/01/01/nginx-install/","title":"死磕nginx系列--nginx入门"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>死磕nginx系列--nginx入门 | Big Little Ant</title>
   
 
 
@@ -60,51 +51,23 @@
 
 
 
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
   <noscript>
-  <style>
-  body { margin-top: 2rem; }
-
-  .use-motion .menu-item,
-  .use-motion .sidebar,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header {
-    visibility: visible;
-  }
-
-  .use-motion .header,
-  .use-motion .site-brand-container .toggle,
-  .use-motion .footer { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle,
-  .use-motion .custom-logo-image {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line {
-    transform: scaleX(1);
-  }
-
-  .search-pop-overlay, .sidebar-nav { display: none; }
-  .sidebar-panel { display: block; }
-  </style>
-</noscript>
-
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
   <div class="headband"></div>
 
   <main class="main">
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Toggle navigation bar">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
         <span class="toggle-line"></span>
         <span class="toggle-line"></span>
         <span class="toggle-line"></span>
@@ -115,7 +78,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">biglittleant</h1>
+      <p class="site-title">Big Little Ant</p>
       <i class="logo-line"></i>
     </a>
       <p class="site-subtitle" itemprop="description">不被嘲笑的梦想，是不值得去实现的</p>
@@ -130,47 +93,16 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
-
-  </li>
-        <li class="menu-item menu-item-标签">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-文章分类">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a>
-
-  </li>
-        <li class="menu-item menu-item-归档">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-        <li class="menu-item menu-item-关于">
-
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
-
-  </li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-文章分类"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>文章分类</a></li><li class="menu-item menu-item-golang"><a href="/categories/go" rel="section"><i class="fa fa-th fa-fw"></i>Golang</a></li><li class="menu-item menu-item-kubernetes"><a href="/categories/kubernetes" rel="section"><i class="fa fa-th fa-fw"></i>Kubernetes</a></li><li class="menu-item menu-item-标签"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-归档"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-关于"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
   </ul>
 </nav>
 
 
 
 
-</div>
+</header>
         
   
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-  </div>
-
   <aside class="sidebar">
 
     <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
@@ -183,33 +115,34 @@
         </li>
       </ul>
 
-      <!--noindex-->
-      <section class="post-toc-wrap sidebar-panel">
-          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#nginx-%E5%8A%9F%E8%83%BD%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">nginx 功能介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nginx%E5%8F%AF%E4%BB%A5%E6%8F%90%E4%BE%9B%E7%9A%84%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.2.</span> <span class="nav-text">nginx可以提供的服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nginx-%E7%9A%84%E4%BC%98%E7%82%B9"><span class="nav-number">1.3.</span> <span class="nav-text">nginx 的优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nginx%E5%BA%94%E7%94%A8%E5%9C%BA%E5%90%88"><span class="nav-number">1.4.</span> <span class="nav-text">nginx应用场合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E6%B5%81web%E6%9C%8D%E5%8A%A1%E4%BA%A7%E5%93%81%E5%AF%B9%E6%AF%94%E8%AF%B4%E6%98%8E"><span class="nav-number">1.5.</span> <span class="nav-text">主流web服务产品对比说明</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Apache-%E7%89%B9%E6%80%A7"><span class="nav-number">1.5.1.</span> <span class="nav-text">Apache-特性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#nginx-%E7%89%B9%E6%80%A7"><span class="nav-number">1.5.2.</span> <span class="nav-text">nginx-特性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#web%E6%9C%8D%E5%8A%A1%E4%BA%A7%E5%93%81%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94%E6%B5%8B%E8%AF%95"><span class="nav-number">1.5.3.</span> <span class="nav-text">web服务产品性能对比测试</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E6%95%B0%E6%8D%AE%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94"><span class="nav-number">1.5.3.1.</span> <span class="nav-text">静态数据性能对比</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E6%95%B0%E6%8D%AE%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94"><span class="nav-number">1.5.3.2.</span> <span class="nav-text">动态数据性能对比</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88nginx%E7%9A%84%E6%80%BB%E4%BD%93%E6%80%A7%E8%83%BD%E6%AF%94Apache%E9%AB%98%E3%80%82"><span class="nav-number">1.5.3.3.</span> <span class="nav-text">为什么nginx的总体性能比Apache高。</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9WEB%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%9A"><span class="nav-number">1.6.</span> <span class="nav-text">如何选择WEB服务器：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nginx%E5%AE%9E%E6%88%98%E8%BF%87%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">nginx实战过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96%E5%8C%85"><span class="nav-number">2.1.</span> <span class="nav-text">安装依赖包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E7%BC%96%E8%AF%91"><span class="nav-number">2.2.</span> <span class="nav-text">开始编译</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nginx%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">nginx配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">3.1.</span> <span class="nav-text">配置基础配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#access-log%E6%97%A5%E5%BF%97%E9%85%8D%E7%BD%AE"><span class="nav-number">3.1.1.</span> <span class="nav-text">access_log日志配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#log-format-%E5%AE%9A%E4%B9%89%E6%97%A5%E5%BF%97%E6%A0%BC%E5%BC%8F"><span class="nav-number">3.1.2.</span> <span class="nav-text">log_format 定义日志格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#open-log-file-cache"><span class="nav-number">3.1.3.</span> <span class="nav-text">open_log_file_cache</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#nginx%E6%97%A5%E5%BF%97%E8%B0%83%E8%AF%95%E6%8A%80%E5%B7%A7"><span class="nav-number">3.1.4.</span> <span class="nav-text">nginx日志调试技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE-Nginx-%E4%BB%85%E4%BB%85%E8%AE%B0%E5%BD%95%E6%9D%A5%E8%87%AA%E4%BA%8E%E4%BD%A0%E7%9A%84-IP-%E7%9A%84%E9%94%99%E8%AF%AF"><span class="nav-number">3.1.4.1.</span> <span class="nav-text">设置 Nginx 仅仅记录来自于你的 IP 的错误</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%B0%83%E8%AF%95-nginx-rewrite-%E8%A7%84%E5%88%99"><span class="nav-number">3.1.4.2.</span> <span class="nav-text">调试 nginx rewrite 规则</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8location%E8%AE%B0%E5%BD%95%E6%8C%87%E5%AE%9AURL%E7%9A%84%E6%97%A5%E5%BF%97"><span class="nav-number">3.1.4.3.</span> <span class="nav-text">使用location记录指定URL的日志</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%84%E7%9B%91%E6%8E%A7%E5%8F%82%E6%95%B0"><span class="nav-number">3.2.</span> <span class="nav-text">常用的监控参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%90%AF%E7%8A%B6%E6%80%81%E9%A1%B5"><span class="nav-number">3.3.</span> <span class="nav-text">开启状态页</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E7%99%BB%E5%BD%95%E5%AF%86%E7%A0%81"><span class="nav-number">3.4.</span> <span class="nav-text">配置登录密码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BF%E9%97%AEURL"><span class="nav-number">3.5.</span> <span class="nav-text">访问URL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99zabbix%E7%9B%91%E6%8E%A7%E8%84%9A%E6%9C%AC"><span class="nav-number">3.6.</span> <span class="nav-text">编写zabbix监控脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nginx%E5%86%85%E6%A0%B8%E4%BC%98%E5%8C%96%EF%BC%9A"><span class="nav-number">3.7.</span> <span class="nav-text">nginx内核优化：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E6%B1%87%E6%80%BB"><span class="nav-number">4.</span> <span class="nav-text">报错汇总</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%981%EF%BC%9A%E7%BC%96%E8%AF%91%E6%8A%A5%E9%94%99"><span class="nav-number">4.1.</span> <span class="nav-text">问题1：编译报错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%982-%E6%8F%90%E7%A4%BA%E6%89%BE%E4%B8%8D%E5%88%B0libpcre-so-1"><span class="nav-number">4.2.</span> <span class="nav-text">问题2: 提示找不到libpcre.so.1 </span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%983%EF%BC%9A%E5%90%AF%E5%8A%A8nginx%E6%8A%A5%E9%94%99"><span class="nav-number">4.3.</span> <span class="nav-text">问题3：启动nginx报错</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E9%98%85%E8%AF%BB%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">扩展阅读：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#nginx%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F"><span class="nav-number">5.1.</span> <span class="nav-text">nginx全局变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#web%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86%E6%A8%A1%E5%9E%8B"><span class="nav-number">5.2.</span> <span class="nav-text">web服务器事件处理模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#select"><span class="nav-number">5.2.1.</span> <span class="nav-text">select</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#poll"><span class="nav-number">5.2.2.</span> <span class="nav-text">poll</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#epoll"><span class="nav-number">5.2.3.</span> <span class="nav-text">epoll</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nginx-s-reload-%E8%BF%87%E7%A8%8B%EF%BC%9A"><span class="nav-number">5.3.</span> <span class="nav-text">nginx -s reload 过程：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Apache-select%E6%A8%A1%E5%9E%8B%E5%92%8C-nginx-epoll-%E6%A8%A1%E5%9E%8B%E5%AF%B9%E6%AF%94%E8%AE%B2%E8%A7%A3"><span class="nav-number">5.4.</span> <span class="nav-text">Apache select模型和 nginx epoll 模型对比讲解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%8F%82%E8%80%83"><span class="nav-number">6.</span> <span class="nav-text">相关参考</span></a></li></ol></div>
-      </section>
-      <!--/noindex-->
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#nginx-%E5%8A%9F%E8%83%BD%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">nginx 功能介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nginx%E5%8F%AF%E4%BB%A5%E6%8F%90%E4%BE%9B%E7%9A%84%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.2.</span> <span class="nav-text">nginx可以提供的服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nginx-%E7%9A%84%E4%BC%98%E7%82%B9"><span class="nav-number">1.3.</span> <span class="nav-text">nginx 的优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nginx%E5%BA%94%E7%94%A8%E5%9C%BA%E5%90%88"><span class="nav-number">1.4.</span> <span class="nav-text">nginx应用场合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E6%B5%81web%E6%9C%8D%E5%8A%A1%E4%BA%A7%E5%93%81%E5%AF%B9%E6%AF%94%E8%AF%B4%E6%98%8E"><span class="nav-number">1.5.</span> <span class="nav-text">主流web服务产品对比说明</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Apache-%E7%89%B9%E6%80%A7"><span class="nav-number">1.5.1.</span> <span class="nav-text">Apache-特性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#nginx-%E7%89%B9%E6%80%A7"><span class="nav-number">1.5.2.</span> <span class="nav-text">nginx-特性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#web%E6%9C%8D%E5%8A%A1%E4%BA%A7%E5%93%81%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94%E6%B5%8B%E8%AF%95"><span class="nav-number">1.5.3.</span> <span class="nav-text">web服务产品性能对比测试</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E6%95%B0%E6%8D%AE%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94"><span class="nav-number">1.5.3.1.</span> <span class="nav-text">静态数据性能对比</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E6%95%B0%E6%8D%AE%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94"><span class="nav-number">1.5.3.2.</span> <span class="nav-text">动态数据性能对比</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88nginx%E7%9A%84%E6%80%BB%E4%BD%93%E6%80%A7%E8%83%BD%E6%AF%94Apache%E9%AB%98%E3%80%82"><span class="nav-number">1.5.3.3.</span> <span class="nav-text">为什么nginx的总体性能比Apache高。</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9WEB%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%9A"><span class="nav-number">1.6.</span> <span class="nav-text">如何选择WEB服务器：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nginx%E5%AE%9E%E6%88%98%E8%BF%87%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">nginx实战过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96%E5%8C%85"><span class="nav-number">2.1.</span> <span class="nav-text">安装依赖包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E7%BC%96%E8%AF%91"><span class="nav-number">2.2.</span> <span class="nav-text">开始编译</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nginx%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">nginx配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">3.1.</span> <span class="nav-text">配置基础配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#access-log%E6%97%A5%E5%BF%97%E9%85%8D%E7%BD%AE"><span class="nav-number">3.1.1.</span> <span class="nav-text">access_log日志配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#log-format-%E5%AE%9A%E4%B9%89%E6%97%A5%E5%BF%97%E6%A0%BC%E5%BC%8F"><span class="nav-number">3.1.2.</span> <span class="nav-text">log_format 定义日志格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#open-log-file-cache"><span class="nav-number">3.1.3.</span> <span class="nav-text">open_log_file_cache</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#nginx%E6%97%A5%E5%BF%97%E8%B0%83%E8%AF%95%E6%8A%80%E5%B7%A7"><span class="nav-number">3.1.4.</span> <span class="nav-text">nginx日志调试技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE-Nginx-%E4%BB%85%E4%BB%85%E8%AE%B0%E5%BD%95%E6%9D%A5%E8%87%AA%E4%BA%8E%E4%BD%A0%E7%9A%84-IP-%E7%9A%84%E9%94%99%E8%AF%AF"><span class="nav-number">3.1.4.1.</span> <span class="nav-text">设置 Nginx 仅仅记录来自于你的 IP 的错误</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%B0%83%E8%AF%95-nginx-rewrite-%E8%A7%84%E5%88%99"><span class="nav-number">3.1.4.2.</span> <span class="nav-text">调试 nginx rewrite 规则</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8location%E8%AE%B0%E5%BD%95%E6%8C%87%E5%AE%9AURL%E7%9A%84%E6%97%A5%E5%BF%97"><span class="nav-number">3.1.4.3.</span> <span class="nav-text">使用location记录指定URL的日志</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%84%E7%9B%91%E6%8E%A7%E5%8F%82%E6%95%B0"><span class="nav-number">3.2.</span> <span class="nav-text">常用的监控参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%90%AF%E7%8A%B6%E6%80%81%E9%A1%B5"><span class="nav-number">3.3.</span> <span class="nav-text">开启状态页</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E7%99%BB%E5%BD%95%E5%AF%86%E7%A0%81"><span class="nav-number">3.4.</span> <span class="nav-text">配置登录密码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BF%E9%97%AEURL"><span class="nav-number">3.5.</span> <span class="nav-text">访问URL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99zabbix%E7%9B%91%E6%8E%A7%E8%84%9A%E6%9C%AC"><span class="nav-number">3.6.</span> <span class="nav-text">编写zabbix监控脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nginx%E5%86%85%E6%A0%B8%E4%BC%98%E5%8C%96%EF%BC%9A"><span class="nav-number">3.7.</span> <span class="nav-text">nginx内核优化：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E6%B1%87%E6%80%BB"><span class="nav-number">4.</span> <span class="nav-text">报错汇总</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%981%EF%BC%9A%E7%BC%96%E8%AF%91%E6%8A%A5%E9%94%99"><span class="nav-number">4.1.</span> <span class="nav-text">问题1：编译报错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%982-%E6%8F%90%E7%A4%BA%E6%89%BE%E4%B8%8D%E5%88%B0libpcre-so-1"><span class="nav-number">4.2.</span> <span class="nav-text">问题2: 提示找不到libpcre.so.1 </span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%983%EF%BC%9A%E5%90%AF%E5%8A%A8nginx%E6%8A%A5%E9%94%99"><span class="nav-number">4.3.</span> <span class="nav-text">问题3：启动nginx报错</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E9%98%85%E8%AF%BB%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">扩展阅读：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#nginx%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F"><span class="nav-number">5.1.</span> <span class="nav-text">nginx全局变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#web%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86%E6%A8%A1%E5%9E%8B"><span class="nav-number">5.2.</span> <span class="nav-text">web服务器事件处理模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#select"><span class="nav-number">5.2.1.</span> <span class="nav-text">select</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#poll"><span class="nav-number">5.2.2.</span> <span class="nav-text">poll</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#epoll"><span class="nav-number">5.2.3.</span> <span class="nav-text">epoll</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nginx-s-reload-%E8%BF%87%E7%A8%8B%EF%BC%9A"><span class="nav-number">5.3.</span> <span class="nav-text">nginx -s reload 过程：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Apache-select%E6%A8%A1%E5%9E%8B%E5%92%8C-nginx-epoll-%E6%A8%A1%E5%9E%8B%E5%AF%B9%E6%AF%94%E8%AE%B2%E8%A7%A3"><span class="nav-number">5.4.</span> <span class="nav-text">Apache select模型和 nginx epoll 模型对比讲解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%8F%82%E8%80%83"><span class="nav-number">6.</span> <span class="nav-text">相关参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
 
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">biglittleant</p>
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Big Little Ant</p>
   <div class="site-description" itemprop="description"></div>
 </div>
-<div class="site-state-wrap animated">
+<div class="site-state-wrap site-overview-item animated">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/archives">
-          <span class="site-state-item-count">46</span>
+        <a href="/archives/">
+          <span class="site-state-item-count">55</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-        <span class="site-state-item-count">16</span>
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-        <span class="site-state-item-count">37</span>
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -217,48 +150,41 @@
 
 
 
-      </section>
+        </div>
+      </div>
     </div>
   </aside>
-  <div class="sidebar-dimmer"></div>
 
 
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-
-<noscript>
-  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
-</noscript>
-
+    </div>
 
     <div class="main-inner post posts-expand">
-      
 
-      
 
-    
+  
+
+
+<div class="post-block">
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
     <link itemprop="mainEntityOfPage" href="http://www.biglittleant.cn/2017/01/01/nginx-install/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="biglittleant">
-      <meta itemprop="description" content="">
+      <meta itemprop="name" content="Big Little Ant">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="biglittleant">
+      <meta itemprop="name" content="Big Little Ant">
+      <meta itemprop="description" content="">
     </span>
 
-    
-    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="死磕nginx系列--nginx入门 | Big Little Ant">
+      <meta itemprop="description" content="">
+    </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           死磕nginx系列--nginx入门
@@ -274,13 +200,13 @@
 
       <time title="Created: 2017-01-01 14:49:50" itemprop="dateCreated datePublished" datetime="2017-01-01T14:49:50+08:00">2017-01-01</time>
     </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">Edited on</span>
-        <time title="Modified: 2020-09-16 17:35:31" itemprop="dateModified" datetime="2020-09-16T17:35:31+08:00">2020-09-16</time>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
       </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2020-09-16 17:35:31" itemprop="dateModified" datetime="2020-09-16T17:35:31+08:00">2020-09-16</time>
+    </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -296,13 +222,6 @@
     </span>
 
   
-    <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="far fa-eye"></i>
-      </span>
-      <span class="post-meta-item-text">Views: </span>
-      <span id="busuanzi_value_page_pv"></span>
-    </span>
 </div>
 
         </div>
@@ -312,7 +231,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h2 id="nginx-功能介绍"><a href="#nginx-功能介绍" class="headerlink" title="nginx 功能介绍"></a>nginx 功能介绍</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>Nginx因为它的稳定性、丰富的模块库、灵活的配置和低系统资源的消耗而闻名．业界一致认为它是Apache2.2＋mod_proxy_balancer的轻量级代替者，不仅是因为响应静态页面的速度非常快，而且它的模块数量达到Apache的近2/3。对proxy和rewrite模块的支持很彻底，还支持mod_fcgi、ssl、vhosts ，适合用来做mongrel clusters的前端HTTP响应。<br>nginx和Apache一样使用模块化设计，nginx模块包括内置模块和第三方模块，其中内置模块中包含主模块和事件模块。</p>
+        <h2 id="nginx-功能介绍"><a href="#nginx-功能介绍" class="headerlink" title="nginx 功能介绍"></a>nginx 功能介绍</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>Nginx因为它的稳定性、丰富的模块库、灵活的配置和低系统资源的消耗而闻名．业界一致认为它是Apache2.2＋mod_proxy_balancer的轻量级代替者，不仅是因为响应静态页面的速度非常快，而且它的模块数量达到Apache的近2&#x2F;3。对proxy和rewrite模块的支持很彻底，还支持mod_fcgi、ssl、vhosts ，适合用来做mongrel clusters的前端HTTP响应。<br>nginx和Apache一样使用模块化设计，nginx模块包括内置模块和第三方模块，其中内置模块中包含主模块和事件模块。</p>
 <p>nginx处理请求逻辑图<br><img src="http://oi3tsepsh.bkt.clouddn.com/Nginx%E6%A8%A1%E5%9D%97%E7%9A%84HTTP%E8%AF%B7%E6%B1%82%E5%92%8C%E5%93%8D%E5%BA%94%E8%BF%87%E7%A8%8B.jpg" alt="Nginx模块的HTTP请求和响应过程"></p>
 <h3 id="nginx可以提供的服务"><a href="#nginx可以提供的服务" class="headerlink" title="nginx可以提供的服务"></a>nginx可以提供的服务</h3><ol>
 <li>WWW web 服务.</li>
@@ -349,13 +268,14 @@
 <li>消耗代码资源比较低。</li>
 <li>lighttpd（百度贴吧，豆瓣）</li>
 <li>基于异步IO模式，性能和nginx相近。</li>
-<li>扩展库是SO模式，比nginx要灵活。</li>
-<li>通过差距（mod_secdownload）可实现文件URL地址加密。</li>
+<li>扩展库是SO模式，比nginx要灵活。<br>8.通过差距（mod_secdownload）可实现文件URL地址加密。</li>
 </ol>
 <h4 id="web服务产品性能对比测试"><a href="#web服务产品性能对比测试" class="headerlink" title="web服务产品性能对比测试"></a>web服务产品性能对比测试</h4><h5 id="静态数据性能对比"><a href="#静态数据性能对比" class="headerlink" title="静态数据性能对比"></a>静态数据性能对比</h5><ol>
 <li>处理静态文件Apache性能比nginx和lighttpd要差。</li>
 <li>nginx在处理小文件优势明显。</li>
-<li>处理静态小文件（小于1M），nginx和lighttpd比Apache更有优势，lighttpd最强。<h5 id="动态数据性能对比"><a href="#动态数据性能对比" class="headerlink" title="动态数据性能对比"></a>动态数据性能对比</h5></li>
+<li>处理静态小文件（小于1M），nginx和lighttpd比Apache更有优势，lighttpd最强。</li>
+</ol>
+<h5 id="动态数据性能对比"><a href="#动态数据性能对比" class="headerlink" title="动态数据性能对比"></a>动态数据性能对比</h5><ol>
 <li>处理动态内容三者相差不大，主要取决于PHP和数据库的压力。</li>
 <li>当处理动态数据时，三者差距不大，从测试结果看，Apache更有优势一点。这是因为处理动态数据能力取决于PHP和后端数据的提供服务能力。也就是说瓶颈不在web服务器上。</li>
 <li>一般PHP引擎支持的并发参考值300-1000，JAVA引擎并发300-1000，数据库的并发300-1000.</li>
@@ -373,7 +293,7 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">./configure --prefix=/application/nginx-1.6.2 --user=nginx --group=nginx  --with-http_ssl_module  --with-http_stub_status_module</span><br><span class="line"></span><br><span class="line">useradd nginx -M -s /sbin/nologin</span><br><span class="line">make &amp;&amp; make install</span><br><span class="line">ln -s /application/nginx1.6.2/ /application/nginx</span><br></pre></td></tr></table></figure>
 
 <p>测试nginx配置文件是否正常</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/application/nginx/sbin/nginx -t</span><br><span class="line"><span class="meta">#</span><span class="bash">nginx: the configuration file /application/nginx-1.6.2/conf/nginx.conf syntax is ok</span></span><br><span class="line"><span class="meta">#</span><span class="bash">nginx: configuration file /application/nginx-1.6.2/conf/nginx.conf <span class="built_in">test</span> is successful</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/application/nginx/sbin/nginx -t</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">nginx: the configuration file /application/nginx-1.6.2/conf/nginx.conf syntax is ok</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">nginx: configuration file /application/nginx-1.6.2/conf/nginx.conf <span class="built_in">test</span> is successful</span></span><br></pre></td></tr></table></figure>
 
 <p>启动nginx服务器</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/application/nginx/sbin/nginx -t  ##检查配置文件</span><br><span class="line">/application/nginx/sbin/nginx     ##确定nginx服务</span><br><span class="line">netstat -lntup |grep nginx        ## 检查进程是否正常</span><br><span class="line">curl 192.168.56.12                ## 确认结果</span><br></pre></td></tr></table></figure>
@@ -395,13 +315,13 @@
 <p>例子</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kill -QUIT  `cat /data/app/nginx/nginx.pid`</span><br><span class="line">kill -HUP `cat /data/app/nginx/nginx.pid`</span><br></pre></td></tr></table></figure>
 
-<h2 id="nginx配置文件"><a href="#nginx配置文件" class="headerlink" title="nginx配置文件"></a>nginx配置文件</h2><h3 id="配置基础配置文件"><a href="#配置基础配置文件" class="headerlink" title="配置基础配置文件"></a>配置基础配置文件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">user  www www;</span><br><span class="line">worker_processes 8;</span><br><span class="line">error_log  /data/logs/nginx_error.log  crit;</span><br><span class="line">pid        /usr/local/webserver/nginx/nginx.pid;</span><br><span class="line"><span class="meta">#</span><span class="bash">Specifies the value <span class="keyword">for</span> maximum file descriptors that can be opened by this process.</span></span><br><span class="line">worker_rlimit_nofile 65535;</span><br><span class="line">events</span><br><span class="line">&#123;</span><br><span class="line">  use epoll;</span><br><span class="line">  worker_connections 65535;</span><br><span class="line">&#125;</span><br><span class="line">http</span><br><span class="line">&#123;</span><br><span class="line">  include       mime.types;</span><br><span class="line">  default_type  application/octet-stream;</span><br><span class="line"><span class="meta">  #</span><span class="bash">charset  gb2312;</span></span><br><span class="line">  server_names_hash_bucket_size 128;</span><br><span class="line">  client_header_buffer_size 32k;</span><br><span class="line">  large_client_header_buffers 4 32k;</span><br><span class="line">  client_max_body_size 8m;</span><br><span class="line">  sendfile on;</span><br><span class="line">  tcp_nopush     on;</span><br><span class="line">  keepalive_timeout 60;</span><br><span class="line">  tcp_nodelay on;</span><br><span class="line">include  gzip.conf;</span><br><span class="line">include blog.biglittle.cn.conf;</span><br></pre></td></tr></table></figure>
+<h2 id="nginx配置文件"><a href="#nginx配置文件" class="headerlink" title="nginx配置文件"></a>nginx配置文件</h2><h3 id="配置基础配置文件"><a href="#配置基础配置文件" class="headerlink" title="配置基础配置文件"></a>配置基础配置文件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">user  www www;</span><br><span class="line">worker_processes 8;</span><br><span class="line">error_log  /data/logs/nginx_error.log  crit;</span><br><span class="line">pid        /usr/local/webserver/nginx/nginx.pid;</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">Specifies the value <span class="keyword">for</span> maximum file descriptors that can be opened by this process.</span></span><br><span class="line">worker_rlimit_nofile 65535;</span><br><span class="line">events</span><br><span class="line">&#123;</span><br><span class="line">  use epoll;</span><br><span class="line">  worker_connections 65535;</span><br><span class="line">&#125;</span><br><span class="line">http</span><br><span class="line">&#123;</span><br><span class="line">  include       mime.types;</span><br><span class="line">  default_type  application/octet-stream;</span><br><span class="line"><span class="meta prompt_">  #</span><span class="language-bash">charset  gb2312;</span></span><br><span class="line">  server_names_hash_bucket_size 128;</span><br><span class="line">  client_header_buffer_size 32k;</span><br><span class="line">  large_client_header_buffers 4 32k;</span><br><span class="line">  client_max_body_size 8m;</span><br><span class="line">  sendfile on;</span><br><span class="line">  tcp_nopush     on;</span><br><span class="line">  keepalive_timeout 60;</span><br><span class="line">  tcp_nodelay on;</span><br><span class="line">include  gzip.conf;</span><br><span class="line">include blog.biglittle.cn.conf;</span><br></pre></td></tr></table></figure>
 
 <p><code>gzip.conf</code>文件内容</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">gzip on;</span><br><span class="line">gzip_min_length  1k;</span><br><span class="line">gzip_buffers     4 16k;</span><br><span class="line">gzip_http_version 1.0;</span><br><span class="line">gzip_comp_level 2;</span><br><span class="line">gzip_types       text/plain application/x-javascript text/css application/xml;</span><br><span class="line">gzip_vary on;</span><br><span class="line"><span class="meta">#</span><span class="bash">limit_zone  crawler  <span class="variable">$binary_remote_addr</span>  10m;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">gzip on;</span><br><span class="line">gzip_min_length  1k;</span><br><span class="line">gzip_buffers     4 16k;</span><br><span class="line">gzip_http_version 1.0;</span><br><span class="line">gzip_comp_level 2;</span><br><span class="line">gzip_types       text/plain application/x-javascript text/css application/xml;</span><br><span class="line">gzip_vary on;</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">limit_zone  crawler  <span class="variable">$binary_remote_addr</span>  10m;</span></span><br></pre></td></tr></table></figure>
 
 <p><code>blog.biglittle.cn.conf</code>文件内容</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">server</span><br><span class="line">&#123;</span><br><span class="line">  listen 80 default;</span><br><span class="line">  server_name blog.biglittleant.cn;</span><br><span class="line">  index index.html index.htm index.php;</span><br><span class="line">  root /data/nginx/biglittleant/blog;</span><br><span class="line"><span class="meta">  #</span><span class="bash">server_name_in_redirect off;</span></span><br><span class="line">  location ~ .*\.(php|php5)?$</span><br><span class="line">  &#123;</span><br><span class="line">    fastcgi_pass  127.0.0.1:9000;</span><br><span class="line">    fastcgi_index index.php;</span><br><span class="line">    include fastcgi.conf;</span><br><span class="line">  &#125;</span><br><span class="line">  location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)$</span><br><span class="line">  &#123;</span><br><span class="line">    expires      30d;</span><br><span class="line">  &#125;</span><br><span class="line">  location ~ .*\.(js|css)?$</span><br><span class="line">  &#123;</span><br><span class="line">    expires      1h;</span><br><span class="line">  &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">server</span><br><span class="line">&#123;</span><br><span class="line">  listen 80 default;</span><br><span class="line">  server_name blog.biglittleant.cn;</span><br><span class="line">  index index.html index.htm index.php;</span><br><span class="line">  root /data/nginx/biglittleant/blog;</span><br><span class="line"><span class="meta prompt_">  #</span><span class="language-bash">server_name_in_redirect off;</span></span><br><span class="line">  location ~ .*\.(php|php5)?$</span><br><span class="line">  &#123;</span><br><span class="line">    fastcgi_pass  127.0.0.1:9000;</span><br><span class="line">    fastcgi_index index.php;</span><br><span class="line">    include fastcgi.conf;</span><br><span class="line">  &#125;</span><br><span class="line">  location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)$</span><br><span class="line">  &#123;</span><br><span class="line">    expires      30d;</span><br><span class="line">  &#125;</span><br><span class="line">  location ~ .*\.(js|css)?$</span><br><span class="line">  &#123;</span><br><span class="line">    expires      1h;</span><br><span class="line">  &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
 
 <p><code>fastcgi.conf</code>文件内容</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">fastcgi_connect_timeout 300;</span><br><span class="line">fastcgi_send_timeout 300;</span><br><span class="line">fastcgi_read_timeout 300;</span><br><span class="line">fastcgi_buffer_size 64k;</span><br><span class="line">fastcgi_buffers 4 64k;</span><br><span class="line">fastcgi_busy_buffers_size 128k;</span><br><span class="line">fastcgi_temp_file_write_size 128k;</span><br></pre></td></tr></table></figure>
@@ -459,32 +379,32 @@
 <p><code>rewrite_log on;</code> 开启后，它将发送所有的 rewrite 相关的日志信息到 error_log 文件中，使用 [notice] 级别。随后就可以在error_log 查看rewrite信息了。</p>
 <h5 id="使用location记录指定URL的日志"><a href="#使用location记录指定URL的日志" class="headerlink" title="使用location记录指定URL的日志"></a>使用location记录指定URL的日志</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        error_log    /var/logs/nginx/example.com.error.log;</span><br><span class="line">        location /static/ &#123;</span><br><span class="line">        error_log /var/logs/nginx/static-error.log debug;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>配置以上配置后，/static/ 相关的日志会被单独记录在static-error.log文件中。</p>
+<p>配置以上配置后，&#x2F;static&#x2F; 相关的日志会被单独记录在static-error.log文件中。</p>
 <p>nx监控</p>
-<h3 id="常用的监控参数"><a href="#常用的监控参数" class="headerlink" title="常用的监控参数"></a>常用的监控参数</h3><h3 id="开启状态页"><a href="#开启状态页" class="headerlink" title="开启状态页"></a>开启状态页</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">设定查看Nginx状态的地址</span></span><br><span class="line">location /NginxStatus &#123;</span><br><span class="line"> stub_status on;</span><br><span class="line"> access_log off;</span><br><span class="line"><span class="meta"> #</span><span class="bash"> auth_basic <span class="string">&quot;NginxStatus&quot;</span>;</span></span><br><span class="line"><span class="meta"> #</span><span class="bash"> auth_basic_user_file conf/htpasswd;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="常用的监控参数"><a href="#常用的监控参数" class="headerlink" title="常用的监控参数"></a>常用的监控参数</h3><h3 id="开启状态页"><a href="#开启状态页" class="headerlink" title="开启状态页"></a>开启状态页</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">设定查看Nginx状态的地址</span></span><br><span class="line">location /NginxStatus &#123;</span><br><span class="line"> stub_status on;</span><br><span class="line"> access_log off;</span><br><span class="line"><span class="meta prompt_"> # </span><span class="language-bash">auth_basic <span class="string">&quot;NginxStatus&quot;</span>;</span></span><br><span class="line"><span class="meta prompt_"> # </span><span class="language-bash">auth_basic_user_file conf/htpasswd;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>stub_status on;   表示开启stubStatus的工作状态统计功能。</li>
 <li>access_log off;    关闭access_log 日志记录功能。</li>
 <li>auth_basic “NginxStatus”;   auth_basic 是nginx的一种认证机制。</li>
-<li>auth_basic_user_file conf/htpasswd;   用来指定密码文件的位置。<h3 id="配置登录密码"><a href="#配置登录密码" class="headerlink" title="配置登录密码"></a>配置登录密码</h3></li>
+<li>auth_basic_user_file conf&#x2F;htpasswd;   用来指定密码文件的位置。</li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum install -y httpd-tools</span><br><span class="line">/usr/local/apache/bin/htpasswd -c /data/app/nginx/conf/htpasswd biglittleant</span><br><span class="line">New password:</span><br></pre></td></tr></table></figure>
+<h3 id="配置登录密码"><a href="#配置登录密码" class="headerlink" title="配置登录密码"></a>配置登录密码</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum install -y httpd-tools</span><br><span class="line">/usr/local/apache/bin/htpasswd -c /data/app/nginx/conf/htpasswd biglittleant</span><br><span class="line">New password:</span><br></pre></td></tr></table></figure>
 
 <p>完成后会在<code>/data/app/nginx/conf/</code>目录下生成<code>htpasswd</code>文件。</p>
-<h3 id="访问URL"><a href="#访问URL" class="headerlink" title="访问URL"></a>访问URL</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> curl http://127.0.0.1/NginxStatus</span></span><br><span class="line">Active connections: 11921</span><br><span class="line">server accepts handled requests</span><br><span class="line"> 11989 11989 11991</span><br><span class="line">Reading: 0 Writing: 7 Waiting: 42</span><br></pre></td></tr></table></figure>
+<h3 id="访问URL"><a href="#访问URL" class="headerlink" title="访问URL"></a>访问URL</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">curl http://127.0.0.1/NginxStatus</span></span><br><span class="line">Active connections: 11921</span><br><span class="line">server accepts handled requests</span><br><span class="line"> 11989 11989 11991</span><br><span class="line">Reading: 0 Writing: 7 Waiting: 42</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>active connections – 活跃的连接数量</li>
 <li>server accepts handled requests — 总共处理了11989个连接 , 成功创建11989次握手, 总共处理了11991个请求</li>
 <li>Reading — 读取客户端的连接数.</li>
 <li>Writing — 响应数据到客户端的数量</li>
-<li>Waiting — 开启 keep-alive 的情况下,这个值等于 active – (reading+writing), 意思就是 Nginx 已经处理完正在等候下一次请求指令的驻留连接.<h3 id="编写zabbix监控脚本"><a href="#编写zabbix监控脚本" class="headerlink" title="编写zabbix监控脚本"></a>编写zabbix监控脚本</h3></li>
+<li>Waiting — 开启 keep-alive 的情况下,这个值等于 active – (reading+writing), 意思就是 Nginx 已经处理完正在等候下一次请求指令的驻留连接.</li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">nginx_status_fun()&#123;</span><br><span class="line">	NGINX_PORT=$1</span><br><span class="line">	NGINX_COMMAND=$2</span><br><span class="line">	nginx_active()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| grep &#x27;Active&#x27; | awk &#x27;&#123;print $NF&#125;&#x27;</span><br><span class="line">        &#125;</span><br><span class="line">	nginx_reading()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| grep &#x27;Reading&#x27; | awk &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">       &#125;</span><br><span class="line">	nginx_writing()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| grep &#x27;Writing&#x27; | awk &#x27;&#123;print $4&#125;&#x27;</span><br><span class="line">       &#125;</span><br><span class="line">	nginx_waiting()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| grep &#x27;Waiting&#x27; | awk &#x27;&#123;print $6&#125;&#x27;</span><br><span class="line">       &#125;</span><br><span class="line">	nginx_accepts()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| awk NR==3 | awk &#x27;&#123;print $1&#125;&#x27;</span><br><span class="line">       &#125;</span><br><span class="line">	nginx_handled()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| awk NR==3 | awk &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">       &#125;</span><br><span class="line">	nginx_requests()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| awk NR==3 | awk &#x27;&#123;print $3&#125;&#x27;</span><br><span class="line">       &#125;</span><br><span class="line">  	case $NGINX_COMMAND in</span><br><span class="line">		active)</span><br><span class="line">			nginx_active;</span><br><span class="line">			;;</span><br><span class="line">		reading)</span><br><span class="line">			nginx_reading;</span><br><span class="line">			;;</span><br><span class="line">		writing)</span><br><span class="line">			nginx_writing;</span><br><span class="line">			;;</span><br><span class="line">		waiting)</span><br><span class="line">			nginx_waiting;</span><br><span class="line">			;;</span><br><span class="line">		accepts)</span><br><span class="line">			nginx_accepts;</span><br><span class="line">			;;</span><br><span class="line">		handled)</span><br><span class="line">			nginx_handled;</span><br><span class="line">			;;</span><br><span class="line">		requests)</span><br><span class="line">			nginx_requests;</span><br><span class="line">		esac</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="编写zabbix监控脚本"><a href="#编写zabbix监控脚本" class="headerlink" title="编写zabbix监控脚本"></a>编写zabbix监控脚本</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">nginx_status_fun()&#123;</span><br><span class="line">	NGINX_PORT=$1</span><br><span class="line">	NGINX_COMMAND=$2</span><br><span class="line">	nginx_active()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| grep &#x27;Active&#x27; | awk &#x27;&#123;print $NF&#125;&#x27;</span><br><span class="line">        &#125;</span><br><span class="line">	nginx_reading()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| grep &#x27;Reading&#x27; | awk &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">       &#125;</span><br><span class="line">	nginx_writing()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| grep &#x27;Writing&#x27; | awk &#x27;&#123;print $4&#125;&#x27;</span><br><span class="line">       &#125;</span><br><span class="line">	nginx_waiting()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| grep &#x27;Waiting&#x27; | awk &#x27;&#123;print $6&#125;&#x27;</span><br><span class="line">       &#125;</span><br><span class="line">	nginx_accepts()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| awk NR==3 | awk &#x27;&#123;print $1&#125;&#x27;</span><br><span class="line">       &#125;</span><br><span class="line">	nginx_handled()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| awk NR==3 | awk &#x27;&#123;print $2&#125;&#x27;</span><br><span class="line">       &#125;</span><br><span class="line">	nginx_requests()&#123;</span><br><span class="line">        /usr/bin/curl &quot;http://127.0.0.1:&quot;$NGINX_PORT&quot;/NginxStatus/&quot; 2&gt;/dev/null| awk NR==3 | awk &#x27;&#123;print $3&#125;&#x27;</span><br><span class="line">       &#125;</span><br><span class="line">  	case $NGINX_COMMAND in</span><br><span class="line">		active)</span><br><span class="line">			nginx_active;</span><br><span class="line">			;;</span><br><span class="line">		reading)</span><br><span class="line">			nginx_reading;</span><br><span class="line">			;;</span><br><span class="line">		writing)</span><br><span class="line">			nginx_writing;</span><br><span class="line">			;;</span><br><span class="line">		waiting)</span><br><span class="line">			nginx_waiting;</span><br><span class="line">			;;</span><br><span class="line">		accepts)</span><br><span class="line">			nginx_accepts;</span><br><span class="line">			;;</span><br><span class="line">		handled)</span><br><span class="line">			nginx_handled;</span><br><span class="line">			;;</span><br><span class="line">		requests)</span><br><span class="line">			nginx_requests;</span><br><span class="line">		esac</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>nx优化</p>
-<h3 id="nginx内核优化："><a href="#nginx内核优化：" class="headerlink" title="nginx内核优化："></a>nginx内核优化：</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">net.ipv4.tcp_fin_timeout = 2</span><br><span class="line">net.ipv4.tcp_tw_reuse = 1</span><br><span class="line">net.ipv4.tcp_tw_recycle = 1</span><br><span class="line">net.ipv4.tcp_syncookies = 1</span><br><span class="line">net.ipv4.tcp_keepalive_time = 600</span><br><span class="line">net.ipv4.ip_local_port_range = 4000    65000</span><br><span class="line">net.ipv4.tcp_max_syn_backlog = 16384</span><br><span class="line">net.ipv4.tcp_max_tw_buckets = 36000</span><br><span class="line">net.ipv4.route.gc_timeout = 100</span><br><span class="line">net.ipv4.tcp_syn_retries = 1</span><br><span class="line">net.ipv4.tcp_synack_retries = 1</span><br><span class="line">net.core.somaxconn = 16384</span><br><span class="line">net.core.netdev_max_backlog = 16384</span><br><span class="line">net.ipv4.tcp_max_orphans = 16384</span><br><span class="line"><span class="meta">#</span><span class="bash">以下参数是对iptables防火墙的优化，防火墙不开会提示，可以忽略不理。</span></span><br><span class="line">net.ipv4.ip_conntrack_max = 25000000</span><br><span class="line">net.ipv4.netfilter.ip_conntrack_max=25000000</span><br><span class="line">net.ipv4.netfilter.ip_conntrack_tcp_timeout_established=180</span><br><span class="line">net.ipv4.netfilter.ip_conntrack_tcp_timeout_time_wait=120</span><br><span class="line">net.ipv4.netfilter.ip_conntrack_tcp_timeout_close_wait=60</span><br><span class="line">net.ipv4.netfilter.ip_conntrack_tcp_timeout_fin_wait=120</span><br></pre></td></tr></table></figure>
+<h3 id="nginx内核优化："><a href="#nginx内核优化：" class="headerlink" title="nginx内核优化："></a>nginx内核优化：</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">net.ipv4.tcp_fin_timeout = 2</span><br><span class="line">net.ipv4.tcp_tw_reuse = 1</span><br><span class="line">net.ipv4.tcp_tw_recycle = 1</span><br><span class="line">net.ipv4.tcp_syncookies = 1</span><br><span class="line">net.ipv4.tcp_keepalive_time = 600</span><br><span class="line">net.ipv4.ip_local_port_range = 4000    65000</span><br><span class="line">net.ipv4.tcp_max_syn_backlog = 16384</span><br><span class="line">net.ipv4.tcp_max_tw_buckets = 36000</span><br><span class="line">net.ipv4.route.gc_timeout = 100</span><br><span class="line">net.ipv4.tcp_syn_retries = 1</span><br><span class="line">net.ipv4.tcp_synack_retries = 1</span><br><span class="line">net.core.somaxconn = 16384</span><br><span class="line">net.core.netdev_max_backlog = 16384</span><br><span class="line">net.ipv4.tcp_max_orphans = 16384</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">以下参数是对iptables防火墙的优化，防火墙不开会提示，可以忽略不理。</span></span><br><span class="line">net.ipv4.ip_conntrack_max = 25000000</span><br><span class="line">net.ipv4.netfilter.ip_conntrack_max=25000000</span><br><span class="line">net.ipv4.netfilter.ip_conntrack_tcp_timeout_established=180</span><br><span class="line">net.ipv4.netfilter.ip_conntrack_tcp_timeout_time_wait=120</span><br><span class="line">net.ipv4.netfilter.ip_conntrack_tcp_timeout_close_wait=60</span><br><span class="line">net.ipv4.netfilter.ip_conntrack_tcp_timeout_fin_wait=120</span><br></pre></td></tr></table></figure>
 
 <h2 id="报错汇总"><a href="#报错汇总" class="headerlink" title="报错汇总"></a>报错汇总</h2><h3 id="问题1：编译报错"><a href="#问题1：编译报错" class="headerlink" title="问题1：编译报错"></a>问题1：编译报错</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">./configure: error: the HTTP rewrite module requires the PCRE library.</span><br><span class="line">You can either disable the module by using —without-http_rewrite_module（伪静态）</span><br><span class="line">option, or install the PCRE library into the system, or build the PCRE library</span><br><span class="line">statically from the source with nginx by using --with-pcre=&lt;path&gt; option</span><br></pre></td></tr></table></figure>
 
@@ -493,8 +413,8 @@
 
 <h3 id="问题2-提示找不到libpcre-so-1"><a href="#问题2-提示找不到libpcre-so-1" class="headerlink" title="问题2: 提示找不到libpcre.so.1 "></a>问题2: 提示找不到<code>libpcre.so.1 </code></h3><p>解决：</p>
 <ol>
-<li>find / -name libpcre.so*</li>
-<li>将找到的路径 追加到 /etc/ld.so.conf</li>
+<li>find &#x2F; -name libpcre.so*</li>
+<li>将找到的路径 追加到 &#x2F;etc&#x2F;ld.so.conf</li>
 <li>ldconfig 生效。</li>
 <li>或<code>ln -s /ser/local/lib/libpcre.so.l /lib64</code>。</li>
 <li>或编译时指定源码的安装路径：<code>--with-pcre=/data/tools/pcre-8.33 </code>。</li>
@@ -521,29 +441,29 @@
 <li><code>$remote_user </code>： 已经经过Auth Basic Module验证的用户名。</li>
 <li><code>$request_filename </code>： 当前请求的文件路径，由root或alias指令与URI请求生成。</li>
 <li><code>$scheme </code>： HTTP方法（如http，https）。</li>
-<li><code>$server_protocol </code>： 请求使用的协议，通常是HTTP/1.0或HTTP/1.1。</li>
+<li><code>$server_protocol </code>： 请求使用的协议，通常是HTTP&#x2F;1.0或HTTP&#x2F;1.1。</li>
 <li><code>$server_addr </code>： 服务器地址，在完成一次系统调用后可以确定这个值。</li>
 <li><code>$server_name </code>： 服务器名称。</li>
 <li><code>$server_port </code>： 请求到达服务器的端口号。</li>
-<li><code>$request_uri </code>： 包含请求参数的原始URI，不包含主机名，如：”/foo/bar.php?arg=baz”。</li>
-<li><code>$uri </code>： 不带请求参数的当前URI，$uri不包含主机名，如”/foo/bar.html”。</li>
+<li><code>$request_uri </code>： 包含请求参数的原始URI，不包含主机名，如：”&#x2F;foo&#x2F;bar.php?arg&#x3D;baz”。</li>
+<li><code>$uri </code>： 不带请求参数的当前URI，$uri不包含主机名，如”&#x2F;foo&#x2F;bar.html”。</li>
 <li><code>$document_uri </code>： 与$uri相同。</li>
 </ul>
 <p>例子：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">访问链接是：http://localhost:88/test1/test2/test.php</span><br><span class="line">网站路径是：/var/www/html</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash">host：localhost</span></span><br><span class="line"><span class="meta">$</span><span class="bash">server_port：88</span></span><br><span class="line"><span class="meta">$</span><span class="bash">request_uri：http://localhost:88/test1/test2/test.php</span></span><br><span class="line"><span class="meta">$</span><span class="bash">document_uri：/test1/test2/test.php</span></span><br><span class="line"><span class="meta">$</span><span class="bash">document_root：/var/www/html</span></span><br><span class="line"><span class="meta">$</span><span class="bash">request_filename：/var/www/html/test1/test2/test.php</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">访问链接是：http://localhost:88/test1/test2/test.php</span><br><span class="line">网站路径是：/var/www/html</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">host：localhost</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">server_port：88</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">request_uri：http://localhost:88/test1/test2/test.php</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">document_uri：/test1/test2/test.php</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">document_root：/var/www/html</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">request_filename：/var/www/html/test1/test2/test.php</span></span><br></pre></td></tr></table></figure>
 
 
 <h3 id="web服务器事件处理模型"><a href="#web服务器事件处理模型" class="headerlink" title="web服务器事件处理模型"></a>web服务器事件处理模型</h3><h4 id="select"><a href="#select" class="headerlink" title="select"></a>select</h4><p>select最早于1983年出现在4.2BSD中，它通过一个select()系统调用来监视多个文件描述符的数组，当select()返回后，该数组中就绪的文件描述符便会被内核修改标志位，使得进程可以获得这些文件描述符从而进行后续的读写操作。<br>select目前几乎在所有的平台上支持，其良好跨平台支持也是它的一个优点，事实上从现在看来，这也是它所剩不多的优点之一。<br>select的一个缺点在于单个进程能够监视的文件描述符的数量存在最大限制，在Linux上一般为1024，不过可以通过修改宏定义甚至重新编译内核的方式提升这一限制。<br>另外，select()所维护的存储大量文件描述符的数据结构，随着文件描述符数量的增大，其复制的开销也线性增长。同时，由于网络响应时间的延迟使得大量TCP连接处于非活跃状态，但调用select()会对所有socket进行一次线性扫描，所以这也浪费了一定的开销。</p>
 <h4 id="poll"><a href="#poll" class="headerlink" title="poll"></a>poll</h4><p>poll在1986年诞生于System V Release 3，它和select在本质上没有多大差别，但是poll没有最大文件描述符数量的限制。<br>poll和select同样存在一个缺点就是，包含大量文件描述符的数组被整体复制于用户态和内核的地址空间之间，而不论这些文件描述符是否就绪，它的开销随着文件描述符数量的增加而线性增大。<br>另外，select()和poll()将就绪的文件描述符告诉进程后，如果进程没有对其进行IO操作，那么下次调用select()和poll()的时候将再次报告这些文件描述符，所以它们一般不会丢失就绪的消息，这种方式称为水平触发（Level Triggered）。</p>
-<h4 id="epoll"><a href="#epoll" class="headerlink" title="epoll"></a>epoll</h4><p>直到Linux2.6才出现了由内核直接支持的实现方法，那就是epoll，它几乎具备了之前所说的一切优点，被公认为Linux2.6下性能最好的多路I/O就绪通知方法。<br>epoll可以同时支持水平触发和边缘触发（Edge Triggered，只告诉进程哪些文件描述符刚刚变为就绪状态，它只说一遍，如果我们没有采取行动，那么它将不会再次告知，这种方式称为边缘触发），理论上边缘触发的性能要更高一些，但是代码实现相当复杂。<br>epoll同样只告知那些就绪的文件描述符，而且当我们调用epoll_wait()获得就绪文件描述符时，返回的不是实际的描述符，而是一个代表就绪描述符数量的值，你只需要去epoll指定的一个数组中依次取得相应数量的文件描述符即可，这里也使用了内存映射（mmap）技术，这样便彻底省掉了这些文件描述符在系统调用时复制的开销。<br>另一个本质的改进在于epoll采用基于事件的就绪通知方式。在select/poll中，进程只有在调用一定的方法后，内核才对所有监视的文件描述符进行扫描，而epoll事先通过epoll_ctl()来注册一个文件描述符，一旦基于某个文件描述符就绪时，内核会采用类似callback的回调机制，迅速激活这个文件描述符，当进程调用epoll_wait()时便得到通知。</p>
+<h4 id="epoll"><a href="#epoll" class="headerlink" title="epoll"></a>epoll</h4><p>直到Linux2.6才出现了由内核直接支持的实现方法，那就是epoll，它几乎具备了之前所说的一切优点，被公认为Linux2.6下性能最好的多路I&#x2F;O就绪通知方法。<br>epoll可以同时支持水平触发和边缘触发（Edge Triggered，只告诉进程哪些文件描述符刚刚变为就绪状态，它只说一遍，如果我们没有采取行动，那么它将不会再次告知，这种方式称为边缘触发），理论上边缘触发的性能要更高一些，但是代码实现相当复杂。<br>epoll同样只告知那些就绪的文件描述符，而且当我们调用epoll_wait()获得就绪文件描述符时，返回的不是实际的描述符，而是一个代表就绪描述符数量的值，你只需要去epoll指定的一个数组中依次取得相应数量的文件描述符即可，这里也使用了内存映射（mmap）技术，这样便彻底省掉了这些文件描述符在系统调用时复制的开销。<br>另一个本质的改进在于epoll采用基于事件的就绪通知方式。在select&#x2F;poll中，进程只有在调用一定的方法后，内核才对所有监视的文件描述符进行扫描，而epoll事先通过epoll_ctl()来注册一个文件描述符，一旦基于某个文件描述符就绪时，内核会采用类似callback的回调机制，迅速激活这个文件描述符，当进程调用epoll_wait()时便得到通知。</p>
 <h3 id="nginx-s-reload-过程："><a href="#nginx-s-reload-过程：" class="headerlink" title="nginx -s reload 过程："></a>nginx -s reload 过程：</h3><p>nginx主进程读取配置文件，如果发现配置文件变更，会创建一个新的主进程，然后同时旧的进程，及旧的子进程关闭，旧进程会拒绝新的连接，服务到自己的连接结束，然后关闭。</p>
 <h3 id="Apache-select模型和-nginx-epoll-模型对比讲解"><a href="#Apache-select模型和-nginx-epoll-模型对比讲解" class="headerlink" title="Apache select模型和 nginx epoll 模型对比讲解"></a>Apache select模型和 nginx epoll 模型对比讲解</h3><p>Nginx的高并发得益于其采用了epoll模型，与传统的服务器程序架构不同，epoll是linux内核2.6以后才出现的。下面通过比较Apache和Nginx工作原理来比较。</p>
-<p>传统Apache都是多进程或者多线程来工作，假设是多进程工作（prefork），apache会先生成几个进程，类似进程池的工作原理，只不过这里的进程池会随着请求数目的增加而增加。对于每一个连接，apache都是在一个进程内处理完毕。具体是 recv（），以及根据 URI 去进行磁盘I/O来寻找文件，还有 send（）都是阻塞的。其实说白了都是 apche 对于套接字的I/O，读或者写，但是读或者写都是阻塞的，阻塞意味着进程就得挂起进入sleep状态，那么一旦连接数很多，Apache必然要生成更多的进程来响应请求，一旦进程多了，CPU对于进程的切换就频繁了，很耗资源和时间，所以就导致apache性能下降了，说白了就是处理不过来这么多进程了。其实仔细想想，如果对于进程每个请求都没有阻塞，那么效率肯定会提高很多。</p>
-<p>Nginx采用epoll模型，异步非阻塞。对于Nginx来说，把一个完整的连接请求处理都划分成了事件，一个一个的事件。比如accept（）， recv（），磁盘I/O，send（）等，每部分都有相应的模块去处理，一个完整的请求可能是由几百个模块去处理。真正核心的就是事件收集和分发模块，这就是管理所有模块的核心。只有核心模块的调度才能让对应的模块占用CPU资源，从而处理请求。拿一个HTTP请求来说，首先在事件收集分发模块注册感兴趣的监听事件，注册好之后不阻塞直接返回，接下来就不需要再管了，等待有连接来了内核会通知你(epoll的轮询会告诉进程)，cpu就可以处理其他事情去了。一旦有请求来，那么对整个请求分配相应的上下文（其实已经预先分配好），这时候再注册新的感兴趣的事件(read函数)，同样客户端数据来了内核会自动通知进程可以去读数据了，读了数据之后就是解析，解析完后去磁盘找资源（I/O），一旦I/O完成会通知进程，进程开始给客户端发回数据send()，这时候也不是阻塞的，调用后就等内核发回通知发送的结果就行。整个下来把一个请求分成了很多个阶段，每个阶段都到很多模块去注册，然后处理，都是异步非阻塞。异步这里指的就是做一个事情，不需要等返回结果，做好了会自动通知你。</p>
-<p>select/epoll的特点</p>
+<p>传统Apache都是多进程或者多线程来工作，假设是多进程工作（prefork），apache会先生成几个进程，类似进程池的工作原理，只不过这里的进程池会随着请求数目的增加而增加。对于每一个连接，apache都是在一个进程内处理完毕。具体是 recv（），以及根据 URI 去进行磁盘I&#x2F;O来寻找文件，还有 send（）都是阻塞的。其实说白了都是 apche 对于套接字的I&#x2F;O，读或者写，但是读或者写都是阻塞的，阻塞意味着进程就得挂起进入sleep状态，那么一旦连接数很多，Apache必然要生成更多的进程来响应请求，一旦进程多了，CPU对于进程的切换就频繁了，很耗资源和时间，所以就导致apache性能下降了，说白了就是处理不过来这么多进程了。其实仔细想想，如果对于进程每个请求都没有阻塞，那么效率肯定会提高很多。</p>
+<p>Nginx采用epoll模型，异步非阻塞。对于Nginx来说，把一个完整的连接请求处理都划分成了事件，一个一个的事件。比如accept（）， recv（），磁盘I&#x2F;O，send（）等，每部分都有相应的模块去处理，一个完整的请求可能是由几百个模块去处理。真正核心的就是事件收集和分发模块，这就是管理所有模块的核心。只有核心模块的调度才能让对应的模块占用CPU资源，从而处理请求。拿一个HTTP请求来说，首先在事件收集分发模块注册感兴趣的监听事件，注册好之后不阻塞直接返回，接下来就不需要再管了，等待有连接来了内核会通知你(epoll的轮询会告诉进程)，cpu就可以处理其他事情去了。一旦有请求来，那么对整个请求分配相应的上下文（其实已经预先分配好），这时候再注册新的感兴趣的事件(read函数)，同样客户端数据来了内核会自动通知进程可以去读数据了，读了数据之后就是解析，解析完后去磁盘找资源（I&#x2F;O），一旦I&#x2F;O完成会通知进程，进程开始给客户端发回数据send()，这时候也不是阻塞的，调用后就等内核发回通知发送的结果就行。整个下来把一个请求分成了很多个阶段，每个阶段都到很多模块去注册，然后处理，都是异步非阻塞。异步这里指的就是做一个事情，不需要等返回结果，做好了会自动通知你。</p>
+<p>select&#x2F;epoll的特点</p>
 <p>select的特点：select 选择句柄的时候，是遍历所有句柄，也就是说句柄有事件响应时，select需要遍历所有句柄才能获取到哪些句柄有事件通知，因此效率是非常低。但是如果连接很少的情况下， select和epoll的LT触发模式相比， 性能上差别不大。<br>这里要多说一句，select支持的句柄数是有限制的， 同时只支持1024个，这个是句柄集合限制的，如果超过这个限制，很可能导致溢出，而且非常不容易发现问题， 当然可以通过修改linux的socket内核调整这个参数。<br>epoll的特点：epoll对于句柄事件的选择不是遍历的，是事件响应的，就是句柄上事件来就马上选择出来，不需要遍历整个句柄链表，因此效率非常高，内核将句柄用红黑树保存的。<br>对于epoll而言还有ET和LT的区别，LT表示水平触发，ET表示边缘触发，两者在性能以及代码实现上差别也是非常大的。</p>
-<p>可以举一个简单的例子来说明Apache的工作流程，我们平时去餐厅吃饭。餐厅的工作模式是一个服务员全程服务客户，流程是这样，服务员在门口等候客人(listen)，客人到了就接待安排的餐桌上(accept)，等着客户点菜(request uri)，去厨房叫师傅下单做菜（磁盘I/O），等待厨房做好（read），然后给客人上菜(send)，整个下来服务员(进程)很多地方是阻塞的。这样客人一多（HTTP请求一多），餐厅只能通过叫更多的服务员来服务（fork进程），但是由于餐厅资源是有限的（CPU），一旦服务员太多管理成本很高（CPU上下文切换），这样就进入一个瓶颈。</p>
-<p>再来看看Nginx得怎么处理？餐厅门口挂个门铃（注册epoll模型的listen），一旦有客人（HTTP请求）到达，派一个服务员去接待（accept），之后服务员就去忙其他事情了（比如再去接待客人），等这位客人点好餐就叫服务员（数据到了read()），服务员过来拿走菜单到厨房（磁盘I/O），服务员又做其他事情去了，等厨房做好了菜也喊服务员（磁盘I/O结束），服务员再给客人上菜（send()），厨房做好一个菜就给客人上一个，中间服务员可以去干其他事情。整个过程被切分成很多个阶段，每个阶段都有相应的服务模块。我们想想，这样一旦客人多了，餐厅也能招待更多的人。</p>
+<p>可以举一个简单的例子来说明Apache的工作流程，我们平时去餐厅吃饭。餐厅的工作模式是一个服务员全程服务客户，流程是这样，服务员在门口等候客人(listen)，客人到了就接待安排的餐桌上(accept)，等着客户点菜(request uri)，去厨房叫师傅下单做菜（磁盘I&#x2F;O），等待厨房做好（read），然后给客人上菜(send)，整个下来服务员(进程)很多地方是阻塞的。这样客人一多（HTTP请求一多），餐厅只能通过叫更多的服务员来服务（fork进程），但是由于餐厅资源是有限的（CPU），一旦服务员太多管理成本很高（CPU上下文切换），这样就进入一个瓶颈。</p>
+<p>再来看看Nginx得怎么处理？餐厅门口挂个门铃（注册epoll模型的listen），一旦有客人（HTTP请求）到达，派一个服务员去接待（accept），之后服务员就去忙其他事情了（比如再去接待客人），等这位客人点好餐就叫服务员（数据到了read()），服务员过来拿走菜单到厨房（磁盘I&#x2F;O），服务员又做其他事情去了，等厨房做好了菜也喊服务员（磁盘I&#x2F;O结束），服务员再给客人上菜（send()），厨房做好一个菜就给客人上一个，中间服务员可以去干其他事情。整个过程被切分成很多个阶段，每个阶段都有相应的服务模块。我们想想，这样一旦客人多了，餐厅也能招待更多的人。</p>
 <p>不管是Nginx还是Squid这种反向代理，其网络模式都是事件驱动。事件驱动其实是很老的技术，早期的select、poll都是如此。后来基于内核通知的更高级事件机制出现，如libevent里的epoll，使事件驱动性能得以提高。事件驱动的本质还是IO事件，应用程序在多个IO句柄间快速切换，实现所谓的异步IO。事件驱动服务器，最适合做的就是这种IO密集型工作，如反向代理，它在客户端与WEB服务器之间起一个数据中转作用，纯粹是IO操作，自身并不涉及到复杂计算。反向代理用事件驱动来做，显然更好，一个工作进程就可以run了，没有进程、线程管理的开销，CPU、内存消耗都小。</p>
 <p>所以Nginx、Squid都是这样做的。当然，Nginx也可以是多进程 + 事件驱动的模式，几个进程跑libevent，不需要Apache那样动辄数百的进程数。Nginx处理静态文件效果也很好，那是因为静态文件本身也是磁盘IO操作，处理过程一样。至于说多少万的并发连接，这个毫无意义。随手写个网络程序都能处理几万的并发，但如果大部分客户端阻塞在那里，就没什么价值。</p>
 <p>再看看Apache或者Resin这类应用服务器，之所以称他们为应用服务器，是因为他们真的要跑具体的业务应用，如科学计算、图形图像、数据库读写等。它们很可能是CPU密集型的服务，事件驱动并不合适。例如一个计算耗时2秒，那么这2秒就是完全阻塞的，什么event都没用。想想MySQL如果改成事件驱动会怎么样，一个大型的join或sort就会阻塞住所有客户端。这个时候多进程或线程就体现出优势，每个进程各干各的事，互不阻塞和干扰。当然，现代CPU越来越快，单个计算阻塞的时间可能很小，但只要有阻塞，事件编程就毫无优势。所以进程、线程这类技术，并不会消失，而是与事件机制相辅相成，长期存在。</p>
@@ -578,111 +498,65 @@
           </div>
     </footer>
   </article>
-  
-  
-  
+</div>
 
 
 
-      
 
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      const commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
 
-    </div>
+
+</div>
   </main>
 
   <footer class="footer">
     <div class="footer-inner">
-      
 
-      
 
 <div class="copyright">
-  
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">biglittleant</span>
+  <span class="author" itemprop="copyrightHolder">Big Little Ant</span>
 </div>
-<div class="busuanzi-count">
-    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-user"></i>
-      </span>
-      <span class="site-uv" title="Total Visitors">
-        <span id="busuanzi_value_site_uv"></span>
-      </span>
-    </span>
-    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-eye"></i>
-      </span>
-      <span class="site-pv" title="Total Views">
-        <span id="busuanzi_value_site_pv"></span>
-      </span>
-    </span>
-</div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
   </div>
 
     </div>
   </footer>
 
   
-  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
-<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
 
   
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-  
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-
-
-
-
-
-
-
   
 
-  
+
+
+
 
 </body>
 </html>
